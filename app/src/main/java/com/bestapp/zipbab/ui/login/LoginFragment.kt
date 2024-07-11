@@ -17,6 +17,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.databinding.FragmentLoginBinding
+import com.bestapp.zipbab.util.safeNavigate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -58,7 +59,8 @@ class LoginFragment : Fragment() {
         }
 
         tvSignUp.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
+            val action = LoginFragmentDirections.actionLoginFragmentToSignUpFragment()
+            action.safeNavigate(this@LoginFragment)
         }
 
         mt.setNavigationOnClickListener {
