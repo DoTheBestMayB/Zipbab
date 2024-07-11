@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val appSettingRepository: AppSettingRepository,
+    appSettingRepository: AppSettingRepository,
     private val categoryRepository: CategoryRepository,
 ) : ViewModel() {
 
