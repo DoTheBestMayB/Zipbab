@@ -49,17 +49,17 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupAdapter()
-        setupListener()
-        setupObserve()
+        setAdapter()
+        setListener()
+        setObserve()
     }
 
-    private fun setupAdapter() {
+    private fun setAdapter() {
         binding.rvFoodMenu.adapter = foodMenuAdapter
         binding.rvCost.adapter = costAdapter
     }
 
-    private fun setupListener() {
+    private fun setListener() {
         binding.llSearch.setOnClickListener {
             val action = HomeFragmentDirections.actionHomeFragmentToSearchFragment()
             findNavController().navigate(action)
@@ -70,7 +70,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setupObserve() {
+    private fun setObserve() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
