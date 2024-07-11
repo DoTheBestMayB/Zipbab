@@ -8,6 +8,16 @@
     android:backgroundTint="@color/selector_light_gray_light_black"
     tools:context=".ui.search.SearchFragment">
 
+    <ImageView
+        android:id="@+id/ib_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin20"
+        android:src="@drawable/baseline_arrow_back_24"
+        app:layout_constraintBottom_toBottomOf="@id/ll_search"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ll_search" />
+
     <LinearLayout
         android:id="@+id/ll_search"
         android:layout_width="0dp"
@@ -16,7 +26,7 @@
         android:layout_marginTop="@dimen/default_margin20"
         android:background="@drawable/shape_back_round_layout_bg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ib_back"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
@@ -34,38 +44,35 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/default_margin8"
-            android:layout_marginTop="@dimen/default_margin8"
-            android:layout_marginEnd="@dimen/default_margin8"
-            android:layout_marginBottom="@dimen/default_margin8"
-            android:background="@color/white"
-            android:gravity="start"
+            android:layout_margin="@dimen/default_margin8"
+            android:background="@color/text_reverse_color"
             android:hint="@string/search_search_hint"
             android:imeActionLabel="검색"
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:maxLines="1"
-            android:textAppearance="@style/body_content14"
-            android:textColorHint="@color/clr_2E3034" />
+            android:textAppearance="@style/body_content14" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv"
+        android:id="@+id/rv_search_result"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/body_content_font_size14"
+        android:layout_marginTop="@dimen/default_margin16"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_search" />
+        app:layout_constraintTop_toBottomOf="@id/ll_search"
+        tools:listitem="@layout/item_search" />
 
     <ImageView
         android:id="@+id/iv_empty"
         android:layout_width="wrap_content"
-        android:layout_height="300dp"
-        android:layout_marginTop="@dimen/body_content_font_size14"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/default_margin16"
         android:src="@drawable/ic_empty_rice"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -78,8 +85,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/search_empty_text"
-        android:textColor="@color/selector_text_color"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/iv_empty"
         app:layout_constraintStart_toStartOf="@id/iv_empty"
         app:layout_constraintTop_toBottomOf="@id/iv_empty" />
