@@ -33,7 +33,7 @@ class SignUpFragment : Fragment() {
 
     private val signUpViewModel: SignUpViewModel by viewModels()
 
-    private val mTransform = Linkify.TransformFilter { _, url -> "" }
+    private val mTransform = Linkify.TransformFilter { _, _ -> "" }
     private val patternUrl = Pattern.compile("이용약관")
 
     override fun onCreateView(

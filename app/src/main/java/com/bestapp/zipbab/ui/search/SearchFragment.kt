@@ -111,7 +111,7 @@ class SearchFragment : Fragment() {
 
     private fun setupListener() {
         binding.etSearch.apply {
-            this.setOnEditorActionListener { textView, actionId, keyEvent ->
+            this.setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_SEARCH -> {
                         val processQuery = binding.etSearch.text.toString().trim()
