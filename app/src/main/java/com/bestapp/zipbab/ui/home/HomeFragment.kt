@@ -63,9 +63,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        setMyMeetAdapter()
-        setFoodMenuAdapter()
-        setCostAdapter()
+        binding.rvFoodMenu.adapter = foodMenuAdapter
+        binding.rvCost.adapter = costAdapter
     }
 
     private fun setupData() {
@@ -186,42 +185,6 @@ class HomeFragment : Fragment() {
                     myMeetingAdapter.submitList(it)
                 }
             }
-        }
-    }
-
-    /**
-     * My 모임 어댑터 세팅
-     */
-    private fun setMyMeetAdapter() {
-        val myMeetingManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.rvMyMeet.apply {
-            layoutManager = myMeetingManager
-            adapter = myMeetingAdapter
-        }
-    }
-
-    /**
-     * 음식 메뉴 어댑터 세팅
-     */
-    private fun setFoodMenuAdapter() {
-        val foodMenuManager =
-            GridLayoutManager(requireContext(), 4, GridLayoutManager.VERTICAL, false)
-        binding.rvFoodMenu.apply {
-            layoutManager = foodMenuManager
-            adapter = foodMenuAdapter
-        }
-    }
-
-    /**
-     * Cost 어댑터 세팅
-     */
-    private fun setCostAdapter() {
-        val costManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.rvCost.apply {
-            layoutManager = costManager
-            adapter = costAdapter
         }
     }
 

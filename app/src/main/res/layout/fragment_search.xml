@@ -9,12 +9,11 @@
     tools:context=".ui.search.SearchFragment">
 
     <LinearLayout
-        android:id="@+id/ll"
+        android:id="@+id/ll_search"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/default_margin20"
+        android:layout_marginHorizontal="@dimen/default_margin20"
         android:layout_marginTop="@dimen/default_margin20"
-        android:layout_marginEnd="@dimen/default_margin20"
         android:background="@drawable/shape_back_round_layout_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,7 +57,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll" />
+        app:layout_constraintTop_toBottomOf="@id/ll_search" />
 
     <ImageView
         android:id="@+id/iv_empty"
@@ -70,7 +69,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll" />
+        app:layout_constraintTop_toBottomOf="@id/ll_search" />
 
     <TextView
         android:id="@+id/tv_empty"
