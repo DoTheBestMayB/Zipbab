@@ -116,7 +116,7 @@
     <string name="meeting_info_location">장소: %s</string>
     <string name="meeting_info_time">시간: %s</string>
     <string name="meeting_info_main_menu">주 메뉴: %s</string>
-    <string name="meeting_info_cost">참여 비용 : %,d원</string>
+    <string name="meeting_info_cost">%,d원</string>
 
     <string name="input_cost_empty_text">모임이 없어요.</string>
 
@@ -160,7 +160,7 @@
     <string name="delete_post_fail">게시물 삭제에 실패했습니다. 잠시 후 다시 시도해주세요.</string>
     <string name="delete_post_done">게시물 삭제가 완료됐습니다.</string>
     <string name="delete_post">삭제하기</string>
-    <string name="meeting_info_host_title">호스트</string>
+    <string name="meeting_member_list_header">참여 멤버</string>
 
     <string name="meet_up_map_no_permission">지도 사용을 위해 위치 권한을 허용해주세요(필수권한)</string>
     <string name="meet_up_map_set_permission">설정으로 이동</string>
@@ -187,4 +187,9 @@
     <string name="not_yet_loaded">%1$s가(이) 아직 로딩 되지 않았습니다. 인터넷 연결 상태를 확인해주세요.</string>
     <string name="user_info">사용자 정보</string>
     <string name="sign_out_is_not_allowed">회원 탈퇴가 허용되지 않은 계정입니다.</string>
+    <string name="meeting_info_app_bar">모임 참가</string>
+    <string name="meeting_sample_content">5성급 호텔 주방장 출신\n셀러드의 깊은 맛에 빠져보세요.\n\n30종류의 와인, 위스키 등 주류 리스트가 준비되어 있습니다.</string>
+    <string name="meeting_end">모임 종료</string>
+    <string name="meeting_see_member_location">내 그룹원 위치보기</string>
+    <string name="meeting_register">모임 가입하기</string>
 </resources>

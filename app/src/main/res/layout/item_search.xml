@@ -34,7 +34,6 @@
         android:layout_marginStart="@dimen/default_margin12"
         android:layout_marginBottom="@dimen/default_margin4"
         android:text="제목 title"
-        android:textColor="@color/selector_text_color"
         style="@style/body_title16"
         app:layout_constraintBottom_toTopOf="@id/tv_location"
         app:layout_constraintStart_toEndOf="@id/cv"
@@ -47,7 +46,6 @@
         android:layout_marginStart="@dimen/default_margin12"
         android:text="위치 location"
         style="@style/body_content16"
-        android:textColor="@color/selector_text_color"
         app:layout_constraintBottom_toBottomOf="@id/cv"
         app:layout_constraintStart_toEndOf="@id/cv"
         app:layout_constraintTop_toBottomOf="@id/tv_title" />
