@@ -112,10 +112,7 @@
     <string name="signup_password_compare_not_correct">비밀번호가 일치하지 않습니다.</string>
 
     <string name="meeting_info_location_tag">장소</string>
-    <string name="meeting_info_count">인원수: %d/%d명</string>
-    <string name="meeting_info_location">장소: %s</string>
-    <string name="meeting_info_time">시간: %s</string>
-    <string name="meeting_info_main_menu">주 메뉴: %s</string>
+    <string name="meeting_info_count">%d / %d명</string>
     <string name="meeting_info_cost">%,d원</string>
 
     <string name="input_cost_empty_text">모임이 없어요.</string>
@@ -192,4 +189,10 @@
     <string name="meeting_end">모임 종료</string>
     <string name="meeting_see_member_location">내 그룹원 위치보기</string>
     <string name="meeting_register">모임 가입하기</string>
+    <string name="meeting_request_register_success">모임 신청이 정상적으로 처리되었습니다.</string>
+    <string name="meeting_request_register_fail">모임 신청에 실패했습니다.</string>
+    <string name="meeting_already_joined">이미 가입된 모임입니다</string>
+    <string name="meeting_already_requested">가입 요청된 모임입니다</string>
+    <string name="meeting_end_fail">모임 종료에 실패했습니다.</string>
+    <string name="meeting_end_success">모임이 종료되었습니다.</string>
 </resources>

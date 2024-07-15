@@ -22,6 +22,7 @@ import com.bestapp.zipbab.data.model.local.GalleryImageInfo
 import com.bestapp.zipbab.data.model.local.SignOutEntity
 import com.bestapp.zipbab.data.model.remote.LoginResponse
 import com.bestapp.zipbab.data.model.remote.SignUpResponse
+import com.bestapp.zipbab.ui.mettinginfo.MemberInfo
 import com.bestapp.zipbab.ui.profilepostimageselect.model.PostGalleryUiState
 import com.bestapp.zipbab.ui.profilepostimageselect.model.SelectedImageUiState
 import com.bestapp.zipbab.ui.profilepostimageselect.model.SubmitInfo
@@ -123,7 +124,7 @@ fun UserResponse.toUiState() = UserUiState(
     profileImage = profileImage,
     temperature = temperature,
     meetingCount = meetingCount,
-    notificationUiState = notificationList.map { it.toUiState() },
+    notificationUiState = notifications.map { it.toUiState() },
     meetingReviews = meetingReviews,
     postDocumentIds = posts,
     placeLocationUiState = placeLocation.toUiState(),
@@ -173,14 +174,8 @@ fun SignUpResponse.toUi(): SignUpState {
 
 // UiState -> Data
 
-fun NotificationTypeResponse.toUiState() = when (this) {
-    is NotificationTypeResponse.MainResponseNotification -> {
-        NotificationUiState.MainNotification(dec = dec, uploadDate = uploadDate)
-    }
-
-    is NotificationTypeResponse.UserResponseNotification -> {
-        NotificationUiState.UserNotification(dec = dec, uploadDate = uploadDate)
-    }
+fun NotificationTypeResponse.toUiState(): NotificationUiState.UserNotification {
+    return NotificationUiState.UserNotification(dec = "", uploadDate = uploadDate)
 }
 
 fun PlaceLocationUiState.toData() = PlaceLocation(
@@ -244,6 +239,13 @@ fun SelectedImageUiState.toGalleryUiState() = PostGalleryUiState(
     uri = uri,
     name = name,
     order = order,
+)
+
+fun UserUiState.toMemberInfo(isHost: Boolean) = MemberInfo(
+    userDocumentID = userDocumentID,
+    nickname = nickname,
+    profileImage = profileImage,
+    isHost = isHost,
 )
 
 // Args -> UiState

@@ -15,6 +15,7 @@ import com.bestapp.zipbab.data.doneSuccessful
 import com.bestapp.zipbab.data.model.UploadStateEntity
 import com.bestapp.zipbab.data.model.local.SignOutEntity
 import com.bestapp.zipbab.data.model.remote.LoginResponse
+import com.bestapp.zipbab.data.model.remote.NotificationType
 import com.bestapp.zipbab.data.model.remote.NotificationTypeResponse
 import com.bestapp.zipbab.data.model.remote.PlaceLocation
 import com.bestapp.zipbab.data.model.remote.PostForInit
@@ -32,6 +33,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
+import java.text.SimpleDateFormat
+import java.util.Locale
 import java.util.UUID
 import javax.inject.Inject
 
@@ -46,6 +49,8 @@ internal class UserRepositoryImpl @Inject constructor(
 
     private val workManager = WorkManager.getInstance(context)
     private val jsonAdapter = moshi.adapter(UploadStateEntity::class.java)
+
+    private val timeParseFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.KOREA)
 
     override suspend fun getUser(userDocumentID: String): UserResponse {
         val users = firestoreDB.getUsersDB()
@@ -96,7 +101,7 @@ internal class UserRepositoryImpl @Inject constructor(
             profileImage = "",
             temperature = 36.5,
             meetingCount = 0,
-            notificationList = listOf(),
+            notifications = listOf(),
             meetingReviews = listOf(),
             posts = listOf(),
             placeLocation = PlaceLocation(
@@ -375,16 +380,6 @@ internal class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addNotifyListInfo( //cyc noti list갱신 -> meeting쪽에서관리
-        userDocumentID: String,
-        notificationType: ArrayList<NotificationTypeResponse.UserResponseNotification>
-    ): Boolean {
-
-        return firestoreDB.getUsersDB().document(userDocumentID)
-            .update("notificationList", notificationType)
-            .doneSuccessful()
-    }
-
     override suspend fun getAccessToken(): AccessToken {
         val querySnapshot = firestoreDB.getAccessDB().document("n9FI6noeU2dFTHbHdQd8")
             .get()
@@ -395,12 +390,30 @@ internal class UserRepositoryImpl @Inject constructor(
 
     override suspend fun removeItem(
         udi: String,
-        exchange: ArrayList<NotificationTypeResponse.UserResponseNotification>,
+        exchange: List<NotificationTypeResponse>,
         index: Int
     ): Boolean {
 
         return firestoreDB.getUsersDB().document(udi)
-            .update("notificationList", exchange)
+            .update("notifications", exchange)
+            .doneSuccessful()
+    }
+
+    override suspend fun addNotification(
+        type: NotificationType,
+        userDocumentID: String,
+        meetingDocumentID: String,
+        hostDocumentID: String
+    ): Boolean {
+        val notification = hashMapOf(
+            "meetingDocumentID" to meetingDocumentID,
+            "type" to type.name,
+            "uploadDate" to timeParseFormat.format(System.currentTimeMillis()),
+            "userDocumentID" to userDocumentID,
+        )
+
+        return firestoreDB.getUsersDB().document(hostDocumentID)
+            .update("notifications", FieldValue.arrayUnion(notification))
             .doneSuccessful()
     }
 }

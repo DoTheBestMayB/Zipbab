@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.bestapp.zipbab.data.model.UploadStateEntity
 import com.bestapp.zipbab.data.model.local.SignOutEntity
 import com.bestapp.zipbab.data.model.remote.LoginResponse
+import com.bestapp.zipbab.data.model.remote.NotificationType
 import com.bestapp.zipbab.data.model.remote.NotificationTypeResponse
 import com.bestapp.zipbab.data.model.remote.Review
 import com.bestapp.zipbab.data.model.remote.SignUpResponse
@@ -24,17 +25,11 @@ interface UserRepository {
     suspend fun convertImages(userDocumentID: String, images: List<Bitmap>): List<String>
     suspend fun addPost(userDocumentID: String, images: List<String>): Boolean
     suspend fun deleteUserProfileImage(userDocumentID: String)
-
-    suspend fun addNotifyListInfo(
-        userDocumentID: String,
-        notificationType: ArrayList<NotificationTypeResponse.UserResponseNotification>
-    ): Boolean
-
     suspend fun getAccessToken(): AccessToken
 
     suspend fun removeItem(
         udi: String,
-        exchange: ArrayList<NotificationTypeResponse.UserResponseNotification>,
+        exchange: List<NotificationTypeResponse>,
         index: Int
     ): Boolean
 
@@ -50,4 +45,11 @@ interface UserRepository {
         tempPostDocumentID: String,
         images: List<String>
     ): Flow<UploadStateEntity>
+
+    suspend fun addNotification(
+        type: NotificationType,
+        userDocumentID: String,
+        meetingDocumentID: String,
+        hostDocumentID: String
+    ): Boolean
 }

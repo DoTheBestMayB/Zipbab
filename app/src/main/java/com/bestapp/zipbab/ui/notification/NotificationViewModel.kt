@@ -59,7 +59,7 @@ class NotificationViewModel @Inject constructor (
 
     fun removeNotifyList(position: Int) = viewModelScope.launch {
         appSettingRepository.userDocumentID.collect {
-            val result = userRepository.getUser(it).notificationList as ArrayList<NotificationTypeResponse.UserResponseNotification>
+            val result = userRepository.getUser(it).notifications as ArrayList<NotificationTypeResponse>
             result.removeAt(position)
             userRepository.removeItem(it, result, position)
         }

@@ -35,9 +35,6 @@
         android:label="fragment_meet_up_map"
         tools:layout="@layout/fragment_meet_up_map">
         <action
-            android:id="@+id/action_meetUpMapFragment_to_meetingManagementFragment"
-            app:destination="@id/meetingManagementFragment" />
-        <action
             android:id="@+id/action_meetUpMapFragment_to_meetingInfoFragment"
             app:destination="@id/meetingInfoFragment" />
     </fragment>
@@ -65,9 +62,6 @@
         android:label="fragment_food_category"
         tools:layout="@layout/fragment_food_category">
         <action
-            android:id="@+id/action_foodCategoryFragment_to_meetingManagementFragment"
-            app:destination="@id/meetingManagementFragment" />
-        <action
             android:id="@+id/action_foodCategoryFragment_to_meetingInfoFragment"
             app:destination="@id/meetingInfoFragment" />
         <argument
@@ -94,9 +88,6 @@
         android:label="fragment_cost"
         tools:layout="@layout/fragment_cost">
         <action
-            android:id="@+id/action_costFragment_to_meetingManagementFragment"
-            app:destination="@id/meetingManagementFragment" />
-        <action
             android:id="@+id/action_costFragment_to_meetingInfoFragment"
             app:destination="@id/meetingInfoFragment" />
         <argument
@@ -104,31 +95,10 @@
             app:argType="com.bestapp.zipbab.args.FilterArgs$CostArgs" />
     </fragment>
     <fragment
-        android:id="@+id/meetingManagementFragment"
-        android:name="com.bestapp.zipbab.ui.meetingmanagement.MeetingManagementFragment"
-        android:label="fragment_meeting_management"
-        tools:layout="@layout/fragment_meeting_management">
-        <action
-            android:id="@+id/action_meetingManagementFragment_to_memberLocationTrackingFragment"
-            app:destination="@id/memberLocationTrackingFragment" />
-        <action
-            android:id="@+id/action_meetingManagementFragment_to_loginGraph"
-            app:destination="@id/loginGraph" />
-        <action
-            android:id="@+id/action_meetingManagementFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
-        <argument
-            android:name="meetingDocumentID"
-            app:argType="string" />
-    </fragment>
-    <fragment
         android:id="@+id/meetingInfoFragment"
         android:name="com.bestapp.zipbab.ui.mettinginfo.MeetingInfoFragment"
         android:label="fragment_meeting_info"
         tools:layout="@layout/fragment_meeting_info">
-        <action
-            android:id="@+id/action_meetingInfoFragment_to_loginGraph"
-            app:destination="@id/loginGraph" />
         <action
             android:id="@+id/action_meetingInfoFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
@@ -177,9 +147,6 @@
         <action
             android:id="@+id/action_meetingListFragment_to_reviewFragment"
             app:destination="@id/reviewFragment" />
-        <action
-            android:id="@+id/action_meetingListFragment_to_meetingManagementFragment"
-            app:destination="@id/meetingManagementFragment" />
         <action
             android:id="@+id/action_meetingListFragment_to_meetingInfoFragment"
             app:destination="@id/meetingInfoFragment" />

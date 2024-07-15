@@ -20,6 +20,7 @@ import com.bestapp.zipbab.databinding.FragmentMeetUpMapBinding
 import com.bestapp.zipbab.permission.LocationPermissionManager
 import com.bestapp.zipbab.permission.LocationPermissionSnackBar
 import com.bestapp.zipbab.userlocation.hasLocationPermission
+import com.bestapp.zipbab.util.safeNavigate
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
@@ -128,19 +129,11 @@ class MeetUpMapFragment : Fragment() {
                         requireContext(),
                         it
                     ) { meetingDocumentID, isHost ->
-                        if (isHost) {
-                            val action =
-                                MeetUpMapFragmentDirections.actionMeetUpMapFragmentToMeetingManagementFragment(
-                                    meetingDocumentID
-                                )
-                            findNavController().navigate(action)
-                        } else {
-                            val action =
-                                MeetUpMapFragmentDirections.actionMeetUpMapFragmentToMeetingInfoFragment(
-                                    meetingDocumentID
-                                )
-                            findNavController().navigate(action)
-                        }
+                        val action =
+                            MeetUpMapFragmentDirections.actionMeetUpMapFragmentToMeetingInfoFragment(
+                                meetingDocumentID
+                            )
+                        action.safeNavigate(this@MeetUpMapFragment)
                     }
 
                     meetingMarkers.map {
