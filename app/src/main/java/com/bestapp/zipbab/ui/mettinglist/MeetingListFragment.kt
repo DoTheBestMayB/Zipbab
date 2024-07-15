@@ -115,10 +115,9 @@ class MeetingListFragment : Fragment() {
 
                 for (i in 0 until showItemCount) {
                     val meetingDocumentId = meetingListUis[i].meetingDocumentID
-                    val isHost = meetingListUis[i].isHost
 
                     meetingItemBindings[i].ivAction.setOnClickListener {
-                        goMeetingInfo(meetingDocumentId, isHost)
+                        goMeetingInfo(meetingDocumentId)
                     }
                 }
             }
@@ -145,7 +144,7 @@ class MeetingListFragment : Fragment() {
         }
     }
 
-    private fun goMeetingInfo(meetingDocumentID: String, isHost: Boolean) {
+    private fun goMeetingInfo(meetingDocumentID: String) {
         val action =
             MeetingListFragmentDirections.actionMeetingListFragmentToMeetingInfoFragment(
                 meetingDocumentID
