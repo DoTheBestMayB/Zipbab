@@ -73,6 +73,9 @@ class SettingViewModel @Inject constructor(
             }
 
             SettingIntent.SignOut -> signOut()
+            SettingIntent.SignOutTry -> {
+                _actionIntent.value = ActionIntent.SignOutTry
+            }
             SettingIntent.Logout -> logout()
             SettingIntent.Login -> {
                 _navActionIntent.value = NavActionIntent.Login
@@ -91,11 +94,21 @@ class SettingViewModel @Inject constructor(
             }
 
             SettingIntent.RequestDelete -> {
-                viewModelScope.launch {
-                    _actionIntent.emit(ActionIntent.DirectToRequestDelete(
-                        url = requestDeleteUrl.value
-                    ))
-                }
+                _actionIntent.value = ActionIntent.DirectToRequestDelete(
+                    url = requestDeleteUrl.value
+                )
+            }
+
+            SettingIntent.NotYetImplemented -> {
+                _actionIntent.value = ActionIntent.NotYetImplemented
+            }
+
+            SettingIntent.PrivacyPolicy -> {
+                _actionIntent.value = ActionIntent.PrivacyPolicy
+            }
+
+            SettingIntent.LocationPolicy -> {
+                _actionIntent.value = ActionIntent.LocationPolicy
             }
         }
     }
@@ -104,6 +117,7 @@ class SettingViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 appSettingRepository.removeUserDocumentId()
+                _message.emit(SettingMessage.LogoutSuccess)
             }
         }
     }

@@ -36,7 +36,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -122,8 +121,44 @@ class SettingFragment : Fragment() {
                             }
                             settingViewModel.onActionIntentConsumed()
                         }
-                    }
 
+                        ActionIntent.NotYetImplemented -> {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.not_yet_implemented),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            settingViewModel.onActionIntentConsumed()
+                        }
+
+                        ActionIntent.PrivacyPolicy -> {
+                            if (privacyUrl.link.isNotBlank()) {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(privacyUrl.link))
+                                context.startActivity(intent)
+                            }
+                            settingViewModel.onActionIntentConsumed()
+                        }
+
+                        ActionIntent.LocationPolicy -> {
+                            if (locationPolicyUrl.link.isNotBlank()) {
+                                val intent =
+                                    Intent(Intent.ACTION_VIEW, Uri.parse(locationPolicyUrl.link))
+                                context.startActivity(intent)
+                            }
+                        }
+
+                        ActionIntent.SignOutTry -> {
+                            SignOutAlertDialog(
+                                onConfirmation = {
+                                    settingViewModel.handleAction(SettingIntent.SignOut)
+                                    settingViewModel.onActionIntentConsumed()
+                                },
+                                onDismiss = {
+                                    settingViewModel.onActionIntentConsumed()
+                                }
+                            )
+                        }
+                    }
                     LaunchedEffect(true) {
                         settingViewModel.message.collect { message ->
                             val text = when (message) {
@@ -131,6 +166,7 @@ class SettingFragment : Fragment() {
                                 SettingMessage.SignOutFail -> context.getString(R.string.message_when_sign_out_fail)
                                 SettingMessage.SingOutSuccess -> context.getString(R.string.message_when_sign_out_success)
                                 SettingMessage.SignOutIsNotAllowed -> context.getString(R.string.sign_out_is_not_allowed)
+                                SettingMessage.LogoutSuccess -> context.getString(R.string.logout_done)
                             }
                             Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
                         }
@@ -163,8 +199,6 @@ class SettingFragment : Fragment() {
                     }
                     SettingScreen(
                         userUiState = userUiState,
-                        privacyUrl = privacyUrl.link,
-                        locationPolicyUrl = locationPolicyUrl.link,
                         onAction = { intent ->
                             settingViewModel.handleAction(intent)
                         }
@@ -179,37 +213,8 @@ class SettingFragment : Fragment() {
 @Composable
 fun SettingScreen(
     userUiState: UserUiState,
-    privacyUrl: String,
-    locationPolicyUrl: String,
     onAction: (SettingIntent) -> Unit,
 ) {
-    var isSignOutClick by remember {
-        mutableStateOf(false)
-    }
-
-    var isShowLogoutToastMessage by remember {
-        mutableStateOf(false)
-    }
-
-    var isShowAlertToastMessage by remember {
-        mutableStateOf(false)
-    }
-
-    val context = LocalContext.current
-
-    val onPrivacyPolicyClick = {
-        if (privacyUrl.isNotBlank()) {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(privacyUrl))
-            context.startActivity(intent)
-        }
-    }
-    val onLocationPolicyClick = {
-        if (locationPolicyUrl.isNotBlank()) {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(locationPolicyUrl))
-            context.startActivity(intent)
-        }
-    }
-
     Scaffold(
         modifier = Modifier
             .fillMaxWidth()
@@ -238,14 +243,6 @@ fun SettingScreen(
         ScrollContent(
             innerPadding = innerPadding,
             userUiState = userUiState,
-            isShowLogoutToastMessage = isShowLogoutToastMessage,
-            onIsShowLogoutChange = { isShowLogoutToastMessage = isShowLogoutToastMessage.not() },
-            isShowAlertToastMessage = isShowAlertToastMessage,
-            onIsShowAlertChange = { isShowAlertToastMessage = isShowAlertToastMessage.not() },
-            isSignOutClick = isSignOutClick,
-            onIsSignOutChange = { isSignOutClick = isSignOutClick.not() },
-            onPrivacyPolicyClick = onPrivacyPolicyClick,
-            onLocationPolicyClick = onLocationPolicyClick,
             onAction = onAction,
         )
     }
@@ -255,14 +252,6 @@ fun SettingScreen(
 fun ScrollContent(
     innerPadding: PaddingValues,
     userUiState: UserUiState,
-    isShowLogoutToastMessage: Boolean,
-    onIsShowLogoutChange: () -> Unit,
-    isShowAlertToastMessage: Boolean,
-    onIsShowAlertChange: () -> Unit,
-    isSignOutClick: Boolean,
-    onIsSignOutChange: () -> Unit,
-    onPrivacyPolicyClick: () -> Unit,
-    onLocationPolicyClick: () -> Unit,
     onAction: (SettingIntent) -> Unit,
 ) {
     Column(
@@ -281,25 +270,28 @@ fun ScrollContent(
             title = stringResource(id = R.string.setting_profile_row_title),
             description = stringResource(id = R.string.setting_profile_row_description),
             enabled = userUiState.isLoggedIn,
-        ) {
-            onAction(SettingIntent.Profile)
-        }
+            onClick = {
+                onAction(SettingIntent.Profile)
+            }
+        )
         SettingItem(
             iconResource = R.drawable.baseline_people_24,
             title = stringResource(id = R.string.setting_meeting_row_title),
             description = stringResource(id = R.string.setting_meeting_row_description),
             enabled = userUiState.isLoggedIn,
-        ) {
-            onAction(SettingIntent.Meeting)
-        }
+            onClick = {
+                onAction(SettingIntent.Meeting)
+            }
+        )
         SettingItem(
             iconResource = R.drawable.baseline_notifications_none_24,
             title = stringResource(id = R.string.setting_alert_row_title),
-            description = stringResource(id = R.string.setting_alert_row_description)
-        ) {
-            onIsShowAlertChange()
+            description = stringResource(id = R.string.setting_alert_row_description),
+            onClick = {
+                onAction(SettingIntent.NotYetImplemented)
 //            navAction(NavActionType.ALERT, "")
-        }
+            }
+        )
         HorizontalDivider(modifier = Modifier.padding(top = 16.dp))
         Text(
             text = stringResource(id = R.string.header_for_etc_row),
@@ -309,13 +301,17 @@ fun ScrollContent(
             iconResource = R.drawable.baseline_remove_red_eye_24,
             title = stringResource(id = R.string.setting_privacy_policy_row_title),
             description = stringResource(id = R.string.setting_privacy_policy_row_description),
-            onClick = onPrivacyPolicyClick
+            onClick = {
+                onAction(SettingIntent.PrivacyPolicy)
+            },
         )
         SettingItem(
             iconResource = R.drawable.baseline_my_location_24,
             title = stringResource(id = R.string.setting_location_policy_row_title),
             description = stringResource(id = R.string.setting_location_policy_row_description),
-            onClick = onLocationPolicyClick,
+            onClick = {
+                onAction(SettingIntent.LocationPolicy)
+            },
         )
         SettingItem(
             iconResource = R.drawable.baseline_code_24,
@@ -333,15 +329,15 @@ fun ScrollContent(
                 } else {
                     R.string.login
                 }
-            )
-        ) {
-            if (userUiState.isLoggedIn) {
-                onAction(SettingIntent.Logout)
-                onIsShowLogoutChange()
-            } else {
-                onAction(SettingIntent.Login)
+            ),
+            onClick = {
+                if (userUiState.isLoggedIn) {
+                    onAction(SettingIntent.Logout)
+                } else {
+                    onAction(SettingIntent.Login)
+                }
             }
-        }
+        )
         SquareButton(
             modifier = Modifier
                 .fillMaxWidth()
@@ -351,33 +347,15 @@ fun ScrollContent(
                 } else {
                     R.string.register
                 }
-            )
-        ) {
-            if (userUiState.isLoggedIn) {
-                onIsSignOutChange()
-            } else {
-                onAction(SettingIntent.SignUp)
+            ),
+            onClick = {
+                if (userUiState.isLoggedIn) {
+                    onAction(SettingIntent.SignOutTry)
+                } else {
+                    onAction(SettingIntent.SignUp)
+                }
             }
-        }
-        if (isShowLogoutToastMessage) {
-            ToastMessage(message = stringResource(R.string.logout_done))
-            onIsShowLogoutChange()
-        }
-        if (isShowAlertToastMessage) {
-            ToastMessage(message = stringResource(R.string.not_yet_implemented))
-            onIsShowAlertChange()
-        }
-        if (isSignOutClick) {
-            SignOutAlertDialog(
-                onConfirmation = {
-                    onAction(SettingIntent.SignOut)
-                    onIsSignOutChange()
-                },
-                onDismiss = {
-                    onIsSignOutChange()
-                },
-            )
-        }
+        )
     }
 }
 
@@ -604,23 +582,25 @@ fun SettingItem(
 @Composable
 fun SettingScreenPreview() {
     ZipbabTheme {
-        SettingScreen(userUiState = UserUiState(
-            userDocumentID = "userDocumentID",
-            nickname = "부캠이",
-            id = "",
-            pw = "",
-            profileImage = "",
-            temperature = 0.0,
-            meetingCount = 0,
-            notificationUiState = listOf(),
-            meetingReviews = listOf(),
-            postDocumentIds = listOf(),
-            placeLocationUiState = PlaceLocationUiState(
-                locationAddress = "",
-                locationLat = "",
-                locationLong = ""
-            )
-        ), privacyUrl = "", locationPolicyUrl = "", onAction = {}
+        SettingScreen(
+            userUiState = UserUiState(
+                userDocumentID = "userDocumentID",
+                nickname = "부캠이",
+                id = "",
+                pw = "",
+                profileImage = "",
+                temperature = 0.0,
+                meetingCount = 0,
+                notificationUiState = listOf(),
+                meetingReviews = listOf(),
+                postDocumentIds = listOf(),
+                placeLocationUiState = PlaceLocationUiState(
+                    locationAddress = "",
+                    locationLat = "",
+                    locationLong = ""
+                )
+            ),
+            onAction = {},
         )
     }
 }
