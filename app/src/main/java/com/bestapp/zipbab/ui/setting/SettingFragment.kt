@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -102,6 +103,8 @@ class SettingFragment : Fragment() {
                     val navActionIntent by settingViewModel.navActionIntent.collectAsStateWithLifecycle()
                     val actionIntent by settingViewModel.actionIntent.collectAsStateWithLifecycle()
 
+                    val context = LocalContext.current
+
                     when (val currentActionIntent = actionIntent) {
                         ActionIntent.Default -> Unit
                         is ActionIntent.DirectToRequestDelete -> {
@@ -121,18 +124,16 @@ class SettingFragment : Fragment() {
                         }
                     }
 
-                    val message by settingViewModel.message.collectAsStateWithLifecycle(
-                        SettingMessage.Default
-                    )
-
-                    val toastMessage: String? = when (message) {
-                        SettingMessage.Default -> null
-                        SettingMessage.SignOutFail -> stringResource(id = R.string.message_when_sign_out_fail)
-                        SettingMessage.SingOutSuccess -> stringResource(id = R.string.message_when_sign_out_success)
-                        SettingMessage.SignOutIsNotAllowed -> stringResource(id = R.string.sign_out_is_not_allowed)
-                    }
-                    if (toastMessage != null) {
-                        ToastMessage(message = toastMessage)
+                    LaunchedEffect(true) {
+                        settingViewModel.message.collect { message ->
+                            val text = when (message) {
+                                SettingMessage.Default -> return@collect
+                                SettingMessage.SignOutFail -> context.getString(R.string.message_when_sign_out_fail)
+                                SettingMessage.SingOutSuccess -> context.getString(R.string.message_when_sign_out_success)
+                                SettingMessage.SignOutIsNotAllowed -> context.getString(R.string.sign_out_is_not_allowed)
+                            }
+                            Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                        }
                     }
 
                     val action: NavDirections? = when (val intent = navActionIntent) {
