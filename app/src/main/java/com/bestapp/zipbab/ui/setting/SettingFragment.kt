@@ -212,11 +212,12 @@ class SettingFragment : Fragment() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen(
+    modifier: Modifier = Modifier,
     userUiState: UserUiState,
     onAction: (SettingIntent) -> Unit,
 ) {
     Scaffold(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight(),
         topBar = {
@@ -250,17 +251,21 @@ fun SettingScreen(
 
 @Composable
 fun ScrollContent(
+    modifier: Modifier = Modifier,
     innerPadding: PaddingValues,
     userUiState: UserUiState,
     onAction: (SettingIntent) -> Unit,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(innerPadding)
             .padding(horizontal = 20.dp)
 
     ) {
-        ProfileStatus(userUiState, onAction)
+        ProfileStatus(
+            userUiState = userUiState,
+            onAction = onAction,
+        )
         Text(
             text = stringResource(id = R.string.header_for_setting_row),
             modifier = Modifier.padding(top = 24.dp)
@@ -397,6 +402,7 @@ fun SignOutAlertDialog(
 
 @Composable
 fun ProfileStatus(
+    modifier: Modifier = Modifier,
     userUiState: UserUiState,
     onAction: (SettingIntent) -> Unit,
 ) {
@@ -420,6 +426,7 @@ fun ProfileStatus(
     }
 
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (userUiState.isLoggedIn && userUiState.profileImage.isNotBlank()) {
@@ -522,6 +529,7 @@ fun ToastMessage(message: String) {
 
 @Composable
 fun SettingItem(
+    modifier: Modifier = Modifier,
     @DrawableRes iconResource: Int,
     title: String,
     description: String,
@@ -530,7 +538,7 @@ fun SettingItem(
     onClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .padding(top = 8.dp)
             .fillMaxWidth()
             .alpha(if (enabled) 1f else 0.5f)

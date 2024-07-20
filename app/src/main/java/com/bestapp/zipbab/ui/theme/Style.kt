@@ -10,7 +10,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SquareButton(modifier: Modifier, text: String, onClick: () -> Unit) {
+fun SquareButton(
+    modifier: Modifier = Modifier,
+    text: String,
+    onClick: () -> Unit
+) {
     Button(
         modifier = modifier,
         onClick = onClick,
