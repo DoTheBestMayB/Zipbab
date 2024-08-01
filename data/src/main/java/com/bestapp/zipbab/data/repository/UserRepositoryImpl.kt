@@ -11,6 +11,7 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.bestapp.zipbab.data.FirestoreDB.FirestoreDB
+import com.bestapp.zipbab.data.datasource.local.UserLocalDataSource
 import com.bestapp.zipbab.data.doneSuccessful
 import com.bestapp.zipbab.data.model.UploadStateEntity
 import com.bestapp.zipbab.data.model.local.SignOutEntity
@@ -43,6 +44,7 @@ internal class UserRepositoryImpl @Inject constructor(
     private val storageRepository: StorageRepository,
     private val meetingRepository: MeetingRepository,
     private val postRepository: PostRepository,
+    private val userLocalDataSource: UserLocalDataSource,
     @ApplicationContext private val context: Context,
     moshi: Moshi,
 ) : UserRepository {
@@ -82,7 +84,11 @@ internal class UserRepositoryImpl @Inject constructor(
         return LoginResponse.Fail
     }
 
-    override suspend fun signUpUser(nickname: String, email: String, password: String): SignUpResponse {
+    override suspend fun signUpUser(
+        nickname: String,
+        email: String,
+        password: String
+    ): SignUpResponse {
         // 이메일 중복 가입 확인
         val users = firestoreDB.getUsersDB()
             .whereEqualTo("id", email)
@@ -160,7 +166,14 @@ internal class UserRepositoryImpl @Inject constructor(
             .delete()
             .doneSuccessful()
 
-        return if (isSuccess) {
+        if (isSuccess.not()) {
+            return SignOutEntity.Fail
+        }
+
+        // 로컬에서 사용자 documentID 삭제하기
+        val isRemoveUserDocumentSuccess = userLocalDataSource.removeUserDocumentId()
+
+        return if (isRemoveUserDocumentSuccess) {
             SignOutEntity.Success
         } else {
             SignOutEntity.Fail
@@ -359,7 +372,7 @@ internal class UserRepositoryImpl @Inject constructor(
         return workManager.getWorkInfoByIdFlow(workRequestKey).map {
             val jsonString = it.progress.getString(UploadWorker.PROGRESS_KEY)
                 ?: run {
-                    return@map when(it.state) {
+                    return@map when (it.state) {
                         WorkInfo.State.ENQUEUED -> UploadStateEntity.Pending(tempPostDocumentID)
                         WorkInfo.State.RUNNING -> UploadStateEntity.Pending(tempPostDocumentID)
                         WorkInfo.State.SUCCEEDED -> {
@@ -369,8 +382,12 @@ internal class UserRepositoryImpl @Inject constructor(
                             val postDocumentID =
                                 it.outputData.getString(UploadWorker.RESULT_POST_DOCUMENT_ID_KEY)
                                     ?: return@map UploadStateEntity.Fail(tempPostDocumentID)
-                            return@map UploadStateEntity.SuccessPost(tPostDocumentID, postDocumentID)
+                            return@map UploadStateEntity.SuccessPost(
+                                tPostDocumentID,
+                                postDocumentID
+                            )
                         }
+
                         WorkInfo.State.FAILED -> UploadStateEntity.Fail(tempPostDocumentID)
                         WorkInfo.State.BLOCKED -> UploadStateEntity.Pending(tempPostDocumentID)
                         WorkInfo.State.CANCELLED -> UploadStateEntity.Fail(tempPostDocumentID)

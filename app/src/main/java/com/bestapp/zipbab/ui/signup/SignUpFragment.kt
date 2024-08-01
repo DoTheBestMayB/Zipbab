@@ -19,6 +19,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.databinding.FragmentSignUpBinding
+import com.bestapp.zipbab.util.safeNavigate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -170,9 +171,23 @@ class SignUpFragment : Fragment() {
                                 ).show()
                             }
 
+                            SignUpState.SaveDocumentIdFail -> {
+                                signUpViewModel.resetSignUpState()
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.signup_save_document_fail),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                // 로그인 창으로 돌아가서 로그인 시도 다시 하도록 유도하기
+                                val action = SignUpFragmentDirections.actionSignUpFragmentToLoginFragment()
+                                action.safeNavigate(this@SignUpFragment)
+                            }
+
                             is SignUpState.Success -> {
                                 signUpViewModel.resetSignUpState()
-                                findNavController().popBackStack(R.id.loginGraph, true)
+                                if (!findNavController().popBackStack(R.id.loginGraph, true)) {
+                                    requireActivity().finish()
+                                }
                             }
                         }
                     }

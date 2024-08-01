@@ -1,9 +1,8 @@
-package com.bestapp.zipbab.data.repository
+package com.bestapp.zipbab.data.datasource.local
 
-import com.bestapp.zipbab.data.model.remote.Privacy
 import kotlinx.coroutines.flow.Flow
 
-interface AppSettingRepository {
+interface UserLocalDataSource {
 
     val userDocumentID: Flow<String>
 
@@ -16,10 +15,4 @@ interface AppSettingRepository {
     suspend fun updateRememberId(id: String): Boolean
 
     suspend fun removeRememberId(): Boolean
-
-    suspend fun getPrivacyInfo(): Privacy
-
-    suspend fun getLocationPolicyInfo(): Privacy
-
-    suspend fun getDeleteRequestInfo(): Privacy
 }

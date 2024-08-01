@@ -141,7 +141,9 @@ class SettingFragment : Fragment() {
                 launch {
                     viewModel.message.collect { message ->
                         val text = when (message) {
+                            SettingMessage.LOGOUT_SUCCESS -> getString(R.string.message_when_log_out_success)
                             SettingMessage.LOGOUT_FAIL -> getString(R.string.message_when_log_out_fail)
+                            SettingMessage.SIGN_OUT_SUCCESS -> getString(R.string.message_when_sign_out_success)
                             SettingMessage.SIGN_OUT_FAIL -> getString(R.string.message_when_sign_out_fail)
                             SettingMessage.SIGN_OUT_IS_NOT_ALLOWED -> getString(R.string.sign_out_is_not_allowed)
                         }
@@ -149,14 +151,14 @@ class SettingFragment : Fragment() {
                     }
                 }
                 launch {
-                    viewModel.requestDeleteUrl.collect { url ->
+                    viewModel.requestDeleteUrl.collect { privacy ->
                         binding.userDocumentIdInstructionView.tvUrl.setOnClickListener {
                             // 인터넷 연결이 느려서 로딩이 안 된 경우 대응
-                            if (url.isBlank()) {
+                            if (privacy.link.isBlank()) {
                                 showNotYetLoaded(getString(R.string.text_for_delete_request_title))
                                 return@setOnClickListener
                             }
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(privacy.link))
                             startActivity(intent)
                         }
                     }
@@ -252,8 +254,6 @@ class SettingFragment : Fragment() {
                 return@setOnClickListener
             }
             viewModel.logout()
-            Toast.makeText(requireContext(), getString(R.string.logout_done), Toast.LENGTH_SHORT)
-                .show()
         }
         btnRegister.setOnClickListener {
             if (isNotLoadingYet) {

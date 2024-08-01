@@ -7,8 +7,9 @@ import com.bestapp.zipbab.data.repository.AppSettingRepository
 import com.bestapp.zipbab.data.repository.UserRepository
 import com.bestapp.zipbab.model.SignOutState
 import com.bestapp.zipbab.model.UserUiState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import com.bestapp.zipbab.model.toUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -47,8 +48,8 @@ class SettingViewModel @Inject constructor(
     private val _message = MutableSharedFlow<SettingMessage>()
     val message: SharedFlow<SettingMessage> = _message.asSharedFlow()
 
-    private val _requestDeleteUrl = MutableStateFlow("")
-    val requestDeleteUrl: StateFlow<String> = _requestDeleteUrl.asStateFlow()
+    private val _requestDeleteUrl = MutableStateFlow(Privacy())
+    val requestDeleteUrl: StateFlow<Privacy> = _requestDeleteUrl.asStateFlow()
 
     private val _requestPrivacyUrl = MutableStateFlow(Privacy())
     val requestPrivacyUrl: StateFlow<Privacy> = _requestPrivacyUrl.asStateFlow()
@@ -61,16 +62,19 @@ class SettingViewModel @Inject constructor(
 
     fun init() {
         viewModelScope.launch {
-            _requestDeleteUrl.emit(appSettingRepository.getDeleteRequestUrl())
+            _requestDeleteUrl.emit(appSettingRepository.getDeleteRequestInfo())
             _requestPrivacyUrl.emit(appSettingRepository.getPrivacyInfo())
             _requestLocationPolicyUrl.emit(appSettingRepository.getLocationPolicyInfo())
         }
     }
 
     fun logout() {
-        viewModelScope.launch {
-            runCatching {
-                appSettingRepository.removeUserDocumentId()
+        viewModelScope.launch(Dispatchers.IO) {
+            val isSuccess = appSettingRepository.removeUserDocumentId()
+            if (isSuccess) {
+                _message.emit(SettingMessage.LOGOUT_FAIL)
+            } else {
+                _message.emit(SettingMessage.LOGOUT_SUCCESS)
             }
         }
     }
@@ -83,7 +87,7 @@ class SettingViewModel @Inject constructor(
                 when (signOutState) {
                     SignOutState.Fail -> _message.emit(SettingMessage.SIGN_OUT_FAIL)
                     SignOutState.IsNotAllowed -> _message.emit(SettingMessage.SIGN_OUT_IS_NOT_ALLOWED)
-                    SignOutState.Success -> appSettingRepository.removeUserDocumentId()
+                    SignOutState.Success -> _message.emit(SettingMessage.SIGN_OUT_SUCCESS)
                 }
             }.onFailure {
                 throw it
