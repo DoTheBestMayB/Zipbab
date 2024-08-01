@@ -2,6 +2,8 @@ package com.bestapp.zipbab.data.di
 
 import com.bestapp.zipbab.data.datasource.local.UserLocalDataSource
 import com.bestapp.zipbab.data.datasource.local.UserLocalDataSourceImpl
+import com.bestapp.zipbab.data.datasource.remote.CategoryRemoteDataSource
+import com.bestapp.zipbab.data.datasource.remote.CategoryRemoteDataSourceImpl
 import com.bestapp.zipbab.data.datasource.remote.PrivacyRemoteDataSource
 import com.bestapp.zipbab.data.datasource.remote.PrivacyRemoteDataSourceImpl
 import dagger.Binds
@@ -17,5 +19,8 @@ abstract class DataSourceModule {
     abstract fun providePrivacyRemoteDataSource(privacyRemoteDataSourceImpl: PrivacyRemoteDataSourceImpl): PrivacyRemoteDataSource
 
     @Binds
-    abstract fun provideUserLocalDataSource(provideUserLocalDataSourceImpl: UserLocalDataSourceImpl): UserLocalDataSource
+    abstract fun provideUserLocalDataSource(userLocalDataSourceImpl: UserLocalDataSourceImpl): UserLocalDataSource
+
+    @Binds
+    abstract fun provideCategoryRemoteDataSource(categoryRemoteDataSourceImpl: CategoryRemoteDataSourceImpl): CategoryRemoteDataSource
 }

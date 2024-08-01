@@ -3,12 +3,12 @@ package com.bestapp.zipbab.ui.foodcategory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bestapp.zipbab.args.FilterArgs
 import com.bestapp.zipbab.data.repository.AppSettingRepository
 import com.bestapp.zipbab.data.repository.CategoryRepository
 import com.bestapp.zipbab.data.repository.MeetingRepository
 import com.bestapp.zipbab.model.FilterUiState
 import com.bestapp.zipbab.model.MeetingUiState
-import com.bestapp.zipbab.args.FilterArgs
 import com.bestapp.zipbab.model.toUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -24,7 +24,7 @@ class FoodCategoryViewModel @Inject constructor(
     private val meetingRepository: MeetingRepository,
     private val categoryRepository: CategoryRepository,
     private val appSettingRepository: AppSettingRepository,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _meetingList = MutableStateFlow<List<MeetingUiState>>(emptyList())
@@ -42,12 +42,10 @@ class FoodCategoryViewModel @Inject constructor(
     val scrollEvent: SharedFlow<FoodCategoryEvent>
         get() = _scrollEvent
 
-    private val _isLogin = MutableStateFlow<Boolean>(false)
-    val isLogin: StateFlow<Boolean>
-        get() = _isLogin
+    private val isLogin = MutableStateFlow(false)
 
-    private var selectIndex = DEFAULT_INDEX
     private var selectMenu = ""
+    private var selectIndex = DEFAULT_INDEX
 
     init {
         savedStateHandle.get<FilterArgs.FoodArgs>(SAVED_STATE_HANDLE_KEY)?.let {
@@ -56,25 +54,18 @@ class FoodCategoryViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            runCatching {
-                categoryRepository.getFoodCategory()
-            }.onSuccess {
-                val foodUiStateList = it.mapIndexed { index, filter ->
-                    savedStateHandle.get<FilterArgs.FoodArgs>(SAVED_STATE_HANDLE_KEY)
-                        ?.let { foodUiState ->
-                            if (foodUiState.name == filter.toUiState().name) {
-                                selectIndex = index
-                            }
-                        }
+            val foodUiStateList =
+                categoryRepository.getFoodCategory().food.mapIndexed { index, filter ->
+                    if (filter.toUiState().name == selectMenu) {
+                        selectIndex = index
+                    }
                     filter.toUiState()
-
                 }
-                _foodCategory.emit(foodUiStateList)
-                delay(100)
-                _scrollEvent.emit(FoodCategoryEvent.ScrollEvent)
-                appSettingRepository.userDocumentID.collect {
-                    _isLogin.emit(it.isNotEmpty())
-                }
+            _foodCategory.emit(foodUiStateList)
+            delay(100)
+            _scrollEvent.emit(FoodCategoryEvent.ScrollEvent)
+            appSettingRepository.userDocumentID.collect {
+                isLogin.emit(it.isNotEmpty())
             }
         }
 

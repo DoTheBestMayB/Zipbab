@@ -7,6 +7,7 @@ import com.bestapp.zipbab.data.repository.CategoryRepository
 import com.bestapp.zipbab.model.FilterUiState
 import com.bestapp.zipbab.model.toUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -42,22 +43,16 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            runCatching {
-                categoryRepository.getFoodCategory()
-            }.onSuccess {
-                val foodUiStateList = it.map { filter ->
-                    filter.toUiState()
+            val foodCategoryResponse = async {
+                categoryRepository.getFoodCategory().food.map { category ->
+                    category.toUiState()
                 }
-                _foodCategory.value = foodUiStateList
             }
-            runCatching {
-                categoryRepository.getCostCategory()
-            }.onSuccess {
-                val costUiStateList = it.map { filter ->
-                    filter.toUiState()
-                }
-                _costCategory.value = costUiStateList
+            val costCategoryResponse = categoryRepository.getCostCategory().cost.map { category ->
+                category.toUiState()
             }
+            _costCategory.value = costCategoryResponse
+            _foodCategory.value = foodCategoryResponse.await()
         }
     }
 
