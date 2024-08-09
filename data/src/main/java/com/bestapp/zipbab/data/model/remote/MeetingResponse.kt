@@ -34,4 +34,19 @@ data class MeetingResponse(
     val pendingMembers: List<String> = emptyList(),
     val attendanceCheck: List<String> = emptyList(),
     val activation: Boolean = false
-)
+) {
+    fun isEmptyData(): Boolean = meetingDocumentID == "" &&
+            title == "" &&
+            titleImage == "" &&
+            placeLocation == PlaceLocation() &&
+            time == "" &&
+            recruits == 0 &&
+            description == "" &&
+            mainMenu == "" &&
+            costValueByPerson == 0 &&
+            costTypeByPerson == 0 &&
+            hostUserDocumentID == "" &&
+            members.isEmpty() &&
+            pendingMembers.isEmpty() &&
+            attendanceCheck.isEmpty() && !activation
+}

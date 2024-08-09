@@ -154,17 +154,9 @@ class MeetingRemoteDataSourceImpl @Inject constructor(
     }
 
     override suspend fun deleteMeeting(meetingDocumentID: String): Boolean {
-        val meeting = getMeeting(meetingDocumentID)
-        val fileRef = firestoreDB.getImagesDB().child(meeting.titleImage)
-
         return firestoreDB.getMeetingDB().document(meetingDocumentID)
             .delete()
-            .addOnSuccessListener {
-                fileRef.delete()
-                    .addOnFailureListener {
-                        // TODO : 수동으로 파일을 지울 수 있도록 firebase crashlytics 기록 필요
-                    }
-            }.doneSuccessful()
+            .doneSuccessful()
     }
 
     override suspend fun deleteMeetingMember(

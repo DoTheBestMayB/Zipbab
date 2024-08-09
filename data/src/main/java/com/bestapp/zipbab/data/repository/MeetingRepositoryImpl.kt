@@ -6,6 +6,7 @@ import javax.inject.Inject
 
 internal class MeetingRepositoryImpl @Inject constructor(
     private val meetingRemoteDataSource: MeetingRemoteDataSource,
+    private val storageRepository: StorageRepository,
 ) : MeetingRepository {
 
     override suspend fun getMeeting(meetingDocumentID: String): MeetingResponse {
@@ -78,14 +79,27 @@ internal class MeetingRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteMeeting(meetingDocumentID: String): Boolean {
-        return deleteMeeting(meetingDocumentID)
+        val meeting = getMeeting(meetingDocumentID)
+
+        if (meeting.isEmptyData()) {
+            return false
+        }
+
+        val isSuccess = meetingRemoteDataSource.deleteMeeting(meetingDocumentID)
+        if (isSuccess.not()) {
+            return false
+        }
+
+        storageRepository.deleteImage(meeting.titleImage)
+
+        return true
     }
 
     override suspend fun deleteMeetingMember(
         meetingDocumentID: String,
         userDocumentID: String
     ): Boolean {
-        return deleteMeetingMember(meetingDocumentID, userDocumentID)
+        return meetingRemoteDataSource.deleteMeetingMember(meetingDocumentID, userDocumentID)
     }
 
     override suspend fun getPendingMeetingByUserDocumentID(userDocumentID: String): List<MeetingResponse> {
