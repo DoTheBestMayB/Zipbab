@@ -24,24 +24,6 @@ data class MeetingArgs(
     val activation: Boolean,
 ) : Parcelable
 
-fun MeetingResponse.toUi() = MeetingArgs(
-    meetingDocumentID = meetingDocumentID,
-    title = title,
-    titleImage = titleImage,
-    placeLocationArgs = placeLocation.toUi(),
-    time = time,
-    recruits = recruits,
-    description = description,
-    mainMenu = mainMenu,
-    costValueByPerson = costValueByPerson,
-    costTypeByPerson = costTypeByPerson,
-    hostUserDocumentID = hostUserDocumentID,
-    members = members,
-    pendingMembers = pendingMembers,
-    attendanceCheck = attendanceCheck,
-    activation = activation
-)
-
 fun PlaceLocation.toUi() = PlaceLocationArgs(
     locationAddress = locationAddress,
     locationLat = locationLat,

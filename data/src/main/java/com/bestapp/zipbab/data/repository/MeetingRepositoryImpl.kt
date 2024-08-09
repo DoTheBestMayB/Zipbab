@@ -2,9 +2,6 @@ package com.bestapp.zipbab.data.repository
 
 import com.bestapp.zipbab.data.datasource.remote.MeetingRemoteDataSource
 import com.bestapp.zipbab.data.model.remote.MeetingResponse
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.toObject
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 internal class MeetingRepositoryImpl @Inject constructor(

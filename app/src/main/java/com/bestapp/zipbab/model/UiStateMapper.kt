@@ -1,28 +1,27 @@
 package com.bestapp.zipbab.model
 
-import com.bestapp.zipbab.data.model.UploadStateEntity
-import com.bestapp.zipbab.data.model.remote.FilterResponse
-import com.bestapp.zipbab.data.model.remote.MeetingResponse
-import com.bestapp.zipbab.data.model.remote.NotificationTypeResponse
-import com.bestapp.zipbab.data.model.remote.PlaceLocation
-import com.bestapp.zipbab.data.model.remote.PostResponse
-import com.bestapp.zipbab.data.model.remote.Review
-import com.bestapp.zipbab.data.model.remote.TermInfoResponse
-import com.bestapp.zipbab.data.model.remote.UserResponse
 import com.bestapp.zipbab.args.FilterArgs
 import com.bestapp.zipbab.args.ImageArgs
 import com.bestapp.zipbab.args.ImagePostSubmitArgs
 import com.bestapp.zipbab.args.MeetingArgs
 import com.bestapp.zipbab.args.PlaceLocationArgs
 import com.bestapp.zipbab.args.ProfileEditArgs
-import com.bestapp.zipbab.args.SelectImageArgs
-import com.bestapp.zipbab.ui.profile.ProfileUiState
-import com.bestapp.zipbab.ui.profileedit.ProfileEditUiState
+import com.bestapp.zipbab.data.model.UploadStateEntity
 import com.bestapp.zipbab.data.model.local.GalleryImageInfo
 import com.bestapp.zipbab.data.model.local.SignOutEntity
+import com.bestapp.zipbab.data.model.remote.FilterResponse
 import com.bestapp.zipbab.data.model.remote.LoginResponse
+import com.bestapp.zipbab.data.model.remote.MeetingResponse
+import com.bestapp.zipbab.data.model.remote.NotificationTypeResponse
+import com.bestapp.zipbab.data.model.remote.PlaceLocation
+import com.bestapp.zipbab.data.model.remote.PostResponse
+import com.bestapp.zipbab.data.model.remote.Review
 import com.bestapp.zipbab.data.model.remote.SignUpResponse
+import com.bestapp.zipbab.data.model.remote.TermInfoResponse
+import com.bestapp.zipbab.data.model.remote.UserResponse
 import com.bestapp.zipbab.ui.mettinginfo.MemberInfo
+import com.bestapp.zipbab.ui.profile.ProfileUiState
+import com.bestapp.zipbab.ui.profileedit.ProfileEditUiState
 import com.bestapp.zipbab.ui.profilepostimageselect.model.PostGalleryUiState
 import com.bestapp.zipbab.ui.profilepostimageselect.model.SelectedImageUiState
 import com.bestapp.zipbab.ui.profilepostimageselect.model.SubmitInfo
@@ -176,18 +175,6 @@ fun NotificationTypeResponse.toUiState(): NotificationUiState.UserNotification {
     return NotificationUiState.UserNotification(dec = "", uploadDate = uploadDate)
 }
 
-fun PlaceLocationUiState.toData() = PlaceLocation(
-    locationAddress = locationAddress,
-    locationLat = locationLat,
-    locationLong = locationLong
-)
-
-fun PostUiState.toData() = PostResponse(
-    postDocumentID = postDocumentID,
-    images = images,
-)
-
-
 // UiState -> ActionArgs
 
 fun FilterUiState.FoodUiState.toArgs() = FilterArgs.FoodArgs(
@@ -210,10 +197,6 @@ fun ProfileUiState.toProfileEditArgs() = ProfileEditArgs(
 fun GalleryImageInfo.toArgs() = ImageArgs(
     uri = uri,
     name = name,
-)
-
-fun SelectedImageUiState.toArgs() = SelectImageArgs(
-    uri = uri,
 )
 
 fun SubmitInfo.toArgs() = ImagePostSubmitArgs(

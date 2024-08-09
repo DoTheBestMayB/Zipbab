@@ -1,6 +1,5 @@
 package com.bestapp.zipbab.data.FirestoreDB
 
-import com.bestapp.zipbab.data.doneSuccessful
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
