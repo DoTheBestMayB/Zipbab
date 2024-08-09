@@ -1,7 +1,10 @@
 package com.bestapp.zipbab.data.FirestoreDB
 
+import com.bestapp.zipbab.data.doneSuccessful
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Transaction
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import javax.inject.Inject
@@ -44,6 +47,12 @@ class FirestoreDB @Inject constructor(
 
     fun getPolicyDB() : CollectionReference {
         return firebaseFirestore.collection("policy")
+    }
+
+    fun runTransaction(transaction: (transaction: Transaction) -> Unit): Task<Unit> {
+        return firebaseFirestore.runTransaction {
+            transaction(it)
+        }
     }
 
 }
