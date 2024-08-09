@@ -6,7 +6,7 @@ import com.bestapp.zipbab.data.notification.fcm.PushNotification
 import com.bestapp.zipbab.data.notification.setup.KaKaoService
 import javax.inject.Inject
 
-class NotificationRepositoryImpl @Inject constructor(
+internal class NotificationRepositoryImpl @Inject constructor(
     @NetworkProviderModule.KakaoNotificationRetrofit private val kaKaoService: KaKaoService
 ) : NotificationRepository {
     override suspend fun registerToken(

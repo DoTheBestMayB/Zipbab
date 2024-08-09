@@ -9,7 +9,7 @@ import com.bestapp.zipbab.data.notification.setup.GooGleRefreshService
 import com.bestapp.zipbab.data.notification.setup.GooGleService
 import javax.inject.Inject
 
-class ProviderRepositoryImpl @Inject constructor(
+internal class ProviderRepositoryImpl @Inject constructor(
     @NetworkProviderModule.GoogleTokenProvider private val gooGleService: GooGleService,
     @NetworkProviderModule.GoogleRefreshTokenProvider private val gooGleRefreshService: GooGleRefreshService
 ) : ProviderRepository {

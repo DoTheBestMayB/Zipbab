@@ -3,7 +3,7 @@ package com.bestapp.zipbab.data.repository
 import com.bestapp.zipbab.data.datasource.remote.ReportRemoteDataSource
 import javax.inject.Inject
 
-class ReportRepositoryImpl @Inject constructor(
+internal class ReportRepositoryImpl @Inject constructor(
     private val reportRemoteDataSource: ReportRemoteDataSource,
 ) : ReportRepository {
     override suspend fun reportUser(userDocumentID: String): Boolean {

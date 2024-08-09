@@ -6,7 +6,7 @@ import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class PrivacyRemoteDataSourceImpl @Inject constructor(
+internal class PrivacyRemoteDataSourceImpl @Inject constructor(
     private val firestoreDB: FirestoreDB,
 ): PrivacyRemoteDataSource {
     override suspend fun getPrivacyInfo(): Privacy {

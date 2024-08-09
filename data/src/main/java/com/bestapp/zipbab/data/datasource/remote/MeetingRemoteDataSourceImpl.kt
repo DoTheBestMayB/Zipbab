@@ -11,7 +11,7 @@ import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class MeetingRemoteDataSourceImpl @Inject constructor(
+internal class MeetingRemoteDataSourceImpl @Inject constructor(
     private val firestoreDB: FirestoreDB,
 ) : MeetingRemoteDataSource {
 

@@ -9,7 +9,7 @@ import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class PostRemoteDataSourceImpl @Inject constructor(
+internal class PostRemoteDataSourceImpl @Inject constructor(
     private val firestoreDB: FirestoreDB,
 ) : PostRemoteDataSource {
     override suspend fun getPosts(userDocumentID: String): List<PostResponse> {

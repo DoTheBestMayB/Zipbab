@@ -3,8 +3,9 @@ package com.bestapp.zipbab.data.datasource.remote
 import com.bestapp.zipbab.data.FirestoreDB.FirestoreDB
 import com.bestapp.zipbab.data.doneSuccessful
 import com.bestapp.zipbab.data.model.remote.ReportForm
+import javax.inject.Inject
 
-class ReportRemoteDataSourceImpl(
+internal class ReportRemoteDataSourceImpl @Inject constructor(
     private val firestoreDB: FirestoreDB,
 ) : ReportRemoteDataSource {
     override suspend fun reportUser(userDocumentID: String): Boolean {

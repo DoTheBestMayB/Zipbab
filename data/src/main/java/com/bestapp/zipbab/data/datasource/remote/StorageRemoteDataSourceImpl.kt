@@ -8,8 +8,9 @@ import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import javax.inject.Inject
 
-internal class StorageRemoteDataSourceImpl(
+internal class StorageRemoteDataSourceImpl @Inject constructor(
     private val firestoreDB: FirestoreDB,
 ) : StorageRemoteDataSource {
 

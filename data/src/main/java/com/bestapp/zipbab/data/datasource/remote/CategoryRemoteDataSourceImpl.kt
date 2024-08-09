@@ -6,7 +6,7 @@ import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class CategoryRemoteDataSourceImpl @Inject constructor(
+internal class CategoryRemoteDataSourceImpl @Inject constructor(
     private val firestoreDB: FirestoreDB,
 ) : CategoryRemoteDataSource {
     override suspend fun getFoodCategory(): FilterResponse.FoodCategory {
