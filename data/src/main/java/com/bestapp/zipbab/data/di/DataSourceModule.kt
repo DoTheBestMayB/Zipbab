@@ -6,6 +6,8 @@ import com.bestapp.zipbab.data.datasource.remote.CategoryRemoteDataSource
 import com.bestapp.zipbab.data.datasource.remote.CategoryRemoteDataSourceImpl
 import com.bestapp.zipbab.data.datasource.remote.MeetingRemoteDataSource
 import com.bestapp.zipbab.data.datasource.remote.MeetingRemoteDataSourceImpl
+import com.bestapp.zipbab.data.datasource.remote.PostRemoteDataSource
+import com.bestapp.zipbab.data.datasource.remote.PostRemoteDataSourceImpl
 import com.bestapp.zipbab.data.datasource.remote.PrivacyRemoteDataSource
 import com.bestapp.zipbab.data.datasource.remote.PrivacyRemoteDataSourceImpl
 import dagger.Binds
@@ -28,4 +30,7 @@ abstract class DataSourceModule {
 
     @Binds
     abstract fun provideMeetingRemoteDataSource(meetingRemoteDataSourceImpl: MeetingRemoteDataSourceImpl): MeetingRemoteDataSource
+
+    @Binds
+    abstract fun providePostRemoteDataSource(postRemoteDataSourceImpl: PostRemoteDataSourceImpl): PostRemoteDataSource
 }
