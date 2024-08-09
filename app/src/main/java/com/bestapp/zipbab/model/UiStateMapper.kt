@@ -66,28 +66,6 @@ fun MeetingResponse.toUiState() = MeetingUiState(
     activation = activation
 )
 
-fun MeetingResponse.toArgs() = MeetingArgs(
-    meetingDocumentID = meetingDocumentID,
-    title = title,
-    titleImage = titleImage,
-    placeLocationArgs = PlaceLocationArgs(
-        locationAddress = placeLocation.locationAddress,
-        locationLat = placeLocation.locationLat,
-        locationLong = placeLocation.locationLong,
-    ),
-    time = time,
-    recruits = recruits,
-    description = description,
-    mainMenu = mainMenu,
-    costValueByPerson = costValueByPerson,
-    costTypeByPerson = costTypeByPerson,
-    hostUserDocumentID = hostUserDocumentID,
-    members = members,
-    pendingMembers = pendingMembers,
-    attendanceCheck = attendanceCheck,
-    activation = activation,
-)
-
 fun PlaceLocation.toUiState() = PlaceLocationUiState(
     locationAddress = locationAddress,
     locationLat = locationLat,

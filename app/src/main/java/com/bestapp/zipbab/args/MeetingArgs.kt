@@ -1,7 +1,6 @@
 package com.bestapp.zipbab.args
 
 import android.os.Parcelable
-import com.bestapp.zipbab.data.model.remote.MeetingResponse
 import com.bestapp.zipbab.data.model.remote.PlaceLocation
 import kotlinx.parcelize.Parcelize
 
