@@ -10,6 +10,8 @@ import com.bestapp.zipbab.data.datasource.remote.PostRemoteDataSource
 import com.bestapp.zipbab.data.datasource.remote.PostRemoteDataSourceImpl
 import com.bestapp.zipbab.data.datasource.remote.PrivacyRemoteDataSource
 import com.bestapp.zipbab.data.datasource.remote.PrivacyRemoteDataSourceImpl
+import com.bestapp.zipbab.data.datasource.remote.ReportRemoteDataSource
+import com.bestapp.zipbab.data.datasource.remote.ReportRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -33,4 +35,7 @@ abstract class DataSourceModule {
 
     @Binds
     abstract fun providePostRemoteDataSource(postRemoteDataSourceImpl: PostRemoteDataSourceImpl): PostRemoteDataSource
+
+    @Binds
+    abstract fun provideReportRemoteDataSource(reportRemoteDataSourceImpl: ReportRemoteDataSourceImpl): ReportRemoteDataSource
 }

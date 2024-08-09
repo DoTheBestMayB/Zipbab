@@ -1,22 +1,16 @@
 package com.bestapp.zipbab.data.repository
 
-import com.bestapp.zipbab.data.FirestoreDB.FirestoreDB
-import com.bestapp.zipbab.data.model.remote.ReportForm
-import kotlinx.coroutines.tasks.await
+import com.bestapp.zipbab.data.datasource.remote.ReportRemoteDataSource
 import javax.inject.Inject
 
 class ReportRepositoryImpl @Inject constructor(
-    private val firestoreDB: FirestoreDB,
+    private val reportRemoteDataSource: ReportRemoteDataSource,
 ) : ReportRepository {
-    override suspend fun reportUser(userDocumentID: String) {
-        firestoreDB.getReportDB()
-            .add(ReportForm(userDocumentID= userDocumentID))
-            .await()
+    override suspend fun reportUser(userDocumentID: String): Boolean {
+        return reportRemoteDataSource.reportUser(userDocumentID)
     }
 
-    override suspend fun reportPost(userDocumentID: String, postDocumentID: String) {
-        firestoreDB.getReportDB()
-            .add(ReportForm(userDocumentID = userDocumentID, postDocumentID = postDocumentID))
-            .await()
+    override suspend fun reportPost(userDocumentID: String, postDocumentID: String): Boolean {
+        return reportRemoteDataSource.reportPost(userDocumentID, postDocumentID)
     }
 }
