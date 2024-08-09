@@ -12,6 +12,8 @@ import com.bestapp.zipbab.data.datasource.remote.PrivacyRemoteDataSource
 import com.bestapp.zipbab.data.datasource.remote.PrivacyRemoteDataSourceImpl
 import com.bestapp.zipbab.data.datasource.remote.ReportRemoteDataSource
 import com.bestapp.zipbab.data.datasource.remote.ReportRemoteDataSourceImpl
+import com.bestapp.zipbab.data.datasource.remote.StorageRemoteDataSource
+import com.bestapp.zipbab.data.datasource.remote.StorageRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -19,7 +21,7 @@ import dagger.hilt.android.components.ViewModelComponent
 
 @Module
 @InstallIn(ViewModelComponent::class)
-abstract class DataSourceModule {
+internal abstract class DataSourceModule {
 
     @Binds
     abstract fun providePrivacyRemoteDataSource(privacyRemoteDataSourceImpl: PrivacyRemoteDataSourceImpl): PrivacyRemoteDataSource
@@ -38,4 +40,7 @@ abstract class DataSourceModule {
 
     @Binds
     abstract fun provideReportRemoteDataSource(reportRemoteDataSourceImpl: ReportRemoteDataSourceImpl): ReportRemoteDataSource
+
+    @Binds
+    abstract fun provideStorageRemoteDataSource(storageRemoteDataSourceImpl: StorageRemoteDataSourceImpl): StorageRemoteDataSource
 }
