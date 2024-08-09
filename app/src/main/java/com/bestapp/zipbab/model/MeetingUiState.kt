@@ -12,7 +12,6 @@ data class MeetingUiState(
     val costValueByPerson: Int = 0,
     val costTypeByPerson: Int = 0,
     val hostUserDocumentID: String = "",
-    val hostTemperature: Double = 0.0,
     val members: List<String> = emptyList(),
     val pendingMembers: List<String> = emptyList(),
     val attendanceCheck: List<String> = emptyList(),

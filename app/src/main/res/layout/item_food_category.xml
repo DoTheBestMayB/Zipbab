@@ -38,6 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="13dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_location"
         app:layout_constraintStart_toEndOf="@id/cv"
         app:layout_constraintTop_toTopOf="@id/cv"
         tools:text="제목" />
@@ -47,20 +48,10 @@
         style="@style/body_content12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/tv_temperature"
+        app:layout_constraintBottom_toBottomOf="@id/cv"
         app:layout_constraintStart_toStartOf="@id/tv_title"
         app:layout_constraintTop_toBottomOf="@id/tv_title"
         tools:text="장소" />
-
-    <TextView
-        android:id="@+id/tv_temperature"
-        style="@style/body_content12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/cv"
-        app:layout_constraintStart_toStartOf="@id/tv_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_location"
-        tools:text="호스트의 온도 체크" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

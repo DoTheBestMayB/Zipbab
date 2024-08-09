@@ -4,6 +4,8 @@ import com.bestapp.zipbab.data.datasource.local.UserLocalDataSource
 import com.bestapp.zipbab.data.datasource.local.UserLocalDataSourceImpl
 import com.bestapp.zipbab.data.datasource.remote.CategoryRemoteDataSource
 import com.bestapp.zipbab.data.datasource.remote.CategoryRemoteDataSourceImpl
+import com.bestapp.zipbab.data.datasource.remote.MeetingRemoteDataSource
+import com.bestapp.zipbab.data.datasource.remote.MeetingRemoteDataSourceImpl
 import com.bestapp.zipbab.data.datasource.remote.PrivacyRemoteDataSource
 import com.bestapp.zipbab.data.datasource.remote.PrivacyRemoteDataSourceImpl
 import dagger.Binds
@@ -23,4 +25,7 @@ abstract class DataSourceModule {
 
     @Binds
     abstract fun provideCategoryRemoteDataSource(categoryRemoteDataSourceImpl: CategoryRemoteDataSourceImpl): CategoryRemoteDataSource
+
+    @Binds
+    abstract fun provideMeetingRemoteDataSource(meetingRemoteDataSourceImpl: MeetingRemoteDataSourceImpl): MeetingRemoteDataSource
 }

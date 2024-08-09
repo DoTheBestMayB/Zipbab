@@ -13,7 +13,6 @@ package com.bestapp.zipbab.data.model.remote
  * @property costValueByPerson 1인당 참여 비용 실제 값 ex. 14500, 20000
  * @property costTypeByPerson 1인당 참여 비용 타입 ex. 1(~3만원), 2(3~5만원), 3, 4
  * @property hostUserDocumentID 호스트의 userDocumentID
- * @property hostTemperature 호스트 온도
  * @property members  참여자 tokenId 리스트
  * @property pendingMembers 대기자 tokenId 리스트
  * @property attendanceCheck 출석 체크한 tokenId 리스트
@@ -31,7 +30,6 @@ data class MeetingResponse(
     val costValueByPerson: Int = 0,
     val costTypeByPerson: Int = 0,
     val hostUserDocumentID: String = "",
-    val hostTemperature: Double = 0.0,
     val members: List<String> = emptyList(),
     val pendingMembers: List<String> = emptyList(),
     val attendanceCheck: List<String> = emptyList(),

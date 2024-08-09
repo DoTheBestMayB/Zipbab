@@ -181,7 +181,6 @@ class RecruitmentFragment : Fragment() {
                 costValueByPerson = binding.costEdit.text.toString().toInt(),
                 costTypeByPerson = costTypeByPerson.toInt(),
                 hostUserDocumentID = hostKey,
-                hostTemperature = hostTemperature,
                 members = members,
                 pendingMembers = pendingMembers,
                 attendanceCheck = attendanceCheck,
