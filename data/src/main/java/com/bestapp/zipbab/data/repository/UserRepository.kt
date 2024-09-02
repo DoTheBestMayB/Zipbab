@@ -1,6 +1,5 @@
 package com.bestapp.zipbab.data.repository
 
-import android.graphics.Bitmap
 import com.bestapp.zipbab.data.model.UploadStateEntity
 import com.bestapp.zipbab.data.model.local.SignOutEntity
 import com.bestapp.zipbab.data.model.remote.LoginResponse
@@ -22,8 +21,6 @@ interface UserRepository {
     suspend fun updateUserTemperature(reviews: List<Review>): Boolean
     suspend fun updateUserMeetingCount(userDocumentID: String): Boolean
     suspend fun updateUserProfileImage(userDocumentID: String, profileImageUri: String?): Boolean
-    suspend fun convertImages(userDocumentID: String, images: List<Bitmap>): List<String>
-    suspend fun addPost(userDocumentID: String, images: List<String>): Boolean
     suspend fun deleteUserProfileImage(userDocumentID: String)
     suspend fun getAccessToken(): AccessToken
 
@@ -33,7 +30,7 @@ interface UserRepository {
         index: Int
     ): Boolean
 
-    suspend fun addPostWithAsync(
+    fun addPostWithAsync(
         userDocumentID: String,
         tempPostDocumentID: String,
         images: List<String>

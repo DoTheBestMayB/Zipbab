@@ -8,17 +8,14 @@ import androidx.work.Data
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.bestapp.zipbab.data.FirestoreDB.FirestoreDB
-import com.bestapp.zipbab.data.doneSuccessful
+import com.bestapp.zipbab.data.datasource.remote.UserRemoteDataSource
 import com.bestapp.zipbab.data.model.UploadStateEntity
-import com.bestapp.zipbab.data.model.remote.PostForInit
+import com.bestapp.zipbab.data.repository.PostRepository
 import com.bestapp.zipbab.data.repository.StorageRepository
-import com.google.firebase.firestore.FieldValue
 import com.squareup.moshi.Moshi
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 @HiltWorker
@@ -26,8 +23,9 @@ class UploadWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted params: WorkerParameters,
     private val storageRepository: StorageRepository,
+    private val postRepository: PostRepository,
+    private val userRemoteDataSource: UserRemoteDataSource,
     private val ioDispatcher: CoroutineDispatcher,
-    private val firestoreDB: FirestoreDB,
     moshi: Moshi,
 ) : CoroutineWorker(appContext, params) {
 
@@ -68,32 +66,9 @@ class UploadWorker @AssistedInject constructor(
                 makeNotification("ProcessPost")
 
                 updateProgress(UploadStateEntity.ProcessPost(tempPostDocumentID))
-                val postDocumentRef = firestoreDB.getPostDB()
-                    .add(
-                        PostForInit(
-                            images = imageUrls
-                        )
-                    )
-                    .await()
-                val postDocumentId = postDocumentRef.id
+                val postDocumentId = postRepository.createPost(imageUrls)
 
-                var isSuccess = firestoreDB.getPostDB().document(postDocumentId)
-                    .update("postDocumentID", postDocumentId)
-                    .doneSuccessful()
-                if (isSuccess.not()) {
-                    makeNotification("Fail")
-                    updateProgress(UploadStateEntity.Fail(tempPostDocumentID))
-                    // 실패하면 기존 업로드한 이미지 모두 삭제하기
-                    for (url in imageUrls) {
-                        storageRepository.deleteImage(url)
-                    }
-                    return@withContext Result.retry()
-                }
-
-                isSuccess = firestoreDB.getUsersDB().document(userDocumentID)
-                    .update("posts", FieldValue.arrayUnion(postDocumentId))
-                    .doneSuccessful()
-
+                val isSuccess = userRemoteDataSource.addPost(userDocumentID, postDocumentId)
                 if (isSuccess) {
                     makeNotification("Success")
                     updateProgress(

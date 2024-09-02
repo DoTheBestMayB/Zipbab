@@ -34,9 +34,5 @@ internal abstract class DataSourceModule {
     abstract fun provideMeetingRemoteDataSource(meetingRemoteDataSourceImpl: MeetingRemoteDataSourceImpl): MeetingRemoteDataSource
 
     @Binds
-    abstract fun providePostRemoteDataSource(postRemoteDataSourceImpl: PostRemoteDataSourceImpl): PostRemoteDataSource
-
-    @Binds
     abstract fun provideReportRemoteDataSource(reportRemoteDataSourceImpl: ReportRemoteDataSourceImpl): ReportRemoteDataSource
-
 }

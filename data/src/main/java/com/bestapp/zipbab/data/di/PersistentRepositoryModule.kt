@@ -1,5 +1,7 @@
 package com.bestapp.zipbab.data.di
 
+import com.bestapp.zipbab.data.repository.PostRepository
+import com.bestapp.zipbab.data.repository.PostRepositoryImpl
 import com.bestapp.zipbab.data.repository.StorageRepository
 import com.bestapp.zipbab.data.repository.StorageRepositoryImpl
 import dagger.Binds
@@ -13,4 +15,7 @@ internal abstract class PersistentRepositoryModule {
 
     @Binds
     abstract fun bindStorageRepository(storageRepositoryImpl: StorageRepositoryImpl): StorageRepository
+
+    @Binds
+    abstract fun bindPostRepository(postRepositoryImpl: PostRepositoryImpl): PostRepository
 }

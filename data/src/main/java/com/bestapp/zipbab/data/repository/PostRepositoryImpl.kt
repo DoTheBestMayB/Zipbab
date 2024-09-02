@@ -29,4 +29,8 @@ internal class PostRepositoryImpl @Inject constructor(
         }
         return true
     }
+
+    override fun createPost(imageUrls: List<String>): String {
+        return postRemoteDataSource.createPost(imageUrls)
+    }
 }

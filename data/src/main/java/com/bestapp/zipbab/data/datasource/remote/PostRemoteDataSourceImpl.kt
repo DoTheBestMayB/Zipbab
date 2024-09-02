@@ -2,6 +2,7 @@ package com.bestapp.zipbab.data.datasource.remote
 
 import com.bestapp.zipbab.data.FirestoreDB.FirestoreDB
 import com.bestapp.zipbab.data.doneSuccessful
+import com.bestapp.zipbab.data.model.remote.PostForInit
 import com.bestapp.zipbab.data.model.remote.PostResponse
 import com.bestapp.zipbab.data.model.remote.UserResponse
 import com.google.firebase.firestore.FieldValue
@@ -50,5 +51,18 @@ internal class PostRemoteDataSourceImpl @Inject constructor(
             transaction.delete(postDocumentRef)
             transaction.update(userRef, "posts", FieldValue.arrayRemove(postDocumentID))
         }.doneSuccessful()
+    }
+
+    override fun createPost(imageUrls: List<String>): String {
+        val ref = firestoreDB.getPostDB().document()
+
+        firestoreDB.runTransaction { transaction ->
+            transaction.set(ref, PostForInit(
+                images = imageUrls
+            ))
+            transaction.update(ref, "postDocumentID", ref.id)
+        }
+
+        return ref.id
     }
 }
