@@ -1,7 +1,7 @@
 package com.bestapp.zipbab.data.repository
 
-import com.bestapp.zipbab.data.datasource.GalleryImageFetcher
-import com.bestapp.zipbab.data.datasource.GalleryPagingSource
+import com.bestapp.zipbab.data.local.datasource.GalleryImageFetcher
+import com.bestapp.zipbab.data.local.datasource.GalleryPagingSource
 import javax.inject.Inject
 
 internal class GalleryRepositoryImpl @Inject constructor(

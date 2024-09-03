@@ -40,7 +40,7 @@ class ProfileViewModel @Inject constructor(
     private val _postUiState = MutableStateFlow(PostUiState())
     val postUiState: StateFlow<PostUiState> = _postUiState.asStateFlow()
 
-    private val _currentPostPosition = MutableStateFlow<Int>(-1)
+    private val _currentPostPosition = MutableStateFlow(-1)
     val currentPostPosition: StateFlow<Int> = _currentPostPosition.asStateFlow()
 
     private var pendingPostForDeletion: PostUiState = PostUiState()

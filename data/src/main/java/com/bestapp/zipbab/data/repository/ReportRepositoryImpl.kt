@@ -1,6 +1,6 @@
 package com.bestapp.zipbab.data.repository
 
-import com.bestapp.zipbab.data.datasource.remote.ReportRemoteDataSource
+import com.bestapp.zipbab.data.remote.datasource.ReportRemoteDataSource
 import javax.inject.Inject
 
 internal class ReportRepositoryImpl @Inject constructor(

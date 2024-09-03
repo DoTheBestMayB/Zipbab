@@ -15,7 +15,7 @@ class HelperModule {
 
     @Provides
     @ViewModelScoped
-    fun provideLoginValidator(@ApplicationContext context: Context): SignUpInputValidator {
+    fun providesLoginValidator(@ApplicationContext context: Context): SignUpInputValidator {
         return SignUpInputValidator(context)
     }
 }

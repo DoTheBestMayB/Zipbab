@@ -32,17 +32,17 @@ class MeetUpMapViewModel @Inject constructor(
     private val meetingRepository: MeetingRepository,
 ) : ViewModel() {
 
-    private val _userUiState = MutableStateFlow<UserUiState>(UserUiState())
+    private val _userUiState = MutableStateFlow(UserUiState())
     val userUiState: StateFlow<UserUiState> = _userUiState.asStateFlow()
 
     private val _isLocationPermissionGranted = MutableSharedFlow<Boolean>(replay = 1)
     val isLocationPermissionGranted: SharedFlow<Boolean> =
         _isLocationPermissionGranted.asSharedFlow()
 
-    private val _meetUpMapUiState = MutableStateFlow<MeetUpMapUiState>(MeetUpMapUiState())
+    private val _meetUpMapUiState = MutableStateFlow(MeetUpMapUiState())
     val meetUpMapUiState: StateFlow<MeetUpMapUiState> = _meetUpMapUiState.asStateFlow()
 
-    private val _meetingMarkerUiStates = MutableStateFlow<MeetingMarkerUiStates>(
+    private val _meetingMarkerUiStates = MutableStateFlow(
         MeetingMarkerUiStates()
     )
     val meetingMarkerUiStates: StateFlow<MeetingMarkerUiStates> = _meetingMarkerUiStates.asStateFlow()

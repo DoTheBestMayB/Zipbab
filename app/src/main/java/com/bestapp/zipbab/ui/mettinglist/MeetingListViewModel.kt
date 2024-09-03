@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bestapp.zipbab.data.repository.AppSettingRepository
 import com.bestapp.zipbab.data.repository.MeetingRepository
-import com.bestapp.zipbab.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,11 +15,10 @@ import javax.inject.Inject
 @HiltViewModel
 class MeetingListViewModel @Inject constructor(
     private val appSettingRepository: AppSettingRepository,
-    private val userRepository: UserRepository,
     private val meetingRepository: MeetingRepository,
 ) : ViewModel() {
 
-    private val _meetingListUiState = MutableStateFlow<MeetingListUiState>(MeetingListUiState())
+    private val _meetingListUiState = MutableStateFlow(MeetingListUiState())
     val meetingListUiState: StateFlow<MeetingListUiState>
         get() = _meetingListUiState.asStateFlow()
 

@@ -118,7 +118,7 @@ class MeetUpMapFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.meetUpMapUiState.collect() {
+                viewModel.meetUpMapUiState.collect {
                     if (it.meetUpMapMeetingUis.isEmpty() || _naverMap == null) {
                         return@collect
                     }
@@ -134,9 +134,9 @@ class MeetUpMapFragment : Fragment() {
                         action.safeNavigate(this@MeetUpMapFragment)
                     }
 
-                    meetingMarkers.map {
+                    meetingMarkers.map { marker ->
                         val isDarkMode = isSystemInDarkMode()
-                        it.switchNightMode(isDarkMode)
+                        marker.switchNightMode(isDarkMode)
                     }
 
                     viewModel.setMeetingLabels(meetingMarkers)
@@ -297,7 +297,7 @@ class MeetUpMapFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.userUiState.collect() {
+                viewModel.userUiState.collect {
                     binding.layout.tvUserNickname.text =
                         getString(R.string.meet_up_map_nickname).format(it.nickname)
                 }

@@ -1,17 +1,13 @@
 package com.bestapp.zipbab.data.repository
 
-import com.bestapp.zipbab.data.di.NetworkProviderModule
-import com.bestapp.zipbab.data.notification.access.Access
-import com.bestapp.zipbab.data.notification.access.AccessReturn
-import com.bestapp.zipbab.data.notification.refresh.Refresh
-import com.bestapp.zipbab.data.notification.refresh.RefreshReturn
-import com.bestapp.zipbab.data.notification.setup.GooGleRefreshService
-import com.bestapp.zipbab.data.notification.setup.GooGleService
+import com.bestapp.zipbab.data.remote.di.NetworkModule
+import com.bestapp.zipbab.data.remote.service.GooGleRefreshService
+import com.bestapp.zipbab.data.remote.service.GooGleService
 import javax.inject.Inject
 
 internal class ProviderRepositoryImpl @Inject constructor(
-    @NetworkProviderModule.GoogleTokenProvider private val gooGleService: GooGleService,
-    @NetworkProviderModule.GoogleRefreshTokenProvider private val gooGleRefreshService: GooGleRefreshService
+    @NetworkModule.GoogleTokenProvider private val gooGleService: GooGleService,
+    @NetworkModule.GoogleRefreshTokenProvider private val gooGleRefreshService: GooGleRefreshService
 ) : ProviderRepository {
     override suspend fun getTokenInfo( //accesstoken만료시 호출
         id: String,
@@ -19,8 +15,16 @@ internal class ProviderRepositoryImpl @Inject constructor(
         code: String,
         uri: String,
         type: String
-    ): AccessReturn {
-        return gooGleService.getTokenInformation(Access(id, secret, code, uri, type))
+    ): com.bestapp.zipbab.data.remote.notification.access.AccessReturn {
+        return gooGleService.getTokenInformation(
+            com.bestapp.zipbab.data.remote.notification.access.Access(
+                id,
+                secret,
+                code,
+                uri,
+                type
+            )
+        )
     }
 
     override suspend fun getRefreshInfo( //refresh토큰 만료시 호출
@@ -29,7 +33,15 @@ internal class ProviderRepositoryImpl @Inject constructor(
         code: String,
         type: String,
         uri: String
-    ): RefreshReturn {
-        return gooGleRefreshService.getRefreshTokenInformation(Refresh(id, secret, code, type, uri))
+    ): com.bestapp.zipbab.data.remote.notification.refresh.RefreshReturn {
+        return gooGleRefreshService.getRefreshTokenInformation(
+            com.bestapp.zipbab.data.remote.notification.refresh.Refresh(
+                id,
+                secret,
+                code,
+                type,
+                uri
+            )
+        )
     }
 }

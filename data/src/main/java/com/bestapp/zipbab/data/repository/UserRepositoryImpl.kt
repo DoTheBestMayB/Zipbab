@@ -9,10 +9,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.bestapp.zipbab.data.FirestoreDB.FirestoreDB
-import com.bestapp.zipbab.data.datasource.local.UserLocalDataSource
-import com.bestapp.zipbab.data.datasource.remote.UserRemoteDataSource
-import com.bestapp.zipbab.data.doneSuccessful
 import com.bestapp.zipbab.data.model.UploadStateEntity
 import com.bestapp.zipbab.data.model.local.SignOutEntity
 import com.bestapp.zipbab.data.model.remote.LoginResponse
@@ -21,8 +17,11 @@ import com.bestapp.zipbab.data.model.remote.NotificationTypeResponse
 import com.bestapp.zipbab.data.model.remote.Review
 import com.bestapp.zipbab.data.model.remote.SignUpResponse
 import com.bestapp.zipbab.data.model.remote.UserResponse
-import com.bestapp.zipbab.data.notification.fcm.AccessToken
-import com.bestapp.zipbab.data.upload.UploadWorker
+import com.bestapp.zipbab.data.remote.firestoreDB.FirestoreDB
+import com.bestapp.zipbab.data.remote.datasource.UserLocalDataSource
+import com.bestapp.zipbab.data.remote.datasource.UserRemoteDataSource
+import com.bestapp.zipbab.data.remote.upload.UploadWorker
+import com.bestapp.zipbab.data.remote.util.doneSuccessful
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.toObject
 import com.squareup.moshi.Moshi
@@ -232,12 +231,12 @@ internal class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAccessToken(): AccessToken {
+    override suspend fun getAccessToken(): com.bestapp.zipbab.data.remote.notification.fcm.AccessToken {
         val querySnapshot = firestoreDB.getAccessDB().document("n9FI6noeU2dFTHbHdQd8")
             .get()
             .await()
 
-        return querySnapshot.toObject<AccessToken>() ?: AccessToken()
+        return querySnapshot.toObject<com.bestapp.zipbab.data.remote.notification.fcm.AccessToken>() ?: com.bestapp.zipbab.data.remote.notification.fcm.AccessToken()
     }
 
     override suspend fun removeItem(

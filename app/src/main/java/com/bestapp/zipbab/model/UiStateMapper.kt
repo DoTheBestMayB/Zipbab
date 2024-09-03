@@ -3,8 +3,6 @@ package com.bestapp.zipbab.model
 import com.bestapp.zipbab.args.FilterArgs
 import com.bestapp.zipbab.args.ImageArgs
 import com.bestapp.zipbab.args.ImagePostSubmitArgs
-import com.bestapp.zipbab.args.MeetingArgs
-import com.bestapp.zipbab.args.PlaceLocationArgs
 import com.bestapp.zipbab.args.ProfileEditArgs
 import com.bestapp.zipbab.data.model.UploadStateEntity
 import com.bestapp.zipbab.data.model.local.GalleryImageInfo

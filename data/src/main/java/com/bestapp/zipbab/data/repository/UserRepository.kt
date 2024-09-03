@@ -8,7 +8,6 @@ import com.bestapp.zipbab.data.model.remote.NotificationTypeResponse
 import com.bestapp.zipbab.data.model.remote.Review
 import com.bestapp.zipbab.data.model.remote.SignUpResponse
 import com.bestapp.zipbab.data.model.remote.UserResponse
-import com.bestapp.zipbab.data.notification.fcm.AccessToken
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -22,7 +21,7 @@ interface UserRepository {
     suspend fun updateUserMeetingCount(userDocumentID: String): Boolean
     suspend fun updateUserProfileImage(userDocumentID: String, profileImageUri: String?): Boolean
     suspend fun deleteUserProfileImage(userDocumentID: String)
-    suspend fun getAccessToken(): AccessToken
+    suspend fun getAccessToken(): com.bestapp.zipbab.data.remote.notification.fcm.AccessToken
 
     suspend fun removeItem(
         udi: String,

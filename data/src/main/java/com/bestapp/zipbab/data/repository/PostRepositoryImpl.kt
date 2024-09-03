@@ -1,7 +1,7 @@
 package com.bestapp.zipbab.data.repository
 
-import com.bestapp.zipbab.data.datasource.remote.PostRemoteDataSource
 import com.bestapp.zipbab.data.model.remote.PostResponse
+import com.bestapp.zipbab.data.remote.datasource.PostRemoteDataSource
 import javax.inject.Inject
 
 internal class PostRepositoryImpl @Inject constructor(

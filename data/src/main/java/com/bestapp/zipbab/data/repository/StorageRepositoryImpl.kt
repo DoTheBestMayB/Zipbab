@@ -2,7 +2,7 @@ package com.bestapp.zipbab.data.repository
 
 import android.graphics.Bitmap
 import android.net.Uri
-import com.bestapp.zipbab.data.datasource.remote.StorageRemoteDataSource
+import com.bestapp.zipbab.data.remote.datasource.StorageRemoteDataSource
 import com.google.firebase.storage.StorageReference
 import javax.inject.Inject
 

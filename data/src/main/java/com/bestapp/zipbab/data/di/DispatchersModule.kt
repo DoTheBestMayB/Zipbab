@@ -13,5 +13,5 @@ import javax.inject.Singleton
 class DispatchersModule {
     @Provides
     @Singleton
-    fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
+    fun providesIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 }

@@ -1,8 +1,8 @@
 package com.bestapp.zipbab.data.repository
 
-import com.bestapp.zipbab.data.datasource.local.UserLocalDataSource
-import com.bestapp.zipbab.data.datasource.remote.PrivacyRemoteDataSource
 import com.bestapp.zipbab.data.model.remote.Privacy
+import com.bestapp.zipbab.data.remote.datasource.PrivacyRemoteDataSource
+import com.bestapp.zipbab.data.remote.datasource.UserLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

@@ -1,7 +1,7 @@
 package com.bestapp.zipbab.data.repository
 
-import com.bestapp.zipbab.data.datasource.remote.CategoryRemoteDataSource
 import com.bestapp.zipbab.data.model.remote.FilterResponse
+import com.bestapp.zipbab.data.remote.datasource.CategoryRemoteDataSource
 import javax.inject.Inject
 
 internal class CategoryRepositoryImpl @Inject constructor(

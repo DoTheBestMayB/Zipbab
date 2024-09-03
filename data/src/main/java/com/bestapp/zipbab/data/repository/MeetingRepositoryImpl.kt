@@ -1,7 +1,7 @@
 package com.bestapp.zipbab.data.repository
 
-import com.bestapp.zipbab.data.datasource.remote.MeetingRemoteDataSource
 import com.bestapp.zipbab.data.model.remote.MeetingResponse
+import com.bestapp.zipbab.data.remote.datasource.MeetingRemoteDataSource
 import javax.inject.Inject
 
 internal class MeetingRepositoryImpl @Inject constructor(
