@@ -1,10 +1,10 @@
 package com.bestapp.zipbab.data.repository
 
-import com.bestapp.zipbab.data.datasource.GalleryImageFetcher
-import com.bestapp.zipbab.data.datasource.GalleryPagingSource
+import com.bestapp.zipbab.data.local.datasource.GalleryImageFetcher
+import com.bestapp.zipbab.data.local.datasource.GalleryPagingSource
 import javax.inject.Inject
 
-class GalleryRepositoryImpl @Inject constructor(
+internal class GalleryRepositoryImpl @Inject constructor(
     private val galleryImageFetcher: GalleryImageFetcher
 ): GalleryRepository {
     override fun galleryPagingSource(): GalleryPagingSource {

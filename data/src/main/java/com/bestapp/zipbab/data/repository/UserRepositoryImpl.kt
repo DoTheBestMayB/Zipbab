@@ -1,7 +1,6 @@
 package com.bestapp.zipbab.data.repository
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import androidx.work.Constraints
 import androidx.work.Data
@@ -10,21 +9,19 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.bestapp.zipbab.data.FirestoreDB.FirestoreDB
-import com.bestapp.zipbab.data.doneSuccessful
 import com.bestapp.zipbab.data.model.UploadStateEntity
 import com.bestapp.zipbab.data.model.local.SignOutEntity
 import com.bestapp.zipbab.data.model.remote.LoginResponse
 import com.bestapp.zipbab.data.model.remote.NotificationType
 import com.bestapp.zipbab.data.model.remote.NotificationTypeResponse
-import com.bestapp.zipbab.data.model.remote.PlaceLocation
-import com.bestapp.zipbab.data.model.remote.PostForInit
 import com.bestapp.zipbab.data.model.remote.Review
-import com.bestapp.zipbab.data.model.remote.SignOutForbiddenResponse
 import com.bestapp.zipbab.data.model.remote.SignUpResponse
 import com.bestapp.zipbab.data.model.remote.UserResponse
-import com.bestapp.zipbab.data.notification.fcm.AccessToken
-import com.bestapp.zipbab.data.upload.UploadWorker
+import com.bestapp.zipbab.data.remote.firestoreDB.FirestoreDB
+import com.bestapp.zipbab.data.remote.datasource.UserLocalDataSource
+import com.bestapp.zipbab.data.remote.datasource.UserRemoteDataSource
+import com.bestapp.zipbab.data.remote.upload.UploadWorker
+import com.bestapp.zipbab.data.remote.util.doneSuccessful
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.toObject
 import com.squareup.moshi.Moshi
@@ -40,9 +37,11 @@ import javax.inject.Inject
 
 internal class UserRepositoryImpl @Inject constructor(
     private val firestoreDB: FirestoreDB,
+    private val userRemoteDataSource: UserRemoteDataSource,
     private val storageRepository: StorageRepository,
     private val meetingRepository: MeetingRepository,
     private val postRepository: PostRepository,
+    private val userLocalDataSource: UserLocalDataSource,
     @ApplicationContext private val context: Context,
     moshi: Moshi,
 ) : UserRepository {
@@ -53,84 +52,24 @@ internal class UserRepositoryImpl @Inject constructor(
     private val timeParseFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.KOREA)
 
     override suspend fun getUser(userDocumentID: String): UserResponse {
-        val users = firestoreDB.getUsersDB()
-            .whereEqualTo("userDocumentID", userDocumentID)
-            .get()
-            .await()
-
-        for (document in users) {
-            return document.toObject<UserResponse>()
-        }
-
-        return UserResponse()
+        return userRemoteDataSource.getUser(userDocumentID)
     }
 
     override suspend fun login(id: String, pw: String): LoginResponse {
-        val users = firestoreDB.getUsersDB()
-            .whereEqualTo("id", id)
-            .get()
-            .await()
-
-        for (document in users) {
-            val userResponse = document.toObject<UserResponse>()
-            if (userResponse.pw == pw) {
-                return LoginResponse.Success(
-                    userResponse.userDocumentID
-                )
-            }
-        }
-        return LoginResponse.Fail
+        return userRemoteDataSource.login(id, pw)
     }
 
-    override suspend fun signUpUser(nickname: String, email: String, password: String): SignUpResponse {
-        // 이메일 중복 가입 확인
-        val users = firestoreDB.getUsersDB()
-            .whereEqualTo("id", email)
-            .get()
-            .await()
-        if (users.isEmpty.not()) {
-            return SignUpResponse.DuplicateEmail
-        }
-
-        // 계정 등록
-        val userResponse = UserResponse(
-            userDocumentID = "",
-            nickname = nickname,
-            id = email,
-            pw = password,
-            profileImage = "",
-            temperature = 36.5,
-            meetingCount = 0,
-            notifications = listOf(),
-            meetingReviews = listOf(),
-            posts = listOf(),
-            placeLocation = PlaceLocation(
-                locationAddress = "",
-                locationLat = "",
-                locationLong = ""
-            )
-        )
-        val userDocumentRef = firestoreDB.getUsersDB()
-            .add(userResponse)
-            .await()
-        val userDocumentID = userDocumentRef.id
-
-        val isSuccess = firestoreDB.getUsersDB().document(userDocumentID)
-            .update("userDocumentID", userDocumentID)
-            .doneSuccessful()
-
-        return if (isSuccess) {
-            SignUpResponse.Success(userDocumentID)
-        } else {
-            firestoreDB.getUsersDB().document(userDocumentID)
-                .delete()
-            SignUpResponse.Fail
-        }
+    override suspend fun signUpUser(
+        nickname: String,
+        email: String,
+        password: String
+    ): SignUpResponse {
+        return userRemoteDataSource.signUpUser(nickname, email, password)
     }
 
     override suspend fun signOutUser(userDocumentID: String): SignOutEntity {
         // 회원탈퇴가 허용되지 않은 아이디인지 확인
-        if (checkSignOutIsNotAllowed(userDocumentID)) {
+        if (userRemoteDataSource.checkSignOutIsNotAllowed(userDocumentID)) {
             return SignOutEntity.IsNotAllowed
         }
 
@@ -156,54 +95,32 @@ internal class UserRepositoryImpl @Inject constructor(
         deleteUserProfileImage(userDocumentID)
 
         // 회원 탈퇴하기
-        val isSuccess = firestoreDB.getUsersDB().document(userDocumentID)
-            .delete()
-            .doneSuccessful()
+        val isSuccess = userRemoteDataSource.signOutUser(userDocumentID)
 
-        return if (isSuccess) {
+        if (isSuccess.not()) {
+            return SignOutEntity.Fail
+        }
+
+        // 로컬에서 사용자 documentID 삭제하기
+        val isRemoveUserDocumentSuccess = userLocalDataSource.removeUserDocumentId()
+
+        return if (isRemoveUserDocumentSuccess) {
             SignOutEntity.Success
         } else {
             SignOutEntity.Fail
         }
     }
 
-    private suspend fun checkSignOutIsNotAllowed(userDocumentID: String): Boolean {
-        val documentSnapShot = firestoreDB.getPolicyDB()
-            .document("ForbiddenForDelete")
-            .get()
-            .await()
-
-        val notAllowedIDs = documentSnapShot.toObject<SignOutForbiddenResponse>()
-        return notAllowedIDs?.userDocumentIDs?.contains(userDocumentID) ?: false
-    }
-
     override suspend fun updateUserNickname(userDocumentID: String, nickname: String): Boolean {
-        return firestoreDB.getUsersDB().document(userDocumentID)
-            .update("nickname", nickname)
-            .doneSuccessful()
+        return userRemoteDataSource.updateUserNickname(userDocumentID, nickname)
     }
 
     override suspend fun updateUserTemperature(reviews: List<Review>): Boolean {
-        val isSuccessfuls = Array<Boolean>(reviews.size) { false }
-
-        reviews.forEachIndexed { i, review ->
-            if (review.votingPoint == 0.0) {
-                isSuccessfuls[i] = true
-                return@forEachIndexed
-            }
-
-            isSuccessfuls[i] = firestoreDB.getUsersDB().document(review.id)
-                .update("temperature", FieldValue.increment(review.votingPoint))
-                .doneSuccessful()
-        }
-
-        return isSuccessfuls.all { it == true }
+        return userRemoteDataSource.updateUserTemperature(reviews)
     }
 
     override suspend fun updateUserMeetingCount(userDocumentID: String): Boolean {
-        return firestoreDB.getUsersDB().document(userDocumentID)
-            .update("meetingCount", FieldValue.increment(1))
-            .doneSuccessful()
+        return userRemoteDataSource.updateUserMeetingCount(userDocumentID)
     }
 
     override suspend fun updateUserProfileImage(
@@ -221,62 +138,16 @@ internal class UserRepositoryImpl @Inject constructor(
         // 기존 프로필 이미지 삭제
         deleteUserProfileImage(userDocumentID)
 
-        return firestoreDB.getUsersDB().document(userDocumentID)
-            .update("profileImage", uri)
-            .doneSuccessful()
-    }
-
-    override suspend fun convertImages(userDocumentID: String, images: List<Bitmap>): List<String> {
-        val storageUris = Array<String>(images.size) { "" }
-
-        images.forEachIndexed { i, bitmap ->
-            storageUris[i] = storageRepository.uploadImage(bitmap)
-        }
-
-        return storageUris.toList()
-    }
-
-    override suspend fun addPost(userDocumentID: String, images: List<String>): Boolean {
-        val imageUrls = mutableListOf<String>()
-
-        for (image in images) {
-            val url = storageRepository.uploadImage(
-                Uri.parse(image)
-            )
-            imageUrls.add(url)
-        }
-
-        val postDocumentRef = firestoreDB.getPostDB()
-            .add(
-                PostForInit(
-                    images = imageUrls
-                )
-            )
-            .await()
-        val postDocumentId = postDocumentRef.id
-
-        val isSuccess = firestoreDB.getPostDB().document(postDocumentId)
-            .update("postDocumentID", postDocumentId)
-            .doneSuccessful()
-
-        if (isSuccess.not()) {
-            return false
-        }
-
-        return firestoreDB.getUsersDB().document(userDocumentID)
-            .update("posts", FieldValue.arrayUnion(postDocumentId))
-            .doneSuccessful()
+        // 프로필 이미지 갱신
+        return userRemoteDataSource.updateProfileImage(userDocumentID, uri)
     }
 
     override suspend fun deleteUserProfileImage(userDocumentID: String) {
-        val document = firestoreDB.getUsersDB().document(userDocumentID)
-            .get()
-            .await()
-        val userResponse = document.toObject<UserResponse>() ?: return
+        val userResponse = userRemoteDataSource.getUser(userDocumentID)
         storageRepository.deleteImage(userResponse.profileImage)
     }
 
-    override suspend fun addPostWithAsync(
+    override fun addPostWithAsync(
         userDocumentID: String,
         tempPostDocumentID: String,
         images: List<String>
@@ -284,7 +155,6 @@ internal class UserRepositoryImpl @Inject constructor(
         emit(UploadStateEntity.Pending(tempPostDocumentID))
 
         val imageUrls = mutableListOf<String>()
-
         for ((idx, image) in images.withIndex()) {
             emit(
                 UploadStateEntity.ProcessImage(
@@ -300,32 +170,9 @@ internal class UserRepositoryImpl @Inject constructor(
         }
 
         emit(UploadStateEntity.ProcessPost(tempPostDocumentID))
-        val postDocumentRef = firestoreDB.getPostDB()
-            .add(
-                PostForInit(
-                    images = imageUrls
-                )
-            )
-            .await()
-        val postDocumentId = postDocumentRef.id
 
-        var isSuccess = firestoreDB.getPostDB().document(postDocumentId)
-            .update("postDocumentID", postDocumentId)
-            .doneSuccessful()
-        if (isSuccess.not()) {
-            emit(UploadStateEntity.Fail(tempPostDocumentID))
-            // 실패하면 기존 업로드한 이미지 모두 삭제하기
-            // TODO : WorkmManager로 넘겨서 다시 시도하도록 수정
-            for (url in imageUrls) {
-                storageRepository.deleteImage(url)
-            }
-            return@flow
-        }
-
-        isSuccess = firestoreDB.getUsersDB().document(userDocumentID)
-            .update("posts", FieldValue.arrayUnion(postDocumentId))
-            .doneSuccessful()
-
+        val postDocumentId = postRepository.createPost(imageUrls)
+        val isSuccess = userRemoteDataSource.addPost(userDocumentID, postDocumentId)
         if (isSuccess) {
             emit(UploadStateEntity.SuccessPost(tempPostDocumentID, postDocumentId))
         } else {
@@ -359,7 +206,7 @@ internal class UserRepositoryImpl @Inject constructor(
         return workManager.getWorkInfoByIdFlow(workRequestKey).map {
             val jsonString = it.progress.getString(UploadWorker.PROGRESS_KEY)
                 ?: run {
-                    return@map when(it.state) {
+                    return@map when (it.state) {
                         WorkInfo.State.ENQUEUED -> UploadStateEntity.Pending(tempPostDocumentID)
                         WorkInfo.State.RUNNING -> UploadStateEntity.Pending(tempPostDocumentID)
                         WorkInfo.State.SUCCEEDED -> {
@@ -369,8 +216,12 @@ internal class UserRepositoryImpl @Inject constructor(
                             val postDocumentID =
                                 it.outputData.getString(UploadWorker.RESULT_POST_DOCUMENT_ID_KEY)
                                     ?: return@map UploadStateEntity.Fail(tempPostDocumentID)
-                            return@map UploadStateEntity.SuccessPost(tPostDocumentID, postDocumentID)
+                            return@map UploadStateEntity.SuccessPost(
+                                tPostDocumentID,
+                                postDocumentID
+                            )
                         }
+
                         WorkInfo.State.FAILED -> UploadStateEntity.Fail(tempPostDocumentID)
                         WorkInfo.State.BLOCKED -> UploadStateEntity.Pending(tempPostDocumentID)
                         WorkInfo.State.CANCELLED -> UploadStateEntity.Fail(tempPostDocumentID)
@@ -380,12 +231,12 @@ internal class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAccessToken(): AccessToken {
+    override suspend fun getAccessToken(): com.bestapp.zipbab.data.remote.notification.fcm.AccessToken {
         val querySnapshot = firestoreDB.getAccessDB().document("n9FI6noeU2dFTHbHdQd8")
             .get()
             .await()
 
-        return querySnapshot.toObject<AccessToken>() ?: AccessToken()
+        return querySnapshot.toObject<com.bestapp.zipbab.data.remote.notification.fcm.AccessToken>() ?: com.bestapp.zipbab.data.remote.notification.fcm.AccessToken()
     }
 
     override suspend fun removeItem(

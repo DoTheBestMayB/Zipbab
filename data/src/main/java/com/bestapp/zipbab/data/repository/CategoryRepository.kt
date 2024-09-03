@@ -3,7 +3,7 @@ package com.bestapp.zipbab.data.repository
 import com.bestapp.zipbab.data.model.remote.FilterResponse
 
 interface CategoryRepository {
-    suspend fun getFoodCategory(): List<FilterResponse.Food>
+    suspend fun getFoodCategory(): FilterResponse.FoodCategory
 
-    suspend fun getCostCategory(): List<FilterResponse.Cost>
+    suspend fun getCostCategory(): FilterResponse.CostCategory
 }

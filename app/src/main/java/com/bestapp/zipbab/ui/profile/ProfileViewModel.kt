@@ -10,7 +10,7 @@ import com.bestapp.zipbab.data.repository.UserRepository
 import com.bestapp.zipbab.model.PostUiState
 import com.bestapp.zipbab.model.UploadState
 import com.bestapp.zipbab.model.toArgs
-import com.bestapp.zipbab.model.toUiState
+import com.bestapp.zipbab.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,7 +40,7 @@ class ProfileViewModel @Inject constructor(
     private val _postUiState = MutableStateFlow(PostUiState())
     val postUiState: StateFlow<PostUiState> = _postUiState.asStateFlow()
 
-    private val _currentPostPosition = MutableStateFlow<Int>(-1)
+    private val _currentPostPosition = MutableStateFlow(-1)
     val currentPostPosition: StateFlow<Int> = _currentPostPosition.asStateFlow()
 
     private var pendingPostForDeletion: PostUiState = PostUiState()
@@ -51,7 +51,7 @@ class ProfileViewModel @Inject constructor(
     fun loadUserInfo(userDocumentID: String) {
         viewModelScope.launch {
             runCatching {
-                val userUiState = userRepository.getUser(userDocumentID).toUiState()
+                val userUiState = userRepository.getUser(userDocumentID).toUi()
                 appSettingRepository.userDocumentID.collect { selfDocumentId ->
 
                     _profileUiState.emit(
@@ -63,7 +63,7 @@ class ProfileViewModel @Inject constructor(
                             meetingCount = userUiState.meetingCount,
                             postUiStates = postRepository.getPosts(userUiState.userDocumentID)
                                 .map {
-                                    it.toUiState()
+                                    it.toUi()
                                 }.reversed(),
                             isSelfProfile = userUiState.userDocumentID == selfDocumentId,
                             isProfileClicked = false,

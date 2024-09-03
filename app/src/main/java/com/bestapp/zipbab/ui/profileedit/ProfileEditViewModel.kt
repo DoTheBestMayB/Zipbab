@@ -3,9 +3,9 @@ package com.bestapp.zipbab.ui.profileedit
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bestapp.zipbab.data.repository.UserRepository
 import com.bestapp.zipbab.args.ProfileEditArgs
-import com.bestapp.zipbab.model.toUiState
+import com.bestapp.zipbab.data.repository.UserRepository
+import com.bestapp.zipbab.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +28,7 @@ class ProfileEditViewModel @Inject constructor(
     val submitUiState: SharedFlow<SubmitUiState> = _submitUiState.asSharedFlow()
 
     fun setUserInfo(profileEditArgs: ProfileEditArgs) {
-        _uiState.value = profileEditArgs.toUiState()
+        _uiState.value = profileEditArgs.toUi()
     }
 
     fun updateProfileThumbnail(uri: Uri?) {

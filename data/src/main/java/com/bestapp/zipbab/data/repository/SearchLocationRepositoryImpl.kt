@@ -1,12 +1,11 @@
 package com.bestapp.zipbab.data.repository
 
-import com.bestapp.zipbab.data.di.NetworkProviderModule
 import com.bestapp.zipbab.data.model.remote.kakaomap.SearchLocationResponse
-import com.bestapp.zipbab.data.network.SearchLocationService
+import com.bestapp.zipbab.data.remote.service.SearchLocationService
 import javax.inject.Inject
 
 internal class SearchLocationRepositoryImpl @Inject constructor(
-    @NetworkProviderModule.KakaoMapRetrofit private val searchLocationService: SearchLocationService
+    private val searchLocationService: SearchLocationService
 ) : SearchLocationRepository {
     override suspend fun convertLocation(
         query: String,

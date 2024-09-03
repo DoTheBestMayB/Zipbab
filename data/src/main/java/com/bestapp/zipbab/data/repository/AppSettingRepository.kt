@@ -7,19 +7,19 @@ interface AppSettingRepository {
 
     val userDocumentID: Flow<String>
 
-    suspend fun updateUserDocumentId(userDocumentID: String)
+    suspend fun updateUserDocumentId(userDocumentID: String): Boolean
 
-    suspend fun removeUserDocumentId()
+    suspend fun removeUserDocumentId(): Boolean
 
     suspend fun getRememberId(): String
 
-    suspend fun updateRememberId(id: String)
+    suspend fun updateRememberId(id: String): Boolean
 
-    suspend fun removeRememberId()
+    suspend fun removeRememberId(): Boolean
 
     suspend fun getPrivacyInfo(): Privacy
 
     suspend fun getLocationPolicyInfo(): Privacy
 
-    suspend fun getDeleteRequestUrl(): String
+    suspend fun getDeleteRequestInfo(): Privacy
 }

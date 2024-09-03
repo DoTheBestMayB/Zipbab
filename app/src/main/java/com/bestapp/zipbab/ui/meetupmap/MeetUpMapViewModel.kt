@@ -7,7 +7,7 @@ import com.bestapp.zipbab.data.repository.AppSettingRepository
 import com.bestapp.zipbab.data.repository.MeetingRepository
 import com.bestapp.zipbab.data.repository.UserRepository
 import com.bestapp.zipbab.model.UserUiState
-import com.bestapp.zipbab.model.toUiState
+import com.bestapp.zipbab.model.toUi
 import com.bestapp.zipbab.ui.meetupmap.model.MeetUpMapUi
 import com.bestapp.zipbab.ui.meetupmap.model.MeetUpMapUiState
 import com.bestapp.zipbab.ui.meetupmap.model.MeetingMarkerUiStates
@@ -32,17 +32,17 @@ class MeetUpMapViewModel @Inject constructor(
     private val meetingRepository: MeetingRepository,
 ) : ViewModel() {
 
-    private val _userUiState = MutableStateFlow<UserUiState>(UserUiState())
+    private val _userUiState = MutableStateFlow(UserUiState())
     val userUiState: StateFlow<UserUiState> = _userUiState.asStateFlow()
 
     private val _isLocationPermissionGranted = MutableSharedFlow<Boolean>(replay = 1)
     val isLocationPermissionGranted: SharedFlow<Boolean> =
         _isLocationPermissionGranted.asSharedFlow()
 
-    private val _meetUpMapUiState = MutableStateFlow<MeetUpMapUiState>(MeetUpMapUiState())
+    private val _meetUpMapUiState = MutableStateFlow(MeetUpMapUiState())
     val meetUpMapUiState: StateFlow<MeetUpMapUiState> = _meetUpMapUiState.asStateFlow()
 
-    private val _meetingMarkerUiStates = MutableStateFlow<MeetingMarkerUiStates>(
+    private val _meetingMarkerUiStates = MutableStateFlow(
         MeetingMarkerUiStates()
     )
     val meetingMarkerUiStates: StateFlow<MeetingMarkerUiStates> = _meetingMarkerUiStates.asStateFlow()
@@ -72,7 +72,7 @@ class MeetUpMapViewModel @Inject constructor(
             val userDocumentedID = getUser()
 
             val userUiState = if (userDocumentedID.isNotEmpty()) {
-                userRepository.getUser(userDocumentedID).toUiState()
+                userRepository.getUser(userDocumentedID).toUi()
             } else {
                 UserUiState().copy(
                     nickname = NO_LOGIN_USER_DEFAULT_NICKNAME

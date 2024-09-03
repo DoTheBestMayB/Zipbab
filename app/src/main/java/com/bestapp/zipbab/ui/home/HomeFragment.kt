@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.bestapp.zipbab.databinding.FragmentHomeBinding
-import com.bestapp.zipbab.model.toArgs
 import com.bestapp.zipbab.util.safeNavigate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch

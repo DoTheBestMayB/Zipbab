@@ -15,7 +15,7 @@ object LocationModule {
 
     @ViewModelScoped
     @Provides
-    fun provideLocationClient(
+    fun providesLocationClient(
         @ApplicationContext context: Context
     ): LocationService = LocationService(
         context,

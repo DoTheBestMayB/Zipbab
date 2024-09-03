@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bestapp.zipbab.data.repository.MeetingRepository
 import com.bestapp.zipbab.model.MeetingUiState
-import com.bestapp.zipbab.model.toUiState
+import com.bestapp.zipbab.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +26,7 @@ class SearchViewModel @Inject constructor(
                 meetingRepository.getSearch(query)
             }.onSuccess {
                 val meetingUiStateList = it.map { meeting ->
-                    meeting.toUiState()
+                    meeting.toUi()
                 }
                 _searchMeeting.value = meetingUiStateList
             }

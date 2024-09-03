@@ -78,23 +78,28 @@ class LoginViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
-            runCatching {
-                when (val loginResult = userRepository.login(inputId.value, inputPw.value).toUi()) {
-                    LoginResult.Fail -> {
-                        _loginState.emit(LoginState.Fail)
-                    }
-                    is LoginResult.Success -> {
-                        appSettingRepository.updateUserDocumentId(loginResult.userDocumentID)
-                        if (_isRememberId.value) {
-                            appSettingRepository.updateRememberId(inputId.value)
-                        } else {
-                            appSettingRepository.removeRememberId()
-                        }
-                        _loginState.emit(LoginState.Success)
-                    }
+            when (val loginResult = userRepository.login(inputId.value, inputPw.value).toUi()) {
+                LoginResult.Fail -> {
+                    _loginState.emit(LoginState.Fail)
                 }
-            }.onFailure {
-                _loginState.emit(LoginState.Fail)
+                is LoginResult.Success -> {
+                    var isSuccess = appSettingRepository.updateUserDocumentId(loginResult.userDocumentID)
+                    if (isSuccess.not()) {
+                        _loginState.emit(LoginState.Fail)
+                        return@launch
+                    }
+
+                    isSuccess = if (_isRememberId.value) {
+                        appSettingRepository.updateRememberId(inputId.value)
+                    } else {
+                        appSettingRepository.removeRememberId()
+                    }
+                    if (isSuccess.not()) {
+                        _loginState.emit(LoginState.Fail)
+                        return@launch
+                    }
+                    _loginState.emit(LoginState.Success)
+                }
             }
         }
     }

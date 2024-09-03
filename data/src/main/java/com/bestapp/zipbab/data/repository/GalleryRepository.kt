@@ -1,6 +1,6 @@
 package com.bestapp.zipbab.data.repository
 
-import com.bestapp.zipbab.data.datasource.GalleryPagingSource
+import com.bestapp.zipbab.data.local.datasource.GalleryPagingSource
 
 interface GalleryRepository {
 

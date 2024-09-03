@@ -84,8 +84,8 @@ class RecruitmentFragment : Fragment() {
     }
 
     private fun initViews() {
-        var hostKey: String = ""
-        var hostTemperature: Double = 0.0
+        var hostKey = ""
+        var hostTemperature = 0.0
 
         recruitmentViewModel.getDocumentId()
 
@@ -94,8 +94,8 @@ class RecruitmentFragment : Fragment() {
             hostKey = it.userDocumentID
         }
 
-        var lat: String = ""
-        var lng: String = ""
+        val lat = ""
+        val lng = ""
         var imageValue: String = getString(R.string.recruit_default_image)
 
         var placeLocation = PlaceLocation( //위치 값 가져오면 수정
@@ -143,9 +143,9 @@ class RecruitmentFragment : Fragment() {
         }
 
         binding.completeButton.setOnClickListener {
-            var costTypeByPerson: String = ""
-            var date = binding.dateEdit.text.toString()
-            var time = binding.timeEdit.text.toString()
+            var costTypeByPerson = ""
+            val date = binding.dateEdit.text.toString()
+            val time = binding.timeEdit.text.toString()
             when (binding.costEdit.text.toString().toInt()) {
                 in (0..29_999) -> {
                     costTypeByPerson = "1"
@@ -181,7 +181,6 @@ class RecruitmentFragment : Fragment() {
                 costValueByPerson = binding.costEdit.text.toString().toInt(),
                 costTypeByPerson = costTypeByPerson.toInt(),
                 hostUserDocumentID = hostKey,
-                hostTemperature = hostTemperature,
                 members = members,
                 pendingMembers = pendingMembers,
                 attendanceCheck = attendanceCheck,

@@ -52,7 +52,7 @@ class SignUpViewModel @Inject constructor(
 
     fun onSignUp() {
         viewModelScope.launch {
-            val signUpState =
+            var signUpState =
                 userRepository.signUpUser(nickname.value, email.value, password.value).toUi()
 
             when (signUpState) {
@@ -60,8 +60,13 @@ class SignUpViewModel @Inject constructor(
                 SignUpState.DuplicateEmail -> Unit
                 SignUpState.Fail -> Unit
                 is SignUpState.Success -> {
-                    appSettingRepository.updateUserDocumentId(signUpState.userDocumentID)
+                    val isSuccess = appSettingRepository.updateUserDocumentId(signUpState.userDocumentID)
+                    // 회원가입에 성공했으나, 회원 정보 저장에 실패한 경우
+                    if (isSuccess.not()) {
+                        signUpState = SignUpState.SaveDocumentIdFail
+                    }
                 }
+                SignUpState.SaveDocumentIdFail -> Unit
             }
             _signUpState.emit(signUpState)
         }

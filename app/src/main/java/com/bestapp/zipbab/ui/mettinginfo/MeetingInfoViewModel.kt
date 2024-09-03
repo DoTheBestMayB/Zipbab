@@ -8,7 +8,7 @@ import com.bestapp.zipbab.data.repository.MeetingRepository
 import com.bestapp.zipbab.data.repository.UserRepository
 import com.bestapp.zipbab.model.MeetingUiState
 import com.bestapp.zipbab.model.toMemberInfo
-import com.bestapp.zipbab.model.toUiState
+import com.bestapp.zipbab.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -107,7 +107,7 @@ class MeetingInfoViewModel @Inject constructor(
     fun setMeetingDocumentId(meetingDocumentId: String) {
         viewModelScope.launch {
             runCatching {
-                meetingRepository.getMeeting(meetingDocumentId).toUiState()
+                meetingRepository.getMeeting(meetingDocumentId).toUi()
             }.onSuccess { state ->
                 _meeting.emit(state)
                 fetchUserInfo(state.hostUserDocumentID, state.members)
@@ -119,12 +119,12 @@ class MeetingInfoViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 val users = mutableListOf(
-                    userRepository.getUser(hostDocumentId).toUiState().toMemberInfo(isHost = true)
+                    userRepository.getUser(hostDocumentId).toUi().toMemberInfo(isHost = true)
                 )
 
                 for (memberID in memberIDs) {
                     users.add(
-                        userRepository.getUser(memberID).toUiState().toMemberInfo(isHost = false)
+                        userRepository.getUser(memberID).toUi().toMemberInfo(isHost = false)
                     )
                 }
                 _members.emit(users)

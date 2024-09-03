@@ -2,7 +2,6 @@ package com.bestapp.zipbab.ui.notification
 
 import android.Manifest
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -70,7 +69,7 @@ class NotificationFragment : Fragment() {
         itemSwipe()
 
         notifyViewModel.getUserData.observe(viewLifecycleOwner) {
-            if(it.notifications.isEmpty()) {
+            if (it.notifications.isEmpty()) {
                 return@observe
             }
 
@@ -89,24 +88,25 @@ class NotificationFragment : Fragment() {
     private fun accessCheck() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { //33버전 이상
             when {
-                (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS)
+                (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
                         == PackageManager.PERMISSION_GRANTED) -> {
                     sendNotification()
                 }
+
                 (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) -> {
                     AlertDialog.Builder(requireContext())
                         .setTitle("권한 설정")
                         .setMessage("알림설정을 켜시려면 동의 버튼을 눌러주세요")
-                        .setPositiveButton("동의",
-                            DialogInterface.OnClickListener { _, _ ->
-                                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                            })
-                        .setNegativeButton("거부",
-                            DialogInterface.OnClickListener { _, _ ->
-                                Toast.makeText(context, "권한설정을 거부하였습니다.", Toast.LENGTH_SHORT).show()
-                            })
-                        .show()
+                        .setPositiveButton("동의") { _, _ ->
+                            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }.setNegativeButton("거부") { _, _ ->
+                            Toast.makeText(context, "권한설정을 거부하였습니다.", Toast.LENGTH_SHORT).show()
+                        }.show()
                 }
+
                 else -> {
                     requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
@@ -172,8 +172,11 @@ class NotificationFragment : Fragment() {
                     .setTitle("알림")
                     .setMessage("모임 신청을 승인하시려면 수락 버튼을 눌러주세요!!")
                     .setPositiveButton("수락",
-                        DialogInterface.OnClickListener { _, _ ->
-                            notifyViewModel.approveMember(itemTrans[deletedIndex].meetingDocumentId, itemTrans[deletedIndex].userDocumentId) //모임 신청에서 넘겨주는 값
+                        { _, _ ->
+                            notifyViewModel.approveMember(
+                                itemTrans[deletedIndex].meetingDocumentId,
+                                itemTrans[deletedIndex].userDocumentId
+                            ) //모임 신청에서 넘겨주는 값
                         })
                     .setOnDismissListener {
                         viewHolder.itemView
@@ -185,7 +188,7 @@ class NotificationFragment : Fragment() {
                             }.start()
                     }
                     .setNegativeButton("반려",
-                        DialogInterface.OnClickListener { _, _ ->
+                        { _, _ ->
                             Toast.makeText(context, "모임 신청을 거부 하였습니다.", Toast.LENGTH_SHORT).show()
                             muTiAdapter.removeItem(itemList, deletedIndex)
                             notifyViewModel.removeNotifyList(deletedIndex)
@@ -197,7 +200,7 @@ class NotificationFragment : Fragment() {
 
     private fun setObserve() {
         notifyViewModel.approveUser.observe(viewLifecycleOwner) {
-            if(it) {
+            if (it) {
                 Toast.makeText(requireContext(), "모임신청을 수락하였습니다.", Toast.LENGTH_SHORT).show()
                 //notifyViewModel.transUserMeeting(itemTrans[deletedIndex].meetingDocumentId, itemTrans[deletedIndex].userDocumentId)
                 muTiAdapter.removeItem(itemList, deletedIndex)
@@ -216,6 +219,7 @@ class NotificationFragment : Fragment() {
             }
         }
     }
+
     private fun itemSwipe() {
         itemTouchHelper = ItemTouchHelper(itemTouchCallback)
         itemTouchHelper?.attachToRecyclerView(binding.recyclerview)

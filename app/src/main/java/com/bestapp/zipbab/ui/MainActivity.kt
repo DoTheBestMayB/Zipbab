@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         if (ev == null) {
-            return super.dispatchTouchEvent(ev)
+            return super.dispatchTouchEvent(null)
         }
         val fragment =
             supportFragmentManager.findFragmentById(R.id.fcv)?.childFragmentManager?.fragments?.lastOrNull()
