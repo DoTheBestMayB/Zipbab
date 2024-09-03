@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.bestapp.zipbab.data.repository.AppSettingRepository
 import com.bestapp.zipbab.data.repository.CategoryRepository
 import com.bestapp.zipbab.model.FilterUiState
-import com.bestapp.zipbab.model.toUiState
+import com.bestapp.zipbab.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,11 +45,11 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val foodCategoryResponse = async {
                 categoryRepository.getFoodCategory().food.map { category ->
-                    category.toUiState()
+                    category.toUi()
                 }
             }
             val costCategoryResponse = categoryRepository.getCostCategory().cost.map { category ->
-                category.toUiState()
+                category.toUi()
             }
             _costCategory.value = costCategoryResponse
             _foodCategory.value = foodCategoryResponse.await()

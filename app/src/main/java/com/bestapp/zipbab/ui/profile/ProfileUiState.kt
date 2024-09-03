@@ -1,5 +1,6 @@
 package com.bestapp.zipbab.ui.profile
 
+import com.bestapp.zipbab.args.ProfileEditArgs
 import com.bestapp.zipbab.model.PostUiState
 
 data class ProfileUiState(
@@ -11,4 +12,10 @@ data class ProfileUiState(
     val postUiStates: List<PostUiState> = listOf(),
     val isSelfProfile: Boolean = false,
     val isProfileClicked: Boolean = false,
-)
+) {
+    fun toProfileEditArgs() = ProfileEditArgs(
+        userDocumentID = userDocumentID,
+        nickname = nickname,
+        profileImage = profileImage,
+    )
+}

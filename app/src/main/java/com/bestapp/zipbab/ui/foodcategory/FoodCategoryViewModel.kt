@@ -9,7 +9,7 @@ import com.bestapp.zipbab.data.repository.CategoryRepository
 import com.bestapp.zipbab.data.repository.MeetingRepository
 import com.bestapp.zipbab.model.FilterUiState
 import com.bestapp.zipbab.model.MeetingUiState
-import com.bestapp.zipbab.model.toUiState
+import com.bestapp.zipbab.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -56,10 +56,10 @@ class FoodCategoryViewModel @Inject constructor(
         viewModelScope.launch {
             val foodUiStateList =
                 categoryRepository.getFoodCategory().food.mapIndexed { index, filter ->
-                    if (filter.toUiState().name == selectMenu) {
+                    if (filter.toUi().name == selectMenu) {
                         selectIndex = index
                     }
-                    filter.toUiState()
+                    filter.toUi()
                 }
             _foodCategory.emit(foodUiStateList)
             delay(100)
@@ -78,7 +78,7 @@ class FoodCategoryViewModel @Inject constructor(
             }.onSuccess {
 
                 val meetingUiStateList = it.map { meeting ->
-                    meeting.toUiState()
+                    meeting.toUi()
                 }
                 _meetingList.emit(meetingUiStateList)
             }

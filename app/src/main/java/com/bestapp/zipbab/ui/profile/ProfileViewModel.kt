@@ -10,7 +10,7 @@ import com.bestapp.zipbab.data.repository.UserRepository
 import com.bestapp.zipbab.model.PostUiState
 import com.bestapp.zipbab.model.UploadState
 import com.bestapp.zipbab.model.toArgs
-import com.bestapp.zipbab.model.toUiState
+import com.bestapp.zipbab.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -51,7 +51,7 @@ class ProfileViewModel @Inject constructor(
     fun loadUserInfo(userDocumentID: String) {
         viewModelScope.launch {
             runCatching {
-                val userUiState = userRepository.getUser(userDocumentID).toUiState()
+                val userUiState = userRepository.getUser(userDocumentID).toUi()
                 appSettingRepository.userDocumentID.collect { selfDocumentId ->
 
                     _profileUiState.emit(
@@ -63,7 +63,7 @@ class ProfileViewModel @Inject constructor(
                             meetingCount = userUiState.meetingCount,
                             postUiStates = postRepository.getPosts(userUiState.userDocumentID)
                                 .map {
-                                    it.toUiState()
+                                    it.toUi()
                                 }.reversed(),
                             isSelfProfile = userUiState.userDocumentID == selfDocumentId,
                             isProfileClicked = false,

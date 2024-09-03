@@ -7,7 +7,7 @@ import com.bestapp.zipbab.data.repository.AppSettingRepository
 import com.bestapp.zipbab.data.repository.MeetingRepository
 import com.bestapp.zipbab.data.repository.UserRepository
 import com.bestapp.zipbab.model.UserUiState
-import com.bestapp.zipbab.model.toUiState
+import com.bestapp.zipbab.model.toUi
 import com.bestapp.zipbab.ui.meetupmap.model.MeetUpMapUi
 import com.bestapp.zipbab.ui.meetupmap.model.MeetUpMapUiState
 import com.bestapp.zipbab.ui.meetupmap.model.MeetingMarkerUiStates
@@ -72,7 +72,7 @@ class MeetUpMapViewModel @Inject constructor(
             val userDocumentedID = getUser()
 
             val userUiState = if (userDocumentedID.isNotEmpty()) {
-                userRepository.getUser(userDocumentedID).toUiState()
+                userRepository.getUser(userDocumentedID).toUi()
             } else {
                 UserUiState().copy(
                     nickname = NO_LOGIN_USER_DEFAULT_NICKNAME

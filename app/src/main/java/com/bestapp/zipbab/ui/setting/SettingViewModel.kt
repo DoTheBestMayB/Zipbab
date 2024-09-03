@@ -7,7 +7,7 @@ import com.bestapp.zipbab.data.repository.AppSettingRepository
 import com.bestapp.zipbab.data.repository.UserRepository
 import com.bestapp.zipbab.model.SignOutState
 import com.bestapp.zipbab.model.UserUiState
-import com.bestapp.zipbab.model.toUiState
+import com.bestapp.zipbab.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -35,7 +35,7 @@ class SettingViewModel @Inject constructor(
                 UserUiState()
             } else {
                 _userInfoLoadState.emit(LoadingState.OnLoading)
-                val user = userRepository.getUser(userDocumentID).toUiState()
+                val user = userRepository.getUser(userDocumentID).toUi()
                 _userInfoLoadState.emit(LoadingState.Done)
                 user
             }
@@ -83,7 +83,7 @@ class SettingViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 val userDocumentID = userUiState.firstOrNull()?.userDocumentID ?: return@runCatching
-                val signOutState = userRepository.signOutUser(userDocumentID).toUiState()
+                val signOutState = userRepository.signOutUser(userDocumentID).toUi()
                 when (signOutState) {
                     SignOutState.Fail -> _message.emit(SettingMessage.SIGN_OUT_FAIL)
                     SignOutState.IsNotAllowed -> _message.emit(SettingMessage.SIGN_OUT_IS_NOT_ALLOWED)

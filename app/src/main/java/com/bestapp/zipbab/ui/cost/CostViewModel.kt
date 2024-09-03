@@ -9,7 +9,7 @@ import com.bestapp.zipbab.data.repository.CategoryRepository
 import com.bestapp.zipbab.data.repository.MeetingRepository
 import com.bestapp.zipbab.model.FilterUiState
 import com.bestapp.zipbab.model.MeetingUiState
-import com.bestapp.zipbab.model.toUiState
+import com.bestapp.zipbab.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,10 +51,10 @@ class CostViewModel @Inject constructor(
         viewModelScope.launch {
             val costUiStateList =
                 categoryRepository.getCostCategory().cost.mapIndexed { index, filter ->
-                    if (filter.toUiState().type == selectCost) {
+                    if (filter.toUi().type == selectCost) {
                         selectIndex = index
                     }
-                    filter.toUiState()
+                    filter.toUi()
                 }
             _costCategory.value = costUiStateList
 
@@ -72,7 +72,7 @@ class CostViewModel @Inject constructor(
             }.onSuccess {
 
                 val meetingUiStateList = it.map { meeting ->
-                    meeting.toUiState()
+                    meeting.toUi()
                 }
                 _meetingList.emit(meetingUiStateList)
             }
