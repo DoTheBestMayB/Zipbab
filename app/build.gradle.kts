@@ -75,6 +75,9 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.hilt.work)
 
+    // webkit
+    implementation(libs.androidx.webkit.webkit)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
