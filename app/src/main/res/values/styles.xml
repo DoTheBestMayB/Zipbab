@@ -60,7 +60,14 @@
     <style name="OutlineButton">
         <item name="android:textAppearance">@style/header_title20</item>
         <item name="backgroundTint">@null</item>
-        <item name="android:background">@drawable/shape_btn_end_radius_6</item>
+        <item name="android:background">@drawable/shape_btn_end_radius_8</item>
+        <item name="android:textColor">@color/drawable_default_color</item>
+    </style>
+
+    <style name="OutlineSquareButton">
+        <item name="android:textAppearance">@style/header_title20</item>
+        <item name="backgroundTint">@null</item>
+        <item name="android:background">@drawable/background_outline_square</item>
         <item name="android:textColor">@color/drawable_default_color</item>
     </style>
 

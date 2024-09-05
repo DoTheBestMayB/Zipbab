@@ -87,20 +87,26 @@ class DetailInfoFragment : Fragment() {
 
     private fun setListener() = with(binding) {
         tilName.editText?.doOnTextChanged { text, _, _, _ ->
-            sharedViewModel.updateName(text.toString(), STEP)
+            sharedViewModel.updateName(text.toString())
         }
         tilParticipantCount.editText?.doOnTextChanged { text, _, _, _ ->
             val count = text.toString().toIntOrNull() ?: -1
-            sharedViewModel.updateParticipantCount(count, STEP)
+            sharedViewModel.updateParticipantCount(count)
         }
         tilCost.editText?.doOnTextChanged { text, _, _, _ ->
             val cost = text.toString().toIntOrNull() ?: -1
-            sharedViewModel.updateCost(cost, STEP)
+            sharedViewModel.updateCost(cost)
         }
         tilDescription.editText?.doOnTextChanged { text, _, _, _ ->
             val description = text.toString()
-            sharedViewModel.updateDescription(description, STEP)
+            sharedViewModel.updateDescription(description)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        sharedViewModel.updateStep(STEP)
     }
 
     override fun onDestroyView() {

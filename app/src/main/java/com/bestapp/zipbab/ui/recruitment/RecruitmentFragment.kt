@@ -11,12 +11,17 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.databinding.FragmentRecruitmentBinding
+import com.bestapp.zipbab.ui.addressfinder.AddressFinderFragment
+import com.bestapp.zipbab.ui.addressfinder.AddressInfo
 import com.bestapp.zipbab.ui.recruitment.viewpager.categoryselect.CategorySelectFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.detailinfo.DetailInfoFragment
+import com.bestapp.zipbab.ui.recruitment.viewpager.locationanddate.LocationAndDateFragment
+import com.bestapp.zipbab.util.safeNavigate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -104,10 +109,40 @@ class RecruitmentFragment : Fragment() {
                             CategorySelectFragment.STEP -> {
                                 binding.btnNext.isEnabled = state.isCategorySelectValid()
                             }
+
                             DetailInfoFragment.STEP -> {
                                 binding.btnNext.isEnabled = state.isDetailInfoInputValid()
                             }
+
+                            LocationAndDateFragment.STEP -> {
+                                binding.btnNext.isEnabled = state.isLocationAndDateValid()
+                            }
                         }
+                    }
+                }
+
+                launch {
+                    stepSharedViewModel.requestAddressState.collect {
+                        val action =
+                            RecruitmentFragmentDirections.actionRecruitmentFragmentToAddressFinderFragment()
+                        action.safeNavigate(this@RecruitmentFragment)
+                    }
+                }
+
+                launch {
+                    findNavController().currentBackStackEntry?.savedStateHandle?.getStateFlow(
+                        AddressFinderFragment.ADDRESS_RESULT_KEY,
+                        AddressInfo()
+                    )?.collect { info ->
+                        if (info.location.isNotBlank()) {
+                            stepSharedViewModel.updateLocation(
+                                info.location,
+                                info.zipCode,
+                            )
+                        }
+                        findNavController().currentBackStackEntry?.savedStateHandle?.remove<AddressInfo>(
+                            AddressFinderFragment.ADDRESS_RESULT_KEY
+                        )
                     }
                 }
             }

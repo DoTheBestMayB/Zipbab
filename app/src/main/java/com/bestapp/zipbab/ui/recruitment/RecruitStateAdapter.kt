@@ -2,12 +2,12 @@ package com.bestapp.zipbab.ui.recruitment
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.bestapp.zipbab.ui.recruitment.viewpager.detailinfo.DetailInfoFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.JoinConditionFragment
-import com.bestapp.zipbab.ui.recruitment.viewpager.LocationAndDateFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.MeetupProfilePictureSelectFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.MemberVerificationConditionFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.categoryselect.CategorySelectFragment
+import com.bestapp.zipbab.ui.recruitment.viewpager.detailinfo.DetailInfoFragment
+import com.bestapp.zipbab.ui.recruitment.viewpager.locationanddate.LocationAndDateFragment
 
 class RecruitStateAdapter(fragment: Fragment, private val maxStep: Int) : FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int = maxStep

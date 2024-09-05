@@ -53,7 +53,7 @@ class CategorySelectFragment : Fragment() {
                 selectedChips.add(chipGroup.findViewById<Chip>(checkId).text.toString())
             }
             viewModel.onCheckedStateChange(selectedChips)
-            sharedViewModel.updateCategory(selectedChips, STEP)
+            sharedViewModel.updateCategory(selectedChips)
         }
     }
 
@@ -90,6 +90,12 @@ class CategorySelectFragment : Fragment() {
             }
             binding.cg.addView(chip)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        sharedViewModel.updateStep(STEP)
     }
 
     override fun onDestroyView() {

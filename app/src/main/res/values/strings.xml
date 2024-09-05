@@ -210,4 +210,7 @@
     <string name="hint_for_recruitment_participant">최소 2명, 최대 99명까지 입력 가능해요</string>
     <string name="hint_for_recruitment_cost">최대 10,000,000원까지 입력 가능해요</string>
     <string name="meet_description_header">모임 소개</string>
+    <string name="location_and_date_header">모임 장소와 날짜를 설정해주세요</string>
+    <string name="location_header">장소</string>
+    <string name="recruit_location_hint">도로명 주소 검색</string>
 </resources>
