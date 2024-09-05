@@ -61,7 +61,7 @@ class HomeFragment : Fragment() {
     private fun setListener() {
         binding.llSearch.setOnClickListener {
             val action = HomeFragmentDirections.actionHomeFragmentToSearchFragment()
-            findNavController().navigate(action)
+            action.safeNavigate(this)
         }
 
         binding.ivWrite.setOnClickListener {
