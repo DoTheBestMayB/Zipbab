@@ -3,7 +3,7 @@ package com.bestapp.zipbab.ui.recruitment.viewpager.categoryselect
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bestapp.zipbab.data.repository.CategoryRepository
-import com.bestapp.zipbab.model.toUi
+import com.bestapp.zipbab.model.toCategory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,12 +18,10 @@ class CategorySelectViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CategorySelectUiState())
     val uiState: StateFlow<CategorySelectUiState> = _uiState.asStateFlow()
 
-    private var selectedChips = listOf<String>()
-
     init {
         viewModelScope.launch {
             val categories = categoryRepository.getFoodCategory().food.map {
-                it.toUi()
+                it.toCategory()
             }
 
             _uiState.emit(CategorySelectUiState(categories))
@@ -31,6 +29,12 @@ class CategorySelectViewModel @Inject constructor(
     }
 
     fun onCheckedStateChange(selectedChips: List<String>) {
-        this.selectedChips = selectedChips
+        _uiState.value = _uiState.value.copy(
+            categories = _uiState.value.categories.map {
+                it.copy(
+                    isSelected = it.name in selectedChips
+                )
+            }
+        )
     }
 }

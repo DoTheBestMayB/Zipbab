@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.databinding.FragmentCategorySelectBinding
-import com.bestapp.zipbab.model.FilterUiState
 import com.bestapp.zipbab.ui.recruitment.StepSharedViewModel
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,7 +68,14 @@ class CategorySelectFragment : Fragment() {
         }
     }
 
-    private fun setCategory(categories: List<FilterUiState.FoodUiState>) {
+    private fun setCategory(categories: List<FoodCategory>) {
+        // 이미 생성된 Chip이 입력된 category와 동일한 경우 return
+        // Configuration Change가 발생한 경우에만 Chip의 선택 상태를 복원하기 위한 조건문임
+        if (binding.cg.childCount == categories.size) {
+            return
+        }
+        binding.cg.removeAllViews()
+
         for (category in categories) {
             // layout을 inflate 해서 Chip을 생성한 후 ChipGroup에 추가하면 ChipGroup의 SingleSelection이 각 Chip에 대해 개별적으로 적용됨
             // 참고자료 : https://github.com/material-components/material-components-android/issues/1178
@@ -77,6 +83,7 @@ class CategorySelectFragment : Fragment() {
 //            chip.text = category.name
 
             val chip = Chip(requireContext()).apply {
+                id = View.generateViewId()
                 text = category.name
                 isCheckable = true
                 setTextColor(
@@ -89,7 +96,12 @@ class CategorySelectFragment : Fragment() {
                 setChipBackgroundColorResource(R.color.selector_chip_background_color)
             }
             binding.cg.addView(chip)
+
+            if (category.isSelected) {
+                binding.cg.check(chip.id)
+            }
         }
+        return
     }
 
     override fun onResume() {

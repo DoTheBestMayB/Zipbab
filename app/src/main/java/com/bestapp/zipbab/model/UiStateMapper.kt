@@ -18,6 +18,7 @@ import com.bestapp.zipbab.ui.mettinginfo.MemberInfo
 import com.bestapp.zipbab.ui.profileedit.ProfileEditUiState
 import com.bestapp.zipbab.ui.profilepostimageselect.model.PostGalleryUiState
 import com.bestapp.zipbab.ui.profilepostimageselect.model.SelectedImageUiState
+import com.bestapp.zipbab.ui.recruitment.viewpager.categoryselect.FoodCategory
 import com.bestapp.zipbab.ui.signup.SignUpState
 
 // Data -> UiState
@@ -39,6 +40,11 @@ fun FilterResponse.Cost.toUi() = FilterUiState.CostUiState(
 fun FilterResponse.Food.toUi() = FilterUiState.FoodUiState(
     icon = icon,
     name = name,
+)
+
+fun FilterResponse.Food.toCategory() = FoodCategory(
+    name = name,
+    isSelected = false,
 )
 
 fun MeetingResponse.toUi() = MeetingUiState(
