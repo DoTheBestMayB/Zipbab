@@ -111,7 +111,8 @@ class RecruitmentFragment : Fragment() {
                 binding.btnNext.text = getString(R.string.next)
             }
         }
-        stepAdapter.submitList(state.getStepInfo())
+
+        stepAdapter.submitList(state.steps)
     }
 
     override fun onDestroyView() {

@@ -16,14 +16,24 @@ class RecruitmentViewModel @Inject constructor(
     val uiState: StateFlow<RecruitmentState> = _uiState.asStateFlow()
 
     fun onNext() {
+        val newStep = (_uiState.value.currentStep + 1).coerceAtMost(RecruitmentState.MAX_STEP)
+
         _uiState.value = _uiState.value.copy(
-            currentStep = (_uiState.value.currentStep + 1).coerceAtMost(RecruitmentState.MAX_STEP)
+            currentStep = newStep,
+            steps = _uiState.value.steps.toMutableList().apply {
+                this[newStep] = this[newStep].copy(isProcessed = true)
+            }.toList()
         )
     }
 
     fun onBefore() {
+        val newStep = (_uiState.value.currentStep - 1).coerceAtLeast(RecruitmentState.MIN_STEP)
+
         _uiState.value = _uiState.value.copy(
-            currentStep = (_uiState.value.currentStep - 1).coerceAtLeast(RecruitmentState.MIN_STEP)
+            currentStep = newStep,
+            steps = _uiState.value.steps.toMutableList().apply {
+                this[newStep + 1] = this[newStep + 1].copy(isProcessed = false)
+            }.toList()
         )
     }
 }
