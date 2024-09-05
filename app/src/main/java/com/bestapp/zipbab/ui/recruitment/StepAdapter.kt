@@ -14,9 +14,9 @@ class StepAdapter: ListAdapter<StepInfo, StepAdapter.StepViewHolder>(diff) {
 
         fun bind(item: StepInfo) {
             val colorRes = if (item.isProcessed) {
-                R.color.black
+                R.color.step_selected_color
             } else {
-                R.color.clr_D3D3D3
+                R.color.step_not_selected_color
             }
             binding.v.setBackgroundResource(colorRes)
         }
