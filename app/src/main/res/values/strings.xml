@@ -3,7 +3,7 @@
     <string name="home">홈</string>
     <string name="meetUpMap">지도</string>
     <string name="setting">내 정보</string>
-    <string name="recruit_text">모집 글쓰기</string>
+    <string name="recruit_app_bar">모임 모집</string>
     <string name="title_image">대표 사진</string>
     <string name="first_chip">파스타</string>
     <string name="second_chip">찌개</string>
@@ -198,4 +198,8 @@
     <string name="meeting_end_success">모임이 종료되었습니다.</string>
     <string name="meeting_register_not_logged_in">비회원은 가입할 수 없습니다</string>
     <string name="signup_save_document_fail">회원가입에 성공했으나, 로그인 처리에 실패했습니다. 다시 시도해주세요.</string>
+
+    <string name="before">이전</string>
+    <string name="next">다음</string>
+    <string name="create_meeting">모임 생성하기</string>
 </resources>

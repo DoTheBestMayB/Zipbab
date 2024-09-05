@@ -6,467 +6,77 @@
     android:layout_height="match_parent"
     tools:context=".ui.recruitment.RecruitmentFragment">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
-        style="?attr/actionBarSize"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/abl"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/back_button"
-            android:layout_width="wrap_content"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/mt"
+            style="@style/AppBar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_arrow_back_24" />
+            android:minHeight="?attr/actionBarSize"
+            app:navigationIcon="@drawable/baseline_close_24"
+            app:title="@string/recruit_app_bar"
+            app:titleCentered="true" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/pretendard_bold"
-            android:text="@string/recruit_text"
-            android:textSize="@dimen/header_title_font_size20" />
-    </com.google.android.material.appbar.MaterialToolbar>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView
-        android:id="@+id/scroll_view"
-        android:layout_width="match_parent"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/pager"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/light_gray"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/default_margin24"
+        app:layout_constraintBottom_toTopOf="@id/rv_step"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/abl" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <!--  ItemDecoration을 이용해 양쪽에 8dp를 설정하므로, marginHorizontal을 12dp로 설정함  -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_step"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/default_margin12"
+        android:layout_marginBottom="@dimen/default_margin16"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/btn_next"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:spanCount="6"
+        tools:itemCount="6"
+        tools:listitem="@layout/item_recruit_step" />
 
-            <View
-                android:id="@+id/line"
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-            <TextView
-                android:id="@+id/title_text"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginHorizontal="@dimen/default_margin20"
-                android:layout_marginTop="@dimen/default_margin16"
-                android:fontFamily="@font/pretendard_bold"
-                android:text="@string/title_image"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/line" />
+    <Button
+        android:id="@+id/btn_before"
+        style="@style/SquareButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin20"
+        android:layout_marginBottom="@dimen/default_margin16"
+        android:backgroundTint="@color/clr_EDF1F3"
+        android:text="@string/before"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_next"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent" />
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/title_image"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:layout_marginStart="@dimen/default_margin20"
-                android:layout_marginTop="@dimen/default_margin16"
-                android:scaleType="centerCrop"
-                android:background="@drawable/background_shape"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/title_text" />
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/title_image_select"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:scaleType="centerCrop"
-                android:layout_marginStart="@dimen/default_margin8"
-                android:src="@drawable/sample_profile_image"
-                android:background="@color/clr_8A8A8A"
-                app:layout_constraintBottom_toBottomOf="@id/title_image"
-                app:layout_constraintStart_toEndOf="@id/title_image" />
-
-            <TextView
-                android:id="@+id/name_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_margin20"
-                android:layout_marginTop="@dimen/default_margin16"
-                android:fontFamily="@font/pretendard_bold"
-                android:text="@string/name_text"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/title_image" />
-
-            <EditText
-                android:id="@+id/name_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_margin20"
-                android:layout_marginTop="@dimen/default_margin8"
-                android:layout_marginEnd="@dimen/default_margin20"
-                android:background="@drawable/background_shape"
-                android:fontFamily="@font/pretendard_regular"
-                android:hint="@string/party_name"
-                android:padding="10dp"
-                android:textSize="@dimen/body_content_font_size14"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/name_text"
-                android:inputType="text"
-                android:importantForAutofill="no"/>
-
-            <TextView
-                android:id="@+id/number_check"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_margin20"
-                android:layout_marginTop="@dimen/default_margin16"
-                android:fontFamily="@font/pretendard_bold"
-                android:text="@string/count_people"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/name_edit" />
-
-            <EditText
-                android:id="@+id/number_check_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="@dimen/default_margin8"
-                android:background="@drawable/background_shape"
-                android:fontFamily="@font/pretendard_regular"
-                android:maxLength="1"
-                android:hint="@string/count_9"
-                android:padding="10dp"
-                android:textSize="@dimen/body_content_font_size14"
-                android:imeOptions="actionNext"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/number_check"
-                android:importantForAutofill="no"
-                android:inputType="number"/>
-
-            <TextView
-                android:id="@+id/cost_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_margin20"
-                android:layout_marginTop="@dimen/default_margin16"
-                android:fontFamily="@font/pretendard_bold"
-                android:text="@string/person_cost"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/number_check_edit" />
-
-            <EditText
-                android:id="@+id/cost_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="@dimen/default_margin8"
-                android:background="@drawable/background_shape"
-                android:fontFamily="@font/pretendard_regular"
-                android:hint="@string/cost_ex"
-                android:maxLength="5"
-                android:padding="10dp"
-                android:textSize="@dimen/body_content_font_size14"
-                android:imeOptions="actionDone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cost_text"
-                android:importantForAutofill="no"
-                android:inputType="number"/>
-
-            <TextView
-                android:id="@+id/description_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_margin20"
-                android:layout_marginTop="@dimen/default_margin16"
-                android:fontFamily="@font/pretendard_bold"
-                android:text="@string/detail_answer"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cost_edit" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/description_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                style="@style/Widget.MaterialComponents.TabLayout"
-                android:layout_marginTop="@dimen/default_margin8"
-                android:background="@drawable/background_shape"
-                android:ellipsize="end"
-                android:fontFamily="@font/pretendard_regular"
-                app:counterEnabled="true"
-                app:counterMaxLength="200"
-                android:padding="5dp"
-                android:textSize="@dimen/body_content_font_size14"
-                android:inputType="text"
-                android:importantForAutofill="no"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/description_text">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/text_count"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="3dp"
-                    android:fontFamily="@font/pretendard_regular"
-                    android:imeOptions="actionDone"
-                    android:hint="@string/des_text"
-                    android:maxLength="200"
-                    android:ellipsize="end"
-                    android:textSize="@dimen/body_content_font_size12"
-                    />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:id="@+id/location_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_margin20"
-                android:layout_marginTop="@dimen/default_margin16"
-                android:fontFamily="@font/pretendard_bold"
-                android:text="@string/location_ex"
-                android:textSize="@dimen/body_content_font_size14"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/description_edit" />
-
-            <EditText
-                android:id="@+id/et_location"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_shape"
-                android:layout_marginTop="@dimen/default_margin8"
-                android:fontFamily="@font/pretendard_regular"
-                android:textSize="@dimen/body_content_font_size14"
-                android:padding="10dp"
-                android:hint="@string/location_edittext"
-                android:inputType="text"
-                android:imeOptions="actionDone"
-                android:layout_marginStart="20dp"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintTop_toBottomOf="@id/location_text"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/b_location"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/b_location"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                style="@style/SquareButton"
-                android:text="@string/search_tv"
-                app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintTop_toTopOf="@id/et_location"
-                app:layout_constraintBottom_toBottomOf="@id/et_location"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/et_location"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="20dp"/>
-
-
-            <TextView
-                android:id="@+id/date_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_margin20"
-                android:layout_marginTop="@dimen/default_margin16"
-                android:fontFamily="@font/pretendard_bold"
-                android:text="@string/party_date"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/et_location" />
-
-            <EditText
-                android:id="@+id/date_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="@dimen/default_margin8"
-                android:background="@drawable/background_shape"
-                android:fontFamily="@font/pretendard_regular"
-                android:gravity="center"
-                android:hint="@string/date_ex"
-                android:inputType="date"
-                android:padding="10dp"
-                android:textSize="@dimen/body_content_font_size14"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/date_text"
-                android:importantForAutofill="no"/>
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/calendar_button"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/baseline_edit_calendar_24"
-                app:layout_constraintBottom_toBottomOf="@id/date_edit"
-                app:layout_constraintEnd_toEndOf="@id/date_edit"
-                app:layout_constraintTop_toTopOf="@id/date_edit" />
-
-            <EditText
-                android:id="@+id/time_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/default_margin20"
-                android:layout_marginTop="@dimen/default_margin8"
-                android:background="@drawable/background_shape"
-                android:fontFamily="@font/pretendard_regular"
-                android:padding="10dp"
-                android:hint="@string/time_ex"
-                android:gravity="center"
-                android:inputType="time"
-                android:textSize="@dimen/body_content_font_size14"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/date_edit"
-                android:importantForAutofill="no"/>
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/time_button"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/baseline_more_time_24"
-                app:layout_constraintBottom_toBottomOf="@id/time_edit"
-                app:layout_constraintEnd_toEndOf="@id/time_edit"
-                app:layout_constraintTop_toTopOf="@id/time_edit" />
-
-            <TextView
-                android:id="@+id/food_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_margin20"
-                android:layout_marginTop="@dimen/default_margin16"
-                android:fontFamily="@font/pretendard_bold"
-                android:text="@string/make_food"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/time_edit" />
-
-            <HorizontalScrollView
-                android:id="@+id/horizontal_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/default_margin20"
-                android:layout_marginTop="@dimen/default_margin8"
-                android:scrollbars="none"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/food_type">
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chip_group"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="12dp"
-                    app:chipSpacingHorizontal="4dp"
-                    app:chipSpacingVertical="6dp"
-                    app:selectionRequired="true"
-                    app:singleLine="true"
-                    app:singleSelection="true">
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/first_type"
-                        style="@style/Widget.Chip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/first_chip"
-                        app:chipIconTint="@color/chip_filter" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/second_type"
-                        style="@style/Widget.Chip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/second_chip"
-                        app:chipIconEnabled="true"
-                        app:chipIconTint="@color/chip_filter" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/third_type"
-                        style="@style/Widget.Chip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/third_chip"
-                        app:chipIconEnabled="true"
-                        app:chipIconTint="@color/chip_filter" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/fourth_type"
-                        style="@style/Widget.Chip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/fourth_chip"
-                        app:chipIconEnabled="true"
-                        app:chipIconTint="@color/chip_filter" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/fifth_type"
-                        style="@style/Widget.Chip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/fifth_chip"
-                        app:chipIconEnabled="true"
-                        app:chipIconTint="@color/chip_filter" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/sixth_type"
-                        style="@style/Widget.Chip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/sixth_chip"
-                        app:chipIconEnabled="true"
-                        app:chipIconTint="@color/chip_filter" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/seventh_type"
-                        style="@style/Widget.Chip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/seventh_chip"
-                        app:chipIconEnabled="true"
-                        app:chipIconTint="@color/chip_filter" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/eighth_type"
-                        style="@style/Widget.Chip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/eighth_chip"
-                        app:chipIconEnabled="true"
-                        app:chipIconTint="@color/chip_filter" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/nineth_type"
-                        style="@style/Widget.Chip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/nineth_chip"
-                        app:chipIconEnabled="true"
-                        app:chipIconTint="@color/chip_filter" />
-
-                </com.google.android.material.chip.ChipGroup>
-            </HorizontalScrollView>
-
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/complete_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/default_margin20"
-                android:layout_marginTop="@dimen/default_margin16"
-                android:layout_marginBottom="@dimen/default_margin8"
-                style="@style/SquareButton"
-                android:fontFamily="@font/pretendard_regular"
-                android:text="@string/complete_text"
-                android:clickable="false"
-                android:enabled="false"
-                android:textColor="@color/white"
-                android:textSize="@dimen/header_title_font_size20"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/horizontal_view" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+    <Button
+        android:id="@+id/btn_next"
+        style="@style/SquareButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/default_margin20"
+        android:layout_marginBottom="@dimen/default_margin16"
+        android:text="@string/next"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toEndOf="@id/btn_before" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
