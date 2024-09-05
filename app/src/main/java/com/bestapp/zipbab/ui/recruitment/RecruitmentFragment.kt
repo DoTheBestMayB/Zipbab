@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.databinding.FragmentRecruitmentBinding
 import com.bestapp.zipbab.ui.recruitment.viewpager.categoryselect.CategorySelectFragment
+import com.bestapp.zipbab.ui.recruitment.viewpager.detailinfo.DetailInfoFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -101,7 +102,10 @@ class RecruitmentFragment : Fragment() {
                         // step에 따라 다음 버튼의 활성화 여부를 변경
                         when (state.lastModifiedStep) {
                             CategorySelectFragment.STEP -> {
-                                binding.btnNext.isEnabled = state.selectedCategories.isNotEmpty()
+                                binding.btnNext.isEnabled = state.isCategorySelectValid()
+                            }
+                            DetailInfoFragment.STEP -> {
+                                binding.btnNext.isEnabled = state.isDetailInfoInputValid()
                             }
                         }
                     }

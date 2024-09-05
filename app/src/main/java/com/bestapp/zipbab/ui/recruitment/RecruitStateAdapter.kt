@@ -2,7 +2,7 @@ package com.bestapp.zipbab.ui.recruitment
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.bestapp.zipbab.ui.recruitment.viewpager.DetailInfoFragment
+import com.bestapp.zipbab.ui.recruitment.viewpager.detailinfo.DetailInfoFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.JoinConditionFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.LocationAndDateFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.MeetupProfilePictureSelectFragment

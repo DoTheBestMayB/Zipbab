@@ -20,4 +20,32 @@ class StepSharedViewModel : ViewModel() {
         )
     }
 
+    fun updateName(name: String, step: Int) {
+        _stepState.value = _stepState.value.copy(
+            lastModifiedStep = step,
+            meetingName = name,
+        )
+    }
+
+    fun updateParticipantCount(count: Int, step: Int) {
+        _stepState.value = _stepState.value.copy(
+            lastModifiedStep = step,
+            participantCount = count,
+        )
+    }
+
+    fun updateCost(cost: Int, step: Int) {
+        _stepState.value = _stepState.value.copy(
+            lastModifiedStep = step,
+            cost = cost,
+        )
+    }
+
+    fun updateDescription(description: String, step: Int) {
+        _stepState.value = _stepState.value.copy(
+            lastModifiedStep = step,
+            description = description,
+        )
+    }
+
 }

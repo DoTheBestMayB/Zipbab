@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="max_recruit_participant_count_length">2</integer>
+    <integer name="max_recruit_description_length">500</integer>
+    <integer name="max_recruit_max_length">20</integer>
+    <integer name="min_participant_count">2</integer>
+    <integer name="max_participant_count">99</integer>
+    <integer name="min_recruit_cost">0</integer>
+    <integer name="max_recruit_cost">10000000</integer>
+</resources>
