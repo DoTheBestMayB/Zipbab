@@ -213,4 +213,10 @@
     <string name="location_and_date_header">모임 장소와 날짜를 설정해주세요</string>
     <string name="location_header">장소</string>
     <string name="recruit_location_hint">도로명 주소 검색</string>
+    <string name="date_header">날짜</string>
+    <string name="recruit_date_hint">날짜 선택하기</string>
+    <string name="time_header">시간</string>
+    <string name="recruit_time_hint">시간 선택하기</string>
+    <string name="recruit_date_picker_title">모임 날짜 선택하기</string>
+    <string name="recruit_time_picker_title">모임 시간 선택하기</string>
 </resources>

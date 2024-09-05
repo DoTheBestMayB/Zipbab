@@ -9,6 +9,9 @@ package com.bestapp.zipbab.ui.recruitment
  * @property description 설명
  * @property address 장소
  * @property zipCode 우편번호
+ * @property date 밀리세컨드로 표시한 모임 날짜
+ * @property hour 모임 시
+ * @property minute 모임 분
  */
 data class StepState(
     val lastModifiedStep: Int = 0,
@@ -19,6 +22,9 @@ data class StepState(
     val description: String = "",
     val address: String = "",
     val zipCode: String = "",
+    val date: Long = 0L,
+    val hour: Int = -1,
+    val minute: Int = -1,
 ) {
 
     fun isCategorySelectValid(): Boolean = selectedCategories.isNotEmpty()
@@ -26,5 +32,5 @@ data class StepState(
     fun isDetailInfoInputValid(): Boolean =
         meetingName.isNotBlank() && participantCount != -1 && cost != -1
 
-    fun isLocationAndDateValid(): Boolean = address.isNotBlank() && zipCode.isNotBlank()
+    fun isLocationAndDateValid(): Boolean = address.isNotBlank() && zipCode.isNotBlank() && date != 0L && hour != -1 && minute != -1
 }

@@ -69,8 +69,21 @@ class StepSharedViewModel : ViewModel() {
     }
 
     fun updateStep(step: Int) {
-        _stepState.value = stepState.value.copy(
+        _stepState.value = _stepState.value.copy(
             lastModifiedStep = step,
+        )
+    }
+
+    fun updateDate(date: Long) {
+        _stepState.value = _stepState.value.copy(
+            date = date,
+        )
+    }
+
+    fun updateTime(hour: Int, minute: Int) {
+        _stepState.value = _stepState.value.copy(
+            hour = hour,
+            minute = minute,
         )
     }
 
