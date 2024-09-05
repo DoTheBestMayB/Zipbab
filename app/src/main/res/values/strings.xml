@@ -202,4 +202,5 @@
     <string name="before">이전</string>
     <string name="next">다음</string>
     <string name="create_meeting">모임 생성하기</string>
+    <string name="category_select_header">어떤 음식을 만들까요?</string>
 </resources>

@@ -27,4 +27,8 @@ class JoinConditionFragment : Fragment() {
 
         super.onDestroyView()
     }
+
+    companion object {
+        const val STEP = 3
+    }
 }

@@ -13,9 +13,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import androidx.viewpager2.widget.ViewPager2
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.databinding.FragmentRecruitmentBinding
+import com.bestapp.zipbab.ui.recruitment.viewpager.categoryselect.CategorySelectFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -26,13 +26,15 @@ class RecruitmentFragment : Fragment() {
         get() = _binding!!
 
     private val recruitmentViewModel: RecruitmentViewModel by viewModels()
+    private val stepSharedViewModel: StepSharedViewModel by viewModels()
 
     private val stepAdapter = StepAdapter()
 
     private val stepItemDecoration: ItemDecoration by lazy {
-        object: ItemDecoration() {
+        object : ItemDecoration() {
 
-            private val marginSize = binding.root.context.resources.getDimension(R.dimen.default_margin8).toInt()
+            private val marginSize =
+                binding.root.context.resources.getDimension(R.dimen.default_margin8).toInt()
 
             override fun getItemOffsets(
                 outRect: Rect,
@@ -90,29 +92,42 @@ class RecruitmentFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     recruitmentViewModel.uiState.collect { state ->
-                        handleCurrentStep(state)
+                        setVisibilityByStep(state.currentStep, state.steps)
+                    }
+                }
+
+                launch {
+                    stepSharedViewModel.stepState.collect { state ->
+                        // step에 따라 다음 버튼의 활성화 여부를 변경
+                        when (state.lastModifiedStep) {
+                            CategorySelectFragment.STEP -> {
+                                binding.btnNext.isEnabled = state.selectedCategories.isNotEmpty()
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun handleCurrentStep(state: RecruitmentState) {
-        binding.pager.setCurrentItem(state.currentStep, false)
+    private fun setVisibilityByStep(currentStep: Int, steps: List<RecruitViewPagerStep>) {
+        binding.pager.setCurrentItem(currentStep, false)
 
-        when (state.currentStep) {
+        when (currentStep) {
             RecruitmentState.MIN_STEP -> binding.btnBefore.isVisible = false
             RecruitmentState.MAX_STEP -> {
-                binding.btnBefore.isVisible = true // MIN_STEP에서 MAX_STEP으로 바로 이동하도록 STEP 갯수가 바뀌는 경우를 위한 코드
+                // MIN_STEP에서 MAX_STEP으로 바로 이동하도록 STEP 갯수가 바뀌는 경우를 위한 코드
+                binding.btnBefore.isVisible = true
                 binding.btnNext.text = getString(R.string.create_meeting)
             }
+
             else -> {
                 binding.btnBefore.isVisible = true
                 binding.btnNext.text = getString(R.string.next)
             }
         }
 
-        stepAdapter.submitList(state.steps)
+        stepAdapter.submitList(steps)
     }
 
     override fun onDestroyView() {

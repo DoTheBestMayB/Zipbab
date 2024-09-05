@@ -29,4 +29,8 @@ class LocationAndDateFragment : Fragment() {
 
         super.onDestroyView()
     }
+
+    companion object {
+        const val STEP = 2
+    }
 }

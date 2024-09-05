@@ -29,4 +29,7 @@ class DetailInfoFragment : Fragment() {
         super.onDestroyView()
     }
 
+    companion object {
+        const val STEP = 1
+    }
 }

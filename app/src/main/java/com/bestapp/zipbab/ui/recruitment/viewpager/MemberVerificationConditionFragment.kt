@@ -28,4 +28,8 @@ class MemberVerificationConditionFragment : Fragment() {
 
         super.onDestroyView()
     }
+
+    companion object {
+        const val STEP = 4
+    }
 }

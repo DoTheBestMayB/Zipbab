@@ -41,4 +41,5 @@
 
     <color name="step_selected_color">#FFFFFFFF</color>
     <color name="step_not_selected_color">#6D6D6D</color>
+    <color name="category_select_color">#D3D3D3</color>
 </resources>
