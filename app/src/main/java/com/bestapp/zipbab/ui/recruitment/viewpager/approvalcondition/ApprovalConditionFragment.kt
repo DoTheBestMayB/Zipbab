@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.databinding.FragmentApprovalConditionBinding
+import com.bestapp.zipbab.databinding.SquareContentViewBinding
 import com.bestapp.zipbab.ui.recruitment.StepSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -62,24 +63,26 @@ class ApprovalConditionFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 sharedViewModel.stepState.collect { state ->
-                    val (checked, unchecked) = if (state.isApprovalRequired == null) {
-                        binding.joinAfterApproval.rb.isChecked = false
-                        binding.joinAfterApproval.root.setBackgroundResource(R.drawable.background_squre_content_view)
-
-                        binding.joinImmediate.rb.isChecked = false
-                        binding.joinImmediate.root.setBackgroundResource(R.drawable.background_squre_content_view)
-                        return@collect
+                    val (checkVerifications, uncheckedVerifications) = if (state.isApprovalRequired == null) {
+                        listOf<SquareContentViewBinding>() to listOf(
+                            binding.joinAfterApproval,
+                            binding.joinImmediate
+                        )
                     } else if (state.isApprovalRequired) {
-                        binding.joinAfterApproval to binding.joinImmediate
+                        listOf(binding.joinAfterApproval) to listOf(binding.joinImmediate)
                     } else {
-                        binding.joinImmediate to binding.joinAfterApproval
+                        listOf(binding.joinImmediate) to listOf(binding.joinAfterApproval)
                     }
 
-                    checked.rb.isChecked = true
-                    checked.root.setBackgroundResource(R.drawable.background_squre_content_view_selected)
+                    for (checkVerification in checkVerifications) {
+                        checkVerification.rb.isChecked = true
+                        checkVerification.root.setBackgroundResource(R.drawable.background_squre_content_view_selected)
+                    }
 
-                    unchecked.rb.isChecked = false
-                    unchecked.root.setBackgroundResource(R.drawable.background_squre_content_view)
+                    for (uncheckedVerification in uncheckedVerifications) {
+                        uncheckedVerification.rb.isChecked = false
+                        uncheckedVerification.root.setBackgroundResource(R.drawable.background_squre_content_view)
+                    }
                 }
             }
         }
