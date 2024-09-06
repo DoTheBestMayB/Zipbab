@@ -87,4 +87,10 @@ class StepSharedViewModel : ViewModel() {
         )
     }
 
+    fun updateApprovalCondition(isApprovalRequired: Boolean) {
+        _stepState.value = _stepState.value.copy(
+            isApprovalRequired = isApprovalRequired,
+        )
+    }
+
 }

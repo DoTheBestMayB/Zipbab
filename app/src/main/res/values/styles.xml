@@ -71,6 +71,13 @@
         <item name="android:textColor">@color/drawable_default_color</item>
     </style>
 
+    <style name="OutlineTransparentSquareButton">
+        <item name="android:textAppearance">@style/header_title20</item>
+        <item name="backgroundTint">@null</item>
+        <item name="android:background">@drawable/background_outline_transparent_square</item>
+        <item name="android:textColor">@color/drawable_default_color</item>
+    </style>
+
     <style name="ReportButton">
         <item name="android:textColor">@color/white</item>
         <item name="backgroundTint">@color/gray</item>

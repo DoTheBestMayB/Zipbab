@@ -219,4 +219,9 @@
     <string name="recruit_time_hint">시간 선택하기</string>
     <string name="recruit_date_picker_title">모임 날짜 선택하기</string>
     <string name="recruit_time_picker_title">모임 시간 선택하기</string>
+    <string name="join_condition_header">가입은 어떻게 받을까요?</string>
+    <string name="recruit_condition_immediate_header">바로 가입</string>
+    <string name="recruit_condition_immediate_body">누구나 가입할 수 있어요.</string>
+    <string name="recruit_condition_approval_header">승인 후 가입</string>
+    <string name="recruit_condition_approval_body">모임장이 승인해야 가입할 수 있어요.</string>
 </resources>

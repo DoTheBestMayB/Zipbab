@@ -12,6 +12,7 @@ package com.bestapp.zipbab.ui.recruitment
  * @property date 밀리세컨드로 표시한 모임 날짜
  * @property hour 모임 시
  * @property minute 모임 분
+ * @property isApprovalRequired 가입 승인 필요 여부
  */
 data class StepState(
     val lastModifiedStep: Int = 0,
@@ -25,6 +26,7 @@ data class StepState(
     val date: Long = 0L,
     val hour: Int = -1,
     val minute: Int = -1,
+    val isApprovalRequired: Boolean? = null,
 ) {
 
     fun isCategorySelectValid(): Boolean = selectedCategories.isNotEmpty()
@@ -33,4 +35,6 @@ data class StepState(
         meetingName.isNotBlank() && participantCount != -1 && cost != -1
 
     fun isLocationAndDateValid(): Boolean = address.isNotBlank() && zipCode.isNotBlank() && date != 0L && hour != -1 && minute != -1
+
+    fun isApprovalConditionValid(): Boolean = isApprovalRequired != null
 }

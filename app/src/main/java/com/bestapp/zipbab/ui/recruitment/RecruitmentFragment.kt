@@ -18,6 +18,7 @@ import com.bestapp.zipbab.R
 import com.bestapp.zipbab.databinding.FragmentRecruitmentBinding
 import com.bestapp.zipbab.ui.addressfinder.AddressFinderFragment
 import com.bestapp.zipbab.ui.addressfinder.AddressInfo
+import com.bestapp.zipbab.ui.recruitment.viewpager.approvalcondition.ApprovalConditionFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.categoryselect.CategorySelectFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.detailinfo.DetailInfoFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.locationanddate.LocationAndDateFragment
@@ -116,6 +117,10 @@ class RecruitmentFragment : Fragment() {
 
                             LocationAndDateFragment.STEP -> {
                                 binding.btnNext.isEnabled = state.isLocationAndDateValid()
+                            }
+
+                            ApprovalConditionFragment.STEP -> {
+                                binding.btnNext.isEnabled = state.isApprovalConditionValid()
                             }
                         }
                     }
