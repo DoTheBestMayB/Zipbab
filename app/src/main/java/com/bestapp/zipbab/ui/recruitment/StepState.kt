@@ -1,5 +1,7 @@
 package com.bestapp.zipbab.ui.recruitment
 
+import com.bestapp.zipbab.ui.recruitment.viewpager.memberverificationcondition.Verification
+
 /**
  * @property lastModifiedStep State를 변경한 Step
  * @property selectedCategories 모임에서 만들 음식 카테고리
@@ -13,6 +15,8 @@ package com.bestapp.zipbab.ui.recruitment
  * @property hour 모임 시
  * @property minute 모임 분
  * @property isApprovalRequired 가입 승인 필요 여부
+ * @property verification 가입 요청 회원의 인증 상태 조건
+ * @property isLeaderVerificationCompleted 모임장이 필요한 인증을 완료 했는지 여부
  */
 data class StepState(
     val lastModifiedStep: Int = 0,
@@ -27,6 +31,8 @@ data class StepState(
     val hour: Int = -1,
     val minute: Int = -1,
     val isApprovalRequired: Boolean? = null,
+    val verification: Verification? = null,
+    val isLeaderVerificationCompleted: Boolean = false,
 ) {
 
     fun isCategorySelectValid(): Boolean = selectedCategories.isNotEmpty()
@@ -37,4 +43,6 @@ data class StepState(
     fun isLocationAndDateValid(): Boolean = address.isNotBlank() && zipCode.isNotBlank() && date != 0L && hour != -1 && minute != -1
 
     fun isApprovalConditionValid(): Boolean = isApprovalRequired != null
+
+    fun isMemberVerificationConditionValid(): Boolean = verification != null && isLeaderVerificationCompleted
 }

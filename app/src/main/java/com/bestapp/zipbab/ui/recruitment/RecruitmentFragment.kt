@@ -22,6 +22,7 @@ import com.bestapp.zipbab.ui.recruitment.viewpager.approvalcondition.ApprovalCon
 import com.bestapp.zipbab.ui.recruitment.viewpager.categoryselect.CategorySelectFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.detailinfo.DetailInfoFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.locationanddate.LocationAndDateFragment
+import com.bestapp.zipbab.ui.recruitment.viewpager.memberverificationcondition.MemberVerificationConditionFragment
 import com.bestapp.zipbab.util.safeNavigate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -121,6 +122,10 @@ class RecruitmentFragment : Fragment() {
 
                             ApprovalConditionFragment.STEP -> {
                                 binding.btnNext.isEnabled = state.isApprovalConditionValid()
+                            }
+
+                            MemberVerificationConditionFragment.STEP -> {
+                                binding.btnNext.isEnabled = state.isMemberVerificationConditionValid()
                             }
                         }
                     }

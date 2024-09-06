@@ -1,9 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.recruitment.viewpager.MemberVerificationConditionFragment">
+    tools:context=".ui.recruitment.viewpager.memberverificationcondition.MemberVerificationConditionFragment">
 
+    <TextView
+        android:id="@+id/tv_header"
+        style="@style/header_title20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin20"
+        android:layout_marginTop="@dimen/default_margin16"
+        android:text="@string/member_verification_condition_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/layout_verification_not_required"
+        layout="@layout/square_content_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/default_margin20"
+        android:layout_marginTop="@dimen/default_margin36"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_header" />
+
+    <include
+        android:id="@+id/layout_email_verification_required"
+        layout="@layout/square_content_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/default_margin20"
+        android:layout_marginTop="@dimen/default_margin16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_verification_not_required" />
+
+    <include
+        android:id="@+id/layout_phone_verification_required"
+        layout="@layout/square_content_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/default_margin20"
+        android:layout_marginTop="@dimen/default_margin16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_email_verification_required" />
+
+    <TextView
+        android:id="@+id/tv_leader_verification_header"
+        style="@style/header_title18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin20"
+        android:layout_marginTop="@dimen/default_margin36"
+        android:text="@string/recruit_leader_verification_required"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_phone_verification_required"
+        tools:visibility="visible" />
+
+    <include
+        android:id="@+id/layout_leader_email_verification_required"
+        layout="@layout/square_content_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/default_margin20"
+        android:layout_marginTop="@dimen/default_margin16"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_leader_verification_header"
+        tools:visibility="visible" />
+
+    <include
+        android:id="@+id/layout_leader_phone_verification_required"
+        layout="@layout/square_content_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/default_margin20"
+        android:layout_marginTop="@dimen/default_margin16"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_leader_email_verification_required"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

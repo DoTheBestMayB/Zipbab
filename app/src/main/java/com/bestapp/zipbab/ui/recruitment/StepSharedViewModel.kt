@@ -2,6 +2,7 @@ package com.bestapp.zipbab.ui.recruitment
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bestapp.zipbab.ui.recruitment.viewpager.memberverificationcondition.Verification
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -90,6 +91,18 @@ class StepSharedViewModel : ViewModel() {
     fun updateApprovalCondition(isApprovalRequired: Boolean) {
         _stepState.value = _stepState.value.copy(
             isApprovalRequired = isApprovalRequired,
+        )
+    }
+
+    fun updateVerification(verification: Verification) {
+        _stepState.value = _stepState.value.copy(
+            verification = verification,
+        )
+    }
+
+    fun updateLeaderVerification(isVerificationCompleted: Boolean) {
+        _stepState.value = _stepState.value.copy(
+            isLeaderVerificationCompleted = isVerificationCompleted
         )
     }
 

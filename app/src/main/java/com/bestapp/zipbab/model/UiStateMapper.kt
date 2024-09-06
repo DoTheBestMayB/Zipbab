@@ -102,6 +102,8 @@ fun UserResponse.toUi() = UserUiState(
     meetingReviews = meetingReviews,
     postDocumentIds = posts,
     placeLocationUiState = placeLocation.toUi(),
+    verifiedEmail = verifiedEmail,
+    verifiedPhone = verifiedPhone,
 )
 
 fun UploadStateEntity.toArgs(): UploadState {

@@ -10,6 +10,8 @@ package com.bestapp.zipbab.data.model.remote
  * @property meetingCount 모임 횟수
  * @property posts 게시물에 포함된 사진 주소들
  * @property placeLocation 유저 위치(주소, 위도, 경도)
+ * @property verifiedEmail 인증된 이메일
+ * @property verifiedPhone 인증된 전화번호
  */
 data class UserResponse(
     val userDocumentID: String = "",
@@ -22,5 +24,7 @@ data class UserResponse(
     val notifications: List<NotificationTypeResponse> = emptyList(),
     val meetingReviews: List<String> = emptyList(),
     val posts: List<String> = emptyList(),
-    val placeLocation: PlaceLocation = PlaceLocation()
+    val placeLocation: PlaceLocation = PlaceLocation(),
+    val verifiedEmail: String = "",
+    val verifiedPhone: String = "",
 )
