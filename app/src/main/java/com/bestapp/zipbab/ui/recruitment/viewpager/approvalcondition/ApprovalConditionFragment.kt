@@ -12,8 +12,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.databinding.FragmentApprovalConditionBinding
 import com.bestapp.zipbab.ui.recruitment.StepSharedViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class ApprovalConditionFragment : Fragment() {
 
     private var _binding: FragmentApprovalConditionBinding? = null
