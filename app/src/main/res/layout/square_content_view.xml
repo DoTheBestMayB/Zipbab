@@ -3,17 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/background_squre_content_view"
     android:layout_height="wrap_content">
-
-    <View
-        android:id="@+id/v_outline_box"
-        style="@style/OutlineTransparentSquareButton"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/tv_body"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_header"
@@ -22,9 +13,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_margin12"
         android:layout_marginTop="@dimen/default_margin12"
-        app:layout_constraintEnd_toEndOf="@id/v_outline_box"
-        app:layout_constraintStart_toStartOf="@id/v_outline_box"
-        app:layout_constraintTop_toTopOf="@id/v_outline_box"
+        app:layout_constraintEnd_toStartOf="@id/rb"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/recruit_condition_immediate_header" />
 
     <TextView
@@ -32,9 +23,9 @@
         style="@style/body_content16"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/default_margin12"
+        android:layout_marginBottom="@dimen/default_margin12"
         android:textColor="@color/gray"
-        app:layout_constraintBottom_toBottomOf="@id/v_outline_box"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/tv_header"
         app:layout_constraintStart_toStartOf="@id/tv_header"
         app:layout_constraintTop_toBottomOf="@id/tv_header"

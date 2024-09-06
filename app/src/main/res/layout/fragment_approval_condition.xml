@@ -19,7 +19,7 @@
 
     <include
         android:id="@+id/join_immediate"
-        layout="@layout/square_header_content_view"
+        layout="@layout/square_content_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/default_margin20"
@@ -30,7 +30,7 @@
 
     <include
         android:id="@+id/join_after_approval"
-        layout="@layout/square_header_content_view"
+        layout="@layout/square_content_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/default_margin20"

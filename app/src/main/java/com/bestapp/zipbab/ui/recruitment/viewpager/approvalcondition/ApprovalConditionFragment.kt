@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -63,10 +62,10 @@ class ApprovalConditionFragment : Fragment() {
                 sharedViewModel.stepState.collect { state ->
                     val (checked, unchecked) = if (state.isApprovalRequired == null) {
                         binding.joinAfterApproval.rb.isChecked = false
-                        binding.joinAfterApproval.vOutlineBox.setBackgroundResource(R.drawable.background_outline_transparent_square)
+                        binding.joinAfterApproval.root.setBackgroundResource(R.drawable.background_squre_content_view)
 
                         binding.joinImmediate.rb.isChecked = false
-                        binding.joinImmediate.vOutlineBox.setBackgroundResource(R.drawable.background_outline_transparent_square)
+                        binding.joinImmediate.root.setBackgroundResource(R.drawable.background_squre_content_view)
                         return@collect
                     } else if (state.isApprovalRequired) {
                         binding.joinAfterApproval to binding.joinImmediate
@@ -75,15 +74,10 @@ class ApprovalConditionFragment : Fragment() {
                     }
 
                     checked.rb.isChecked = true
-                    checked.vOutlineBox.setBackgroundColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.main_color_transparent_20
-                        )
-                    )
+                    checked.root.setBackgroundResource(R.drawable.background_squre_content_view_selected)
 
                     unchecked.rb.isChecked = false
-                    unchecked.vOutlineBox.setBackgroundResource(R.drawable.background_outline_transparent_square)
+                    unchecked.root.setBackgroundResource(R.drawable.background_squre_content_view)
                 }
             }
         }
