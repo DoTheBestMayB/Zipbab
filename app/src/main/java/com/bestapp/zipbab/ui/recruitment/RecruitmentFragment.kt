@@ -132,10 +132,17 @@ class RecruitmentFragment : Fragment() {
                 }
 
                 launch {
-                    stepSharedViewModel.requestAddressState.collect {
-                        val action =
-                            RecruitmentFragmentDirections.actionRecruitmentFragmentToAddressFinderFragment()
-                        action.safeNavigate(this@RecruitmentFragment)
+                    stepSharedViewModel.requestAction.collect { actionType ->
+                        when(actionType) {
+                            ActionType.ADDRESS -> {
+                                val action = RecruitmentFragmentDirections.actionRecruitmentFragmentToAddressFinderFragment()
+                                action.safeNavigate(this@RecruitmentFragment)
+                            }
+                            ActionType.VERIFICATION -> {
+                                val action = RecruitmentFragmentDirections.actionRecruitmentFragmentToVerificationFragment()
+                                action.safeNavigate(this@RecruitmentFragment)
+                            }
+                        }
                     }
                 }
 

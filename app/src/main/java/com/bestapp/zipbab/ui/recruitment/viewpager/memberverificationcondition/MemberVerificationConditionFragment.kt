@@ -48,19 +48,11 @@ class MemberVerificationConditionFragment : Fragment() {
     }
 
     private fun setView() = with(binding) {
-        layoutLeaderEmailVerificationRequired.tvBody.isVisible = false
-        layoutLeaderEmailVerificationRequired.rb.isVisible = false
-        layoutLeaderEmailVerificationRequired.tvHeader.text =
-            getString(R.string.recruit_leader_email_verification)
-        layoutLeaderEmailVerificationRequired.tvHeader.updateLayoutParams<ConstraintLayout.LayoutParams> {
-            bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
-        }
-
-        layoutLeaderPhoneVerificationRequired.tvBody.isVisible = false
-        layoutLeaderPhoneVerificationRequired.rb.isVisible = false
-        layoutLeaderPhoneVerificationRequired.tvHeader.text =
-            getString(R.string.recruit_leader_phone_verification)
-        layoutLeaderPhoneVerificationRequired.tvHeader.updateLayoutParams<ConstraintLayout.LayoutParams> {
+        layoutLeaderVerificationRequired.tvBody.isVisible = false
+        layoutLeaderVerificationRequired.rb.isVisible = false
+        layoutLeaderVerificationRequired.tvHeader.text =
+            getString(R.string.recruit_leader_verification)
+        layoutLeaderVerificationRequired.tvHeader.updateLayoutParams<ConstraintLayout.LayoutParams> {
             bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
         }
 
@@ -89,6 +81,9 @@ class MemberVerificationConditionFragment : Fragment() {
         }
         binding.layoutPhoneVerificationRequired.root.setOnClickListener {
             sharedViewModel.updateVerification(Verification.PHONE)
+        }
+        binding.layoutLeaderVerificationRequired.root.setOnClickListener {
+            sharedViewModel.requestVerification()
         }
     }
 
@@ -138,22 +133,13 @@ class MemberVerificationConditionFragment : Fragment() {
                     viewModel.verificationRequireState.collect { state ->
                         when (state.requiredVerification) {
                             Verification.NONE -> {
-                                layoutLeaderEmailVerificationRequired.root.isVisible = false
-                                layoutLeaderPhoneVerificationRequired.root.isVisible = false
+                                layoutLeaderVerificationRequired.root.isVisible = false
                                 tvLeaderVerificationHeader.isVisible = false
                                 sharedViewModel.updateLeaderVerification(true)
                             }
 
-                            Verification.EMAIL -> {
-                                layoutLeaderEmailVerificationRequired.root.isVisible = true
-                                layoutLeaderPhoneVerificationRequired.root.isVisible = false
-                                tvLeaderVerificationHeader.isVisible = true
-                                sharedViewModel.updateLeaderVerification(false)
-                            }
-
-                            Verification.PHONE -> {
-                                layoutLeaderEmailVerificationRequired.root.isVisible = false
-                                layoutLeaderPhoneVerificationRequired.root.isVisible = true
+                            Verification.EMAIL, Verification.PHONE -> {
+                                layoutLeaderVerificationRequired.root.isVisible = true
                                 tvLeaderVerificationHeader.isVisible = true
                                 sharedViewModel.updateLeaderVerification(false)
                             }

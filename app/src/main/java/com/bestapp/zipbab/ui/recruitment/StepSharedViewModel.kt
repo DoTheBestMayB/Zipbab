@@ -19,8 +19,8 @@ class StepSharedViewModel : ViewModel() {
     private val _stepState = MutableStateFlow(StepState())
     val stepState: StateFlow<StepState> = _stepState.asStateFlow()
 
-    private val _requestAddressState = MutableSharedFlow<Boolean>()
-    val requestAddressState: SharedFlow<Boolean> = _requestAddressState.asSharedFlow()
+    private val _requestAction = MutableSharedFlow<ActionType>()
+    val requestAction: SharedFlow<ActionType> = _requestAction.asSharedFlow()
 
     fun updateCategory(selectedCategory: List<String>) {
         _stepState.value = _stepState.value.copy(
@@ -65,7 +65,7 @@ class StepSharedViewModel : ViewModel() {
 //        _requestAddressState.tryEmit(true)
 
         viewModelScope.launch {
-            _requestAddressState.emit(true)
+            _requestAction.emit(ActionType.ADDRESS)
         }
     }
 
@@ -104,6 +104,12 @@ class StepSharedViewModel : ViewModel() {
         _stepState.value = _stepState.value.copy(
             isLeaderVerificationCompleted = isVerificationCompleted
         )
+    }
+
+    fun requestVerification() {
+        viewModelScope.launch {
+            _requestAction.emit(ActionType.VERIFICATION)
+        }
     }
 
 }

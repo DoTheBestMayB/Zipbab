@@ -64,7 +64,7 @@
         tools:visibility="visible" />
 
     <include
-        android:id="@+id/layout_leader_email_verification_required"
+        android:id="@+id/layout_leader_verification_required"
         layout="@layout/square_content_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -74,19 +74,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_leader_verification_header"
-        tools:visibility="visible" />
-
-    <include
-        android:id="@+id/layout_leader_phone_verification_required"
-        layout="@layout/square_content_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/default_margin20"
-        android:layout_marginTop="@dimen/default_margin16"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_leader_email_verification_required"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -66,6 +66,8 @@
     <string name="version_format">Version %1$s</string>
     <string name="setting_profile_row_title">프로필 수정</string>
     <string name="setting_profile_row_description">프로필을 수정합니다.</string>
+    <string name="setting_verification_row_title">본인 인증</string>
+    <string name="setting_verification_row_description">이메일, 휴대폰 본인 인증을 합니다.</string>
     <string name="setting_meeting_row_title">모임</string>
     <string name="setting_meeting_row_description">참가중인 모임과 참여했던 모임을 확인합니다.</string>
     <string name="setting_alert_row_title">알림 설정</string>
@@ -232,6 +234,5 @@
     <string name="recruit_email_verification_required_body">이메일 인증한 회원만 가입할 수 있어요.</string>
     <string name="recruit_phone_verification_required_header">휴대폰 인증</string>
     <string name="recruit_phone_verification_required_body">휴대폰 인증한 회원만 가입할 수 있어요.</string>
-    <string name="recruit_leader_email_verification">이메일 인증하러 가기</string>
-    <string name="recruit_leader_phone_verification">휴대폰 인증하러 가기</string>
+    <string name="recruit_leader_verification">본인 인증 하러 가기</string>
 </resources>

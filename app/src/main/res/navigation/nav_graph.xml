@@ -55,6 +55,9 @@
         <action
             android:id="@+id/action_settingFragment_to_alertSettingFragment"
             app:destination="@id/alertSettingFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_verificationFragment"
+            app:destination="@id/verificationFragment" />
     </fragment>
     <fragment
         android:id="@+id/foodCategoryFragment"
@@ -126,6 +129,9 @@
         <action
             android:id="@+id/action_recruitmentFragment_to_addressFinderFragment"
             app:destination="@id/addressFinderFragment" />
+        <action
+            android:id="@+id/action_recruitmentFragment_to_verificationFragment"
+            app:destination="@id/verificationFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -238,4 +244,9 @@
         android:name="com.bestapp.zipbab.ui.addressfinder.AddressFinderFragment"
         android:label="fragment_address_finder"
         tools:layout="@layout/fragment_address_finder" />
+    <fragment
+        android:id="@+id/verificationFragment"
+        android:name="com.bestapp.zipbab.ui.verification.VerificationFragment"
+        android:label="fragment_verification"
+        tools:layout="@layout/fragment_verification" />
 </navigation>
