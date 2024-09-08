@@ -235,4 +235,21 @@
     <string name="recruit_phone_verification_required_header">휴대폰 인증</string>
     <string name="recruit_phone_verification_required_body">휴대폰 인증한 회원만 가입할 수 있어요.</string>
     <string name="recruit_leader_verification">본인 인증 하러 가기</string>
+
+    <string name="verification_app_bar">본인 인증</string>
+    <string name="verification_email_header">이메일 인증</string>
+    <string name="hint_for_email_address">이메일 주소</string>
+    <string name="get_verification_code">인증 번호 받기</string>
+    <string name="hint_for_verification_code">인증 번호</string>
+    <string name="verification_confirm">등록하기</string>
+    <string name="verify_mail_app_bar">이메일 인증</string>
+    <string name="verify_email_header">이메일을 입력해주세요</string>
+    <string name="verification_email">이메일</string>
+    <string name="verification_change">변경</string>
+    <string name="verification_phone">휴대폰 번호</string>
+    <string name="verification_register">등록</string>
+    <string name="verify_phone_app_bar">휴대폰 인증</string>
+    <string name="verify_phone_header">전화번호를 입력해주세요</string>
+    <string name="hint_for_phone">전화번호</string>
+    <string name="verification_not_verified_value">-</string>
 </resources>

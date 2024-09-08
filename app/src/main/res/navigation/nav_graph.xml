@@ -248,5 +248,22 @@
         android:id="@+id/verificationFragment"
         android:name="com.bestapp.zipbab.ui.verification.VerificationFragment"
         android:label="fragment_verification"
-        tools:layout="@layout/fragment_verification" />
+        tools:layout="@layout/fragment_verification" >
+        <action
+            android:id="@+id/action_verificationFragment_to_verifyEmailFragment"
+            app:destination="@id/verifyEmailFragment" />
+        <action
+            android:id="@+id/action_verificationFragment_to_verifyPhoneFragment"
+            app:destination="@id/verifyPhoneFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/verifyEmailFragment"
+        android:name="com.bestapp.zipbab.ui.verification.email.VerifyEmailFragment"
+        android:label="fragment_verify_email"
+        tools:layout="@layout/fragment_verify_email" />
+    <fragment
+        android:id="@+id/verifyPhoneFragment"
+        android:name="com.bestapp.zipbab.ui.verification.phone.VerifyPhoneFragment"
+        android:label="fragment_verify_phone"
+        tools:layout="@layout/fragment_verify_phone" />
 </navigation>
