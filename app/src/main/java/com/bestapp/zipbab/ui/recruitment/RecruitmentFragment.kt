@@ -93,6 +93,11 @@ class RecruitmentFragment : Fragment() {
         btnBefore.setOnClickListener {
             recruitmentViewModel.onBefore()
         }
+        mt.setNavigationOnClickListener {
+            if (!findNavController().popBackStack()) {
+                requireActivity().finish()
+            }
+        }
     }
 
     private fun setObserve() {

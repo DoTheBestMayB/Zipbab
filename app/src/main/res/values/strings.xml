@@ -252,4 +252,6 @@
     <string name="verify_phone_header">전화번호를 입력해주세요</string>
     <string name="hint_for_phone">전화번호</string>
     <string name="verification_not_verified_value">-</string>
+
+    <string name="address_finder_app_bar">주소 검색</string>
 </resources>

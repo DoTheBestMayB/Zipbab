@@ -44,7 +44,16 @@ class AddressFinderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setListener()
         setWebView()
+    }
+
+    private fun setListener() {
+        binding.mt.setNavigationOnClickListener {
+            if (!findNavController().popBackStack()) {
+                requireActivity().finish()
+            }
+        }
     }
 
     private fun setWebView() {

@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.databinding.FragmentVerificationBinding
 import com.bestapp.zipbab.util.safeNavigate
@@ -49,6 +50,12 @@ class VerificationFragment : Fragment() {
         binding.tvPhoneAction.setOnClickListener {
             val action = VerificationFragmentDirections.actionVerificationFragmentToVerifyPhoneFragment()
             action.safeNavigate(this)
+        }
+
+        binding.mt.setNavigationOnClickListener {
+            if (!findNavController().popBackStack()) {
+                requireActivity().finish()
+            }
         }
     }
 
