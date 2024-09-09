@@ -225,8 +225,8 @@
                 app:destination="@id/signUpFragment" />
             <argument
                 android:name="meetingDocumentID"
-                app:argType="string"
-                android:defaultValue="" />
+                android:defaultValue=""
+                app:argType="string" />
         </fragment>
         <fragment
             android:id="@+id/signUpFragment"
@@ -248,7 +248,7 @@
         android:id="@+id/verificationFragment"
         android:name="com.bestapp.zipbab.ui.verification.VerificationFragment"
         android:label="fragment_verification"
-        tools:layout="@layout/fragment_verification" >
+        tools:layout="@layout/fragment_verification">
         <action
             android:id="@+id/action_verificationFragment_to_verifyEmailFragment"
             app:destination="@id/verifyEmailFragment" />
@@ -260,7 +260,13 @@
         android:id="@+id/verifyEmailFragment"
         android:name="com.bestapp.zipbab.ui.verification.email.VerifyEmailFragment"
         android:label="fragment_verify_email"
-        tools:layout="@layout/fragment_verify_email" />
+        tools:layout="@layout/fragment_verify_email">
+        <deepLink
+            android:id="@+id/deepLink2"
+            android:autoVerify="true"
+            app:action="ACTION_VIEW"
+            app:uri="zipbab-4185d.web.app" />
+    </fragment>
     <fragment
         android:id="@+id/verifyPhoneFragment"
         android:name="com.bestapp.zipbab.ui.verification.phone.VerifyPhoneFragment"

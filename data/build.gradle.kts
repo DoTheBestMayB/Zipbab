@@ -28,6 +28,7 @@ android {
         buildConfigField("String", "KAKAO_ADMIN_KEY", getValue("kakao_admin_key"))
         buildConfigField("String", "GOOGLE_TOKEN_BASE_URL", getValue("google_token_base_url"))
         buildConfigField("String", "GOOGLE_REFRESH_BASE_URL", getValue("google_refresh_base_url"))
+        buildConfigField("String", "FIREBASE_DYNAMIC_LINK", getValue("firebase_dynamic_link"))
     }
 
     buildTypes {

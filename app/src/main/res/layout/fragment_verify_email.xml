@@ -40,7 +40,7 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_email_address"
+        android:id="@+id/til_email"
         style="@style/TextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_header">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/tie_email_address"
+            android:id="@+id/tie_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:imeOptions="actionNext"
@@ -66,51 +66,13 @@
         style="@style/SquareButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:layout_marginHorizontal="@dimen/default_margin20"
         android:layout_marginTop="@dimen/default_margin16"
         android:layout_marginBottom="@dimen/default_margin16"
-        android:text="@string/get_verification_code"
+        android:text="@string/get_email_verification"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/til_email_address" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_email_verification_code"
-        style="@style/TextInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/default_margin20"
-        android:layout_marginTop="@dimen/default_margin16"
-        android:hint="@string/hint_for_verification_code"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_email_verification_code"
-        tools:visibility="visible">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/tie_email_verification_code"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:imeOptions="actionNext"
-            android:inputType="number"
-            android:nextFocusForward="@id/btn_email_verification_confirm" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <Button
-        android:id="@+id/btn_email_verification_confirm"
-        style="@style/SquareButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/default_margin20"
-        android:layout_marginTop="@dimen/default_margin16"
-        android:layout_marginBottom="@dimen/default_margin16"
-        android:text="@string/verification_confirm"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/til_email_verification_code"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toBottomOf="@id/til_email" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
