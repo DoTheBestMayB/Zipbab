@@ -14,11 +14,15 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
+import com.bestapp.zipbab.BuildConfig
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.databinding.ActivityMainBinding
 import com.bestapp.zipbab.ui.profile.ProfileFragment
 import dagger.hilt.android.AndroidEntryPoint
 import com.bestapp.zipbab.ui.setting.SettingFragment
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -30,10 +34,20 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
 
+        configureFirebaseServices()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUi()
         setNavController()
+        handleIntent(intent)
+    }
+
+    private fun configureFirebaseServices() {
+        // DUBUG시 실제 FirebaseDB가 아닌 로컬 DB에서 테스트하기 위한 설정 코드
+//        if (BuildConfig.DEBUG) {
+//            Firebase.auth.useEmulator(LOCALHOST, AUTH_PORT)
+//            Firebase.firestore.useEmulator(LOCALHOST, FIRESTORE_PORT)
+//        }
     }
 
     private fun setUi() {
@@ -102,5 +116,11 @@ class MainActivity : AppCompatActivity() {
 
             else -> return super.dispatchTouchEvent(ev)
         }
+    }
+
+    companion object {
+        private const val LOCALHOST = "10.0.2.2"
+        private const val AUTH_PORT = 9099
+        private const val FIRESTORE_PORT = 8080
     }
 }

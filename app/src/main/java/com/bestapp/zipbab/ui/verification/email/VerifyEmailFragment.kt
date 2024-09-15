@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -54,6 +55,9 @@ class VerifyEmailFragment : Fragment() {
         binding.tilEmail.editText?.doOnTextChanged { text, _, _, _ ->
             viewModel.onEmailChange(text.toString())
         }
+        binding.btnCheckVerificationStatus.setOnClickListener {
+            viewModel.checkVerificationStatus()
+        }
     }
 
     private fun setObserve() {
@@ -62,29 +66,47 @@ class VerifyEmailFragment : Fragment() {
                 launch {
                     viewModel.uiState.collect { state ->
                         when (state.step) {
-                            Step.DEFAULT -> Unit
+                            Step.DEFAULT -> {
+                                binding.tilEmail.isEnabled = true
+                                binding.btnCheckVerificationStatus.isVisible = false
+                            }
+
                             Step.EMAIL_CHECK -> binding.btnEmailVerificationCode.isEnabled =
                                 state.isAddressValid
 
                             Step.VERIFICATION_CODE_CHECK -> {
                                 binding.tilEmail.isEnabled = false
+                                binding.btnCheckVerificationStatus.isVisible = true
                             }
                         }
                     }
                 }
                 launch {
                     viewModel.message.collect { messageType ->
-                        val message =  when (messageType) {
+                        val message = when (messageType) {
                             VerifyEmailMessage.FAIL_SEND_CODE -> getString(R.string.send_email_verification_fail)
                             VerifyEmailMessage.SUCCESS_SEND_CODE -> getString(R.string.send_email_verification_success)
+                            VerifyEmailMessage.FAIL_UPDATE_AUTH_STATE -> {
+                                val msg = getString(R.string.update_email_auth_state_fail)
+                                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                                findNavController().popBackStack()
+                                return@collect
+                            }
+
+                            VerifyEmailMessage.ALREADY_USED_EMAIL -> getString(R.string.already_used_email)
+                            VerifyEmailMessage.PASS_WORD_TOO_SHORT -> getString(R.string.password_too_short)
                         }
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
                 }
                 launch {
-                    viewModel.authState.collect { isVerified ->
+                    viewModel.isVerified.collect { isVerified ->
                         if (isVerified) {
-                            Toast.makeText(requireContext(), getString(R.string.email_verification_done), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.email_verification_done),
+                                Toast.LENGTH_SHORT
+                            ).show()
                             findNavController().popBackStack()
                         }
                     }

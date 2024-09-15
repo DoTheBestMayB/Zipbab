@@ -66,13 +66,28 @@
         style="@style/SquareButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:enabled="false"
         android:layout_marginHorizontal="@dimen/default_margin20"
         android:layout_marginTop="@dimen/default_margin16"
         android:layout_marginBottom="@dimen/default_margin16"
+        android:enabled="false"
         android:text="@string/get_email_verification"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/til_email" />
+
+    <Button
+        android:id="@+id/btn_check_verification_status"
+        style="@style/SquareButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/default_margin20"
+        android:layout_marginTop="@dimen/default_margin16"
+        android:layout_marginBottom="@dimen/default_margin16"
+        android:text="@string/check_email_verification_status"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_email_verification_code"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

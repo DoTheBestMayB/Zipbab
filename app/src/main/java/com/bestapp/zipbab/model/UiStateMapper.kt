@@ -14,6 +14,7 @@ import com.bestapp.zipbab.data.model.remote.Review
 import com.bestapp.zipbab.data.model.remote.SignUpResponse
 import com.bestapp.zipbab.data.model.remote.TermInfoResponse
 import com.bestapp.zipbab.data.model.remote.UserResponse
+import com.bestapp.zipbab.data.model.remote.VerifyStateEntity
 import com.bestapp.zipbab.ui.mettinginfo.MemberInfo
 import com.bestapp.zipbab.ui.profileedit.ProfileEditUiState
 import com.bestapp.zipbab.ui.profilepostimageselect.model.PostGalleryUiState
@@ -105,6 +106,16 @@ fun UserResponse.toUi() = UserUiState(
     verifiedEmail = verifiedEmail,
     verifiedPhone = verifiedPhone,
 )
+
+fun VerifyStateEntity.toUi(): VerifyState {
+    return when(this) {
+        VerifyStateEntity.AlreadyUsedEmail -> VerifyState.AlreadyUsedEmail
+        VerifyStateEntity.Fail -> VerifyState.Fail
+        VerifyStateEntity.FailAtSendVerificationEmail -> VerifyState.FailAtSendVerificationEmail
+        VerifyStateEntity.Success -> VerifyState.Success
+        VerifyStateEntity.PasswordTooShort -> VerifyState.PasswordTooShort
+    }
+}
 
 fun UploadStateEntity.toArgs(): UploadState {
     return when (this) {

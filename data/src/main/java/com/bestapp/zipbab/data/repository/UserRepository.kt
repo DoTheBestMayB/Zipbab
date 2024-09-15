@@ -21,6 +21,7 @@ interface UserRepository {
     suspend fun updateUserMeetingCount(userDocumentID: String): Boolean
     suspend fun updateUserProfileImage(userDocumentID: String, profileImageUri: String?): Boolean
     suspend fun deleteUserProfileImage(userDocumentID: String)
+    suspend fun updateEmail(userDocumentID: String, email: String): Boolean
     suspend fun getAccessToken(): com.bestapp.zipbab.data.remote.notification.fcm.AccessToken
 
     suspend fun removeItem(

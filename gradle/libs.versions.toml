@@ -90,7 +90,7 @@ firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
 firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
 firebase-perf-ktx = { group = "com.google.firebase", name = "firebase-perf-ktx", version.ref = "firebasePerfKtx" }
-firebase-firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
+firebase-firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx" }
 
 gms-play-service-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServiceAuth" }
 

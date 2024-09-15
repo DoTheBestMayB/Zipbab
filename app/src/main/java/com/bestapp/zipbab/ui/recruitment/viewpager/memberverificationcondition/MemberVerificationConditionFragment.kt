@@ -146,6 +146,13 @@ class MemberVerificationConditionFragment : Fragment() {
                         }
                     }
                 }
+
+                launch {
+                    viewModel.userUiState.collect {
+                        // 이메일, 전화번호 인증을 완료한 후 이 화면으로 돌아왔을 때
+                        // 인증 상태 갱신을 위해 데이터를 다시 불러오도록 하기 위한 목적의 collect 함수(WhileSubscribed 이용함)
+                    }
+                }
             }
         }
     }

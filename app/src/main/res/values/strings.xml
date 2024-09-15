@@ -257,4 +257,8 @@
     <string name="send_email_verification_fail">인증 메일 발송에 실패했습니다.</string>
     <string name="send_email_verification_success">인증 메일이 발송되었습니다. 메일함을 확인해주세요.</string>
     <string name="email_verification_done">이메일 인증이 완료되었습니다.</string>
+    <string name="update_email_auth_state_fail">인증 정보 갱신에 실패했습니다. 다시 시도해주세요.</string>
+    <string name="already_used_email">이미 사용중인 이메일입니다.</string>
+    <string name="password_too_short">인증 계정을 생성하기 위해 비밀번호를 6자리 이상으로 변경해주세요.</string>
+    <string name="check_email_verification_status">인증 상태 갱신</string>
 </resources>

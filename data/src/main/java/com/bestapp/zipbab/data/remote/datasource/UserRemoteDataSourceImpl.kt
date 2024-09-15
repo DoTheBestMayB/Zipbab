@@ -150,4 +150,10 @@ internal class UserRemoteDataSourceImpl @Inject constructor(
             .update("posts", FieldValue.arrayUnion(postDocumentId))
             .doneSuccessful()
     }
+
+    override suspend fun updateEmail(userDocumentID: String, email: String): Boolean {
+        return firestoreDB.getUsersDB().document(userDocumentID)
+            .update("verifiedEmail", email)
+            .doneSuccessful()
+    }
 }

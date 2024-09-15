@@ -21,7 +21,7 @@ class MemberVerificationConditionViewModel @Inject constructor(
     private val userRepository: UserRepository,
 ): ViewModel() {
 
-    private val userUiState: StateFlow<UserUiState> = appSettingRepository.userDocumentID
+    val userUiState: StateFlow<UserUiState> = appSettingRepository.userDocumentID
         .map { userDocumentID ->
             if (userDocumentID.isBlank()) {
                 UserUiState()
@@ -31,7 +31,7 @@ class MemberVerificationConditionViewModel @Inject constructor(
             }
         }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Lazily,
+            started = SharingStarted.WhileSubscribed(5000L),
             initialValue = UserUiState(),
         )
 
