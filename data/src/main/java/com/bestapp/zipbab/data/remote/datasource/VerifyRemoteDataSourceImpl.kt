@@ -25,9 +25,11 @@ class VerifyRemoteDataSourceImpl @Inject constructor() : VerifyRemoteDataSource 
 
         if (user == null) {
             return try {
+                // 사용자가 입력한 메일로 User를 생성한다.
                 val isSuccess =
                     Firebase.auth.createUserWithEmailAndPassword(email, password).doneSuccessful()
                 if (isSuccess) {
+                    // 사용자 생성에 성공하면 인증 메일을 보낸다.
                     val sendEmailResult =
                         Firebase.auth.currentUser?.sendEmailVerification()?.doneSuccessful()
                             ?: false
@@ -44,14 +46,14 @@ class VerifyRemoteDataSourceImpl @Inject constructor() : VerifyRemoteDataSource 
             } catch (e: FirebaseAuthWeakPasswordException) { // 비밀번호가 6자리보다 짭은 경우
                 VerifyStateEntity.PasswordTooShort
             }
-        } else {
-            if (user.email == email) {
+        } else { // 이미 등록된 계정에서 이메일을 변경하는 경우
+            if (user.email == email) { // 현재 등록된 메일과 동일한 메일을 입력한 경우
                 return VerifyStateEntity.AlreadyUsedEmail
             }
             try {
+                // 새로운 메일로 인증 메일을 보낸다.
                 val isSuccess = user.verifyBeforeUpdateEmail(email).doneSuccessful()
                 return if (isSuccess) {
-//                    Firebase.auth.currentUser?.getIdToken(true)?.await()
                     VerifyStateEntity.Success
                 } else {
                     VerifyStateEntity.Fail
@@ -60,14 +62,14 @@ class VerifyRemoteDataSourceImpl @Inject constructor() : VerifyRemoteDataSource 
                 resetAuthState()
                 return VerifyStateEntity.Fail
             } catch (_: FirebaseAuthRecentLoginRequiredException) { // https://firebase.google.com/docs/auth/android/manage-users?hl=en#re-authenticate_a_user
+                // 로그인한지 시간이 많이 경과된 경우, 이메일을 변경하기 위해서는 로그인 상태를 갱신해야 합니다.
                 val credential = EmailAuthProvider.getCredential(user.email ?: "", password)
 
-                // 재인증 이후에도 실패할 경우 Server 단에서 처리하도록 pass
+                // 재인증 이후에도 실패할 경우 Server 단에서 처리하도록 Fail을 리턴했습니다.
                 return try {
                     user.reauthenticate(credential).await()
                     val isSuccess = user.verifyBeforeUpdateEmail(email).doneSuccessful()
                     if (isSuccess) {
-//                        Firebase.auth.currentUser?.getIdToken(true)?.await()
                         VerifyStateEntity.Success
                     } else {
                         VerifyStateEntity.Fail
