@@ -243,7 +243,7 @@
     <string name="hint_for_email_address">이메일 주소</string>
     <string name="get_email_verification">인증 메일 받기</string>
     <string name="hint_for_verification_code">인증 번호</string>
-    <string name="verification_confirm">등록하기</string>
+    <string name="verification_confirm">확인하기</string>
     <string name="verify_mail_app_bar">이메일 인증</string>
     <string name="verify_email_header">이메일을 입력해주세요</string>
     <string name="verification_email">이메일</string>
@@ -261,4 +261,7 @@
     <string name="already_used_email">이미 사용중인 이메일입니다.</string>
     <string name="password_too_short">인증 계정을 생성하기 위해 비밀번호를 6자리 이상으로 변경해주세요.</string>
     <string name="check_email_verification_status">인증 상태 갱신</string>
+    <string name="get_phone_verification">인증 번호 받기</string>
+    <string name="verification_not_supported">미지원</string>
+    <string name="phone_verification_not_support_yet">현재 전화번호 인증을 지원하지 않고 있어요</string>
 </resources>

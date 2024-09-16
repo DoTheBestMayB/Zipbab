@@ -93,6 +93,7 @@
         android:layout_marginEnd="@dimen/default_margin20"
         android:gravity="center"
         android:minWidth="@dimen/default_margin48"
+        android:enabled="false"
         android:minHeight="@dimen/default_margin48"
         android:textColor="@color/main_color"
         app:layout_constraintBottom_toBottomOf="@id/tv_phone_body"

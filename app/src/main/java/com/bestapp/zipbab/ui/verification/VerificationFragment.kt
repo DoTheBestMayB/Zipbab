@@ -82,11 +82,12 @@ class VerificationFragment : Fragment() {
 
         binding.tvPhoneBody.text =
             phone?.ifBlank { getString(R.string.verification_not_verified_value) }
-        binding.tvPhoneAction.text = if (phone.isNullOrBlank()) {
-            getString(R.string.verification_register)
-        } else {
-            getString(R.string.verification_change)
-        }
+//        binding.tvPhoneAction.text = if (phone.isNullOrBlank()) {
+//            getString(R.string.verification_register)
+//        } else {
+//            getString(R.string.verification_change)
+//        }
+        binding.tvPhoneAction.text = getString(R.string.verification_not_supported)
     }
 
     override fun onDestroyView() {

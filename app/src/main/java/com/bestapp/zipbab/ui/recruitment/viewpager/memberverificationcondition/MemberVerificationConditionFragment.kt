@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -81,6 +82,7 @@ class MemberVerificationConditionFragment : Fragment() {
         }
         binding.layoutPhoneVerificationRequired.root.setOnClickListener {
             sharedViewModel.updateVerification(Verification.PHONE)
+            Toast.makeText(requireContext(), getString(R.string.phone_verification_not_support_yet), Toast.LENGTH_SHORT).show()
         }
         binding.layoutLeaderVerificationRequired.root.setOnClickListener {
             sharedViewModel.requestVerification()
