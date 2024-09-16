@@ -1,5 +1,7 @@
 package com.bestapp.zipbab.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -80,6 +82,21 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun handleIntent(intent: Intent) {
+        val appLinkData: Uri? = intent.data
+        if (Intent.ACTION_VIEW == intent.action) {
+            intent.data?.lastPathSegment?.also { recipeId ->
+                Uri.parse("content://")
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+
+        handleIntent(intent)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
