@@ -178,7 +178,15 @@ class StepSharedViewModel @Inject constructor(
     }
 
     fun createMeeting() {
+        if (_stepState.value.isLoading) {
+            return
+        }
         viewModelScope.launch {
+            _stepState.update { currentState ->
+                currentState.copy(
+                    isLoading = true
+                )
+            }
             val hostDocumentID = appSettingRepository.userDocumentID.firstOrNull() ?: run {
                 _message.emit(Message.LOGIN_REQUIRED)
                 return@launch
@@ -212,6 +220,11 @@ class StepSharedViewModel @Inject constructor(
                 Message.CREATION_FAIL
             }
             _message.emit(message)
+            _stepState.update { currentState ->
+                currentState.copy(
+                    isLoading = false
+                )
+            }
         }
     }
 

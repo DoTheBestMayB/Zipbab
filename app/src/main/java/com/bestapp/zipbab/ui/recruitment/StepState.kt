@@ -3,6 +3,7 @@ package com.bestapp.zipbab.ui.recruitment
 import com.bestapp.zipbab.ui.recruitment.viewpager.memberverificationcondition.Verification
 
 /**
+ * @property isLoading 로딩, 업로드 등 여부
  * @property lastModifiedStep State를 변경한 Step
  * @property selectedCategories 모임에서 만들 음식 카테고리
  * @property meetingName 모임 이름
@@ -22,6 +23,7 @@ import com.bestapp.zipbab.ui.recruitment.viewpager.memberverificationcondition.V
  * @property profileUri 대표 이미지
  */
 data class StepState(
+    val isLoading: Boolean = false,
     val lastModifiedStep: Int = 0,
     val selectedCategories: List<String> = emptyList(),
     val meetingName: String = "",

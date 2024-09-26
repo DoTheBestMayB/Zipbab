@@ -135,6 +135,8 @@ class RecruitmentFragment : Fragment() {
 
                 launch {
                     stepSharedViewModel.stepState.collect { state ->
+                        // 로딩 처리
+                        setLoadingUi(state.isLoading)
                         // step에 따라 다음 버튼의 활성화 여부를 변경
                         when (state.lastModifiedStep) {
                             CategorySelectFragment.STEP -> {
@@ -225,6 +227,11 @@ class RecruitmentFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun setLoadingUi(isLoading: Boolean) {
+        binding.vModalBackground.isVisible = isLoading
+        binding.cpiLoading.isVisible = isLoading
     }
 
     private fun setVisibilityByStep(currentStep: Int, steps: List<RecruitViewPagerStep>) {
