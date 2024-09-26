@@ -159,8 +159,8 @@ class MemberVerificationConditionFragment : Fragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
 
         sharedViewModel.updateStep(STEP)
     }

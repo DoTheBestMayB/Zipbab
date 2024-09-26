@@ -107,15 +107,10 @@ class MeetUpMapViewModel @Inject constructor(
     }
 
     private fun MeetingResponse.toUiWithDistance(latLngUser: LatLng): MeetUpMapUi {
-        val latlng = LatLng(
-            placeLocation.locationLat.toDouble(),
-            placeLocation.locationLong.toDouble()
-        )
-
-        val distance = haversine(latLngUser, latlng)
+        val distance = haversine(latLngUser, LatLng(latitude, longitude))
         val isHost = userUiState.value.userDocumentID == hostUserDocumentID
 
-        return toUi(distance, isHost)
+        return toUi(distance, isHost, latitude, longitude)
     }
 
     private fun updateMeetingWithLoginState() = viewModelScope.launch {

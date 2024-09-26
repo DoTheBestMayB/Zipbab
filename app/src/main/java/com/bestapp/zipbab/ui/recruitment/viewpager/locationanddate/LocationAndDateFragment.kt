@@ -32,7 +32,7 @@ class LocationAndDateFragment : Fragment() {
     private val binding: FragmentLocationAndDateBinding
         get() = _binding!!
 
-    private val stepSharedViewModel: StepSharedViewModel by viewModels({ requireParentFragment() })
+    private val sharedViewModel: StepSharedViewModel by viewModels({ requireParentFragment() })
 
     private val simpleDateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
 
@@ -79,7 +79,7 @@ class LocationAndDateFragment : Fragment() {
 
     private fun setListener() {
         binding.btnLocation.setOnClickListener {
-            stepSharedViewModel.requestAddressFinder()
+            sharedViewModel.requestAddressFinder()
         }
         binding.btnDate.setOnClickListener {
             if (datePicker.isAdded.not()){
@@ -87,7 +87,7 @@ class LocationAndDateFragment : Fragment() {
             }
         }
         datePicker.addOnPositiveButtonClickListener {
-            stepSharedViewModel.updateDate(it)
+            sharedViewModel.updateDate(simpleDateFormat.format(it))
         }
         binding.btnTime.setOnClickListener {
             if (timePicker.isAdded.not()) {
@@ -95,21 +95,19 @@ class LocationAndDateFragment : Fragment() {
             }
         }
         timePicker.addOnPositiveButtonClickListener {
-            stepSharedViewModel.updateTime(timePicker.hour, timePicker.minute)
+            sharedViewModel.updateTime(timePicker.hour, timePicker.minute)
         }
     }
 
     private fun setObserve() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                stepSharedViewModel.stepState.collect { state ->
+                sharedViewModel.stepState.collect { state ->
                     binding.btnLocation.text = state.address.ifBlank {
                         getString(R.string.recruit_location_hint)
                     }
 
-                    binding.btnDate.text = if (state.date != 0L) {
-                        simpleDateFormat.format(state.date)
-                    } else {
+                    binding.btnDate.text = state.date.ifBlank {
                         getString(R.string.recruit_date_hint)
                     }
 
@@ -126,7 +124,7 @@ class LocationAndDateFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        stepSharedViewModel.updateStep(STEP)
+        sharedViewModel.updateStep(STEP)
     }
 
     override fun onDestroyView() {

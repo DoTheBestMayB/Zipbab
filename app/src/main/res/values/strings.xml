@@ -264,4 +264,12 @@
     <string name="get_phone_verification">인증 번호 받기</string>
     <string name="verification_not_supported">미지원</string>
     <string name="phone_verification_not_support_yet">현재 전화번호 인증을 지원하지 않고 있어요</string>
+    <string name="meetup_profile_picture_select_header">대표사진을 등록해주세요</string>
+    <string name="meetup_profile_picture_select_description">전체 모임 목록에서 보이는 대표 이미지예요.</string>
+    <string name="recruitment_login_required">로그인 후 다시 시도해주세요.</string>
+    <string name="recruitment_create_complete">모임 생성을 완료했습니다.</string>
+    <string name="recruitment_create_fail">모임 생성에 실패했습니다. 잠시 후 다시 시도해주세요.</string>
+
+    <string name="meeting_info_time">%1$s %2$s</string>
+    <string name="time_format">%1$d:%2$d:%3$d</string>
 </resources>

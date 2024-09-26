@@ -88,12 +88,11 @@ class ApprovalConditionFragment : Fragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
 
         sharedViewModel.updateStep(STEP)
     }
-
 
     override fun onDestroyView() {
         _binding = null

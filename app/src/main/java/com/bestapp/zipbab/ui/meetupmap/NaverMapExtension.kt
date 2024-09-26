@@ -77,8 +77,7 @@ fun addMeetingMarkers(
     val textSize = 13f
 
     meetUpMapUiState.meetUpMapMeetingUis.forEachIndexed { index, meetUpMapMeeting ->
-        val placeLocationUi = meetUpMapMeeting.placeLocationArgs
-        val latLng = LatLng(placeLocationUi.locationLat.toDouble(), placeLocationUi.locationLong.toDouble())
+        val latLng = LatLng(meetUpMapMeeting.latitude, meetUpMapMeeting.longitude)
 
         val marker = markerList[index]
 

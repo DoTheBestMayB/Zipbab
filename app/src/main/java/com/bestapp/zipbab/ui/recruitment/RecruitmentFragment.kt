@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,14 +16,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.bestapp.zipbab.R
+import com.bestapp.zipbab.args.ImageArgs
 import com.bestapp.zipbab.databinding.FragmentRecruitmentBinding
 import com.bestapp.zipbab.ui.addressfinder.AddressFinderFragment
 import com.bestapp.zipbab.ui.addressfinder.AddressInfo
+import com.bestapp.zipbab.ui.profileimageselect.ProfileImageSelectFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.approvalcondition.ApprovalConditionFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.categoryselect.CategorySelectFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.detailinfo.DetailInfoFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.locationanddate.LocationAndDateFragment
 import com.bestapp.zipbab.ui.recruitment.viewpager.memberverificationcondition.MemberVerificationConditionFragment
+import com.bestapp.zipbab.ui.recruitment.viewpager.profile.MeetupProfilePictureSelectFragment
 import com.bestapp.zipbab.util.safeNavigate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -78,7 +82,7 @@ class RecruitmentFragment : Fragment() {
     }
 
     private fun setRecyclerView() {
-        viewPagerAdapter = RecruitStateAdapter(this, RecruitmentState.MAX_STEP)
+        viewPagerAdapter = RecruitStateAdapter(this, RecruitmentState.MAX_STEP + 1)
         binding.pager.adapter = viewPagerAdapter
         binding.pager.isUserInputEnabled = false // 가로 swipe 방지
 
@@ -110,6 +114,26 @@ class RecruitmentFragment : Fragment() {
                 }
 
                 launch {
+                    recruitmentViewModel.createMeetingTrigger.collect {
+                        stepSharedViewModel.createMeeting()
+                    }
+                }
+
+                launch {
+                    stepSharedViewModel.message.collect { message ->
+                        val msg = when (message) {
+                            Message.LOGIN_REQUIRED -> getString(R.string.recruitment_login_required)
+                            Message.CREATION_COMPLETE -> {
+                                stepSharedViewModel.onComplete()
+                                getString(R.string.recruitment_create_complete)
+                            }
+                            Message.CREATION_FAIL -> getString(R.string.recruitment_create_fail)
+                        }
+                        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                launch {
                     stepSharedViewModel.stepState.collect { state ->
                         // step에 따라 다음 버튼의 활성화 여부를 변경
                         when (state.lastModifiedStep) {
@@ -130,7 +154,12 @@ class RecruitmentFragment : Fragment() {
                             }
 
                             MemberVerificationConditionFragment.STEP -> {
-                                binding.btnNext.isEnabled = state.isMemberVerificationConditionValid()
+                                binding.btnNext.isEnabled =
+                                    state.isMemberVerificationConditionValid()
+                            }
+
+                            MeetupProfilePictureSelectFragment.STEP -> {
+                                binding.btnNext.isEnabled = state.isProfilePictureValid()
                             }
                         }
                     }
@@ -138,14 +167,29 @@ class RecruitmentFragment : Fragment() {
 
                 launch {
                     stepSharedViewModel.requestAction.collect { actionType ->
-                        when(actionType) {
+                        when (actionType) {
                             ActionType.ADDRESS -> {
-                                val action = RecruitmentFragmentDirections.actionRecruitmentFragmentToAddressFinderFragment()
+                                val action =
+                                    RecruitmentFragmentDirections.actionRecruitmentFragmentToAddressFinderFragment()
                                 action.safeNavigate(this@RecruitmentFragment)
                             }
+
                             ActionType.VERIFICATION -> {
-                                val action = RecruitmentFragmentDirections.actionRecruitmentFragmentToVerificationFragment()
+                                val action =
+                                    RecruitmentFragmentDirections.actionRecruitmentFragmentToVerificationFragment()
                                 action.safeNavigate(this@RecruitmentFragment)
+                            }
+
+                            ActionType.PROFILE_IMAGE -> {
+                                val action =
+                                    RecruitmentFragmentDirections.actionRecruitmentFragmentToProfileImageSelectFragment()
+                                action.safeNavigate(this@RecruitmentFragment)
+                            }
+
+                            ActionType.DONE -> {
+                                if (!findNavController().popBackStack()) {
+                                    requireActivity().finish()
+                                }
                             }
                         }
                     }
@@ -164,6 +208,18 @@ class RecruitmentFragment : Fragment() {
                         }
                         findNavController().currentBackStackEntry?.savedStateHandle?.remove<AddressInfo>(
                             AddressFinderFragment.ADDRESS_RESULT_KEY
+                        )
+                    }
+                }
+
+                launch {
+                    findNavController().currentBackStackEntry?.savedStateHandle?.getStateFlow(
+                        ProfileImageSelectFragment.PROFILE_IMAGE_SELECT_KEY,
+                        ImageArgs(),
+                    )?.collect { imageArgs ->
+                        stepSharedViewModel.updateProfileImage(imageArgs.uri.toString())
+                        findNavController().currentBackStackEntry?.savedStateHandle?.remove<ImageArgs>(
+                            ProfileImageSelectFragment.PROFILE_IMAGE_SELECT_KEY
                         )
                     }
                 }

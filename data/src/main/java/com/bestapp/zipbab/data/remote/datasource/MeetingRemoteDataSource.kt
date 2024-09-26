@@ -1,5 +1,6 @@
 package com.bestapp.zipbab.data.remote.datasource
 
+import com.bestapp.zipbab.data.model.remote.MeetingCreationInfo
 import com.bestapp.zipbab.data.model.remote.MeetingResponse
 
 interface MeetingRemoteDataSource {
@@ -22,7 +23,7 @@ interface MeetingRemoteDataSource {
         onlyActivation: Boolean
     ): List<MeetingResponse>
 
-    suspend fun createMeeting(meetingResponse: MeetingResponse): Boolean
+    suspend fun createMeeting(meetingCreationInfo: MeetingCreationInfo): Boolean
 
     suspend fun getHostTemperature(hostDocumentID: String): Double
 

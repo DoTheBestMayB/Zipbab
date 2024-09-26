@@ -10,13 +10,16 @@ import com.bestapp.zipbab.ui.recruitment.viewpager.memberverificationcondition.V
  * @property cost 1인당 비용
  * @property description 설명
  * @property address 장소
+ * @property longitude 위도
+ * @property latitude 경도
  * @property zipCode 우편번호
- * @property date 밀리세컨드로 표시한 모임 날짜
+ * @property date 모임 날짜
  * @property hour 모임 시
  * @property minute 모임 분
  * @property isApprovalRequired 가입 승인 필요 여부
  * @property verification 가입 요청 회원의 인증 상태 조건
  * @property isLeaderVerificationCompleted 모임장이 필요한 인증을 완료 했는지 여부
+ * @property profileUri 대표 이미지
  */
 data class StepState(
     val lastModifiedStep: Int = 0,
@@ -26,13 +29,16 @@ data class StepState(
     val cost: Int = -1,
     val description: String = "",
     val address: String = "",
+    val longitude: Double = 0.0,
+    val latitude: Double = 0.0,
     val zipCode: String = "",
-    val date: Long = 0L,
+    val date: String = "",
     val hour: Int = -1,
     val minute: Int = -1,
     val isApprovalRequired: Boolean? = null,
     val verification: Verification? = null,
     val isLeaderVerificationCompleted: Boolean = false,
+    val profileUri: String = "",
 ) {
 
     fun isCategorySelectValid(): Boolean = selectedCategories.isNotEmpty()
@@ -40,9 +46,11 @@ data class StepState(
     fun isDetailInfoInputValid(): Boolean =
         meetingName.isNotBlank() && participantCount != -1 && cost != -1
 
-    fun isLocationAndDateValid(): Boolean = address.isNotBlank() && zipCode.isNotBlank() && date != 0L && hour != -1 && minute != -1
+    fun isLocationAndDateValid(): Boolean = address.isNotBlank() && zipCode.isNotBlank() && date.isNotBlank() && hour != -1 && minute != -1
 
     fun isApprovalConditionValid(): Boolean = isApprovalRequired != null
 
     fun isMemberVerificationConditionValid(): Boolean = verification != null && isLeaderVerificationCompleted
+
+    fun isProfilePictureValid(): Boolean = profileUri.isNotBlank()
 }

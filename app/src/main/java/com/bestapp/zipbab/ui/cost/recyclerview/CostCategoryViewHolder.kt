@@ -23,7 +23,7 @@ class CostCategoryViewHolder(
     ) {
         binding.iv.load(meetingUiState.titleImage)
         binding.tvTitle.text = meetingUiState.title
-        binding.tvLocation.text = meetingUiState.placeLocationUiState.locationAddress
+        binding.tvLocation.text = meetingUiState.address
         binding.tvTemperature.text = String.format("참여 비용: %,d원", meetingUiState.costValueByPerson)
         binding.root.setOnClickListener {
             onCostCategoryClick(meetingUiState)

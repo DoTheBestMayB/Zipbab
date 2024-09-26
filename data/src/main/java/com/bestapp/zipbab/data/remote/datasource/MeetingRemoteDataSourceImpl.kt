@@ -1,5 +1,6 @@
 package com.bestapp.zipbab.data.remote.datasource
 
+import com.bestapp.zipbab.data.model.remote.MeetingCreationInfo
 import com.bestapp.zipbab.data.model.remote.MeetingResponse
 import com.bestapp.zipbab.data.model.remote.UserResponse
 import com.bestapp.zipbab.data.remote.firestoreDB.FirestoreDB
@@ -92,9 +93,34 @@ internal class MeetingRemoteDataSourceImpl @Inject constructor(
         return query.toMeetings()
     }
 
-    override suspend fun createMeeting(meetingResponse: MeetingResponse): Boolean {
+    override suspend fun createMeeting(meetingCreationInfo: MeetingCreationInfo): Boolean {
+        val requestForm = with(meetingCreationInfo) {
+            MeetingResponse(
+                meetingDocumentID = "",
+                title = meetingName,
+                titleImage = profileUri,
+                address = address,
+                longitude = longitude,
+                latitude = latitude,
+                zipCode = zipCode,
+                date = date,
+                hour = hour,
+                minute = minute,
+                participantCount = participantCount,
+                description = description,
+                category = category,
+                isApprovalRequired = isApprovalRequired,
+                verification = verification,
+                costValueByPerson = cost,
+                hostUserDocumentID = hostDocumentID,
+                members = listOf(),
+                pendingMembers = listOf(),
+                attendanceCheck = listOf(),
+                activation = true,
+            )
+        }
         val documentRef = firestoreDB.getMeetingDB()
-            .add(meetingResponse)
+            .add(requestForm)
             .await()
 
         val meetingDocumentID = documentRef.id
