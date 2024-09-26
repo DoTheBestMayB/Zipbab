@@ -1,29 +1,35 @@
 package com.bestapp.zipbab.ui.recruitment
 
-import android.app.Activity.RESULT_OK
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
-import android.content.Intent
-import android.net.Uri
+import android.graphics.Rect
 import android.os.Bundle
-import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.bestapp.zipbab.R
-import com.bestapp.zipbab.data.model.remote.MeetingResponse
-import com.bestapp.zipbab.data.model.remote.PlaceLocation
+import com.bestapp.zipbab.args.ImageArgs
 import com.bestapp.zipbab.databinding.FragmentRecruitmentBinding
+import com.bestapp.zipbab.ui.addressfinder.AddressFinderFragment
+import com.bestapp.zipbab.ui.addressfinder.AddressInfo
+import com.bestapp.zipbab.ui.profileimageselect.ProfileImageSelectFragment
+import com.bestapp.zipbab.ui.recruitment.viewpager.approvalcondition.ApprovalConditionFragment
+import com.bestapp.zipbab.ui.recruitment.viewpager.categoryselect.CategorySelectFragment
+import com.bestapp.zipbab.ui.recruitment.viewpager.detailinfo.DetailInfoFragment
+import com.bestapp.zipbab.ui.recruitment.viewpager.locationanddate.LocationAndDateFragment
+import com.bestapp.zipbab.ui.recruitment.viewpager.memberverificationcondition.MemberVerificationConditionFragment
+import com.bestapp.zipbab.ui.recruitment.viewpager.profile.MeetupProfilePictureSelectFragment
+import com.bestapp.zipbab.util.safeNavigate
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Calendar
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RecruitmentFragment : Fragment() {
@@ -31,33 +37,31 @@ class RecruitmentFragment : Fragment() {
     private val binding: FragmentRecruitmentBinding
         get() = _binding!!
 
-    private var chipType: String = ""
     private val recruitmentViewModel: RecruitmentViewModel by viewModels()
+    private val stepSharedViewModel: StepSharedViewModel by viewModels()
 
-    private var imageResult: Uri? = null
+    private val stepAdapter = StepAdapter()
 
-    /*private val galleryPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()){
-            if (it) {
-                transLauncher()
-            } else {
-                Toast.makeText(requireContext(), "권한 거부", Toast.LENGTH_SHORT).show()
-            }
-        }*/
+    private val stepItemDecoration: ItemDecoration by lazy {
+        object : ItemDecoration() {
 
+            private val marginSize =
+                binding.root.context.resources.getDimension(R.dimen.default_margin8).toInt()
 
-    private val imageLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val imageUri: Uri? = result.data?.data
-                imageUri?.let {
-                    binding.titleImageSelect.setImageURI(it)
-                    imageResult = it
-                    recruitmentViewModel.getImageTrans(it)
-                }
+            override fun getItemOffsets(
+                outRect: Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State
+            ) {
+                super.getItemOffsets(outRect, view, parent, state)
+
+                outRect.set(marginSize, 0, marginSize, 0)
             }
         }
+    }
 
+    private lateinit var viewPagerAdapter: RecruitStateAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,469 +73,190 @@ class RecruitmentFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setRecyclerView()
+        setListener()
+        setObserve()
+    }
+
+    private fun setRecyclerView() {
+        viewPagerAdapter = RecruitStateAdapter(this, RecruitmentState.MAX_STEP + 1)
+        binding.pager.adapter = viewPagerAdapter
+        binding.pager.isUserInputEnabled = false // 가로 swipe 방지
+
+        binding.rvStep.adapter = stepAdapter
+        binding.rvStep.addItemDecoration(stepItemDecoration)
+    }
+
+    private fun setListener() = with(binding) {
+        btnNext.setOnClickListener {
+            recruitmentViewModel.onNext()
+        }
+        btnBefore.setOnClickListener {
+            recruitmentViewModel.onBefore()
+        }
+        mt.setNavigationOnClickListener {
+            if (!findNavController().popBackStack()) {
+                requireActivity().finish()
+            }
+        }
+    }
+
+    private fun setObserve() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    recruitmentViewModel.uiState.collect { state ->
+                        setVisibilityByStep(state.currentStep, state.steps)
+                    }
+                }
+
+                launch {
+                    recruitmentViewModel.createMeetingTrigger.collect {
+                        stepSharedViewModel.createMeeting()
+                    }
+                }
+
+                launch {
+                    stepSharedViewModel.message.collect { message ->
+                        val msg = when (message) {
+                            Message.LOGIN_REQUIRED -> getString(R.string.recruitment_login_required)
+                            Message.CREATION_COMPLETE -> {
+                                stepSharedViewModel.onComplete()
+                                getString(R.string.recruitment_create_complete)
+                            }
+                            Message.CREATION_FAIL -> getString(R.string.recruitment_create_fail)
+                        }
+                        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                launch {
+                    stepSharedViewModel.stepState.collect { state ->
+                        // 로딩 처리
+                        setLoadingUi(state.isLoading)
+                        // step에 따라 다음 버튼의 활성화 여부를 변경
+                        when (state.lastModifiedStep) {
+                            CategorySelectFragment.STEP -> {
+                                binding.btnNext.isEnabled = state.isCategorySelectValid()
+                            }
+
+                            DetailInfoFragment.STEP -> {
+                                binding.btnNext.isEnabled = state.isDetailInfoInputValid()
+                            }
+
+                            LocationAndDateFragment.STEP -> {
+                                binding.btnNext.isEnabled = state.isLocationAndDateValid()
+                            }
+
+                            ApprovalConditionFragment.STEP -> {
+                                binding.btnNext.isEnabled = state.isApprovalConditionValid()
+                            }
+
+                            MemberVerificationConditionFragment.STEP -> {
+                                binding.btnNext.isEnabled =
+                                    state.isMemberVerificationConditionValid()
+                            }
+
+                            MeetupProfilePictureSelectFragment.STEP -> {
+                                binding.btnNext.isEnabled = state.isProfilePictureValid()
+                            }
+                        }
+                    }
+                }
+
+                launch {
+                    stepSharedViewModel.requestAction.collect { actionType ->
+                        when (actionType) {
+                            ActionType.ADDRESS -> {
+                                val action =
+                                    RecruitmentFragmentDirections.actionRecruitmentFragmentToAddressFinderFragment()
+                                action.safeNavigate(this@RecruitmentFragment)
+                            }
+
+                            ActionType.VERIFICATION -> {
+                                val action =
+                                    RecruitmentFragmentDirections.actionRecruitmentFragmentToVerificationFragment()
+                                action.safeNavigate(this@RecruitmentFragment)
+                            }
+
+                            ActionType.PROFILE_IMAGE -> {
+                                val action =
+                                    RecruitmentFragmentDirections.actionRecruitmentFragmentToProfileImageSelectFragment()
+                                action.safeNavigate(this@RecruitmentFragment)
+                            }
+
+                            ActionType.DONE -> {
+                                if (!findNavController().popBackStack()) {
+                                    requireActivity().finish()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                launch {
+                    findNavController().currentBackStackEntry?.savedStateHandle?.getStateFlow(
+                        AddressFinderFragment.ADDRESS_RESULT_KEY,
+                        AddressInfo()
+                    )?.collect { info ->
+                        if (info.location.isNotBlank()) {
+                            stepSharedViewModel.updateLocation(
+                                info.location,
+                                info.zipCode,
+                            )
+                        }
+                        findNavController().currentBackStackEntry?.savedStateHandle?.remove<AddressInfo>(
+                            AddressFinderFragment.ADDRESS_RESULT_KEY
+                        )
+                    }
+                }
+
+                launch {
+                    findNavController().currentBackStackEntry?.savedStateHandle?.getStateFlow(
+                        ProfileImageSelectFragment.PROFILE_IMAGE_SELECT_KEY,
+                        ImageArgs(),
+                    )?.collect { imageArgs ->
+                        stepSharedViewModel.updateProfileImage(imageArgs.uri.toString())
+                        findNavController().currentBackStackEntry?.savedStateHandle?.remove<ImageArgs>(
+                            ProfileImageSelectFragment.PROFILE_IMAGE_SELECT_KEY
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setLoadingUi(isLoading: Boolean) {
+        binding.vModalBackground.isVisible = isLoading
+        binding.cpiLoading.isVisible = isLoading
+    }
+
+    private fun setVisibilityByStep(currentStep: Int, steps: List<RecruitViewPagerStep>) {
+        binding.pager.setCurrentItem(currentStep, false)
+
+        when (currentStep) {
+            RecruitmentState.MIN_STEP -> binding.btnBefore.isVisible = false
+            RecruitmentState.MAX_STEP -> {
+                // MIN_STEP에서 MAX_STEP으로 바로 이동하도록 STEP 갯수가 바뀌는 경우를 위한 코드
+                binding.btnBefore.isVisible = true
+                binding.btnNext.text = getString(R.string.create_meeting)
+            }
+
+            else -> {
+                binding.btnBefore.isVisible = true
+                binding.btnNext.text = getString(R.string.next)
+            }
+        }
+
+        stepAdapter.submitList(steps)
+    }
+
     override fun onDestroyView() {
         _binding = null
 
         super.onDestroyView()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        initViews()
-        selectLister()
-        permissionCheck()
-    }
-
-    private fun initViews() {
-        var hostKey = ""
-        var hostTemperature = 0.0
-
-        recruitmentViewModel.getDocumentId()
-
-        recruitmentViewModel.hostInfo.observe(viewLifecycleOwner) {
-            hostTemperature = it.temperature
-            hostKey = it.userDocumentID
-        }
-
-        val lat = ""
-        val lng = ""
-        var imageValue: String = getString(R.string.recruit_default_image)
-
-        var placeLocation = PlaceLocation( //위치 값 가져오면 수정
-            locationAddress = "",
-            locationLat = lat,
-            locationLong = lng
-        )
-
-        recruitmentViewModel.location.observe(viewLifecycleOwner) {
-            // lat = it.documents[0].latitude
-            // lng = it.documents[0].longitude
-
-            if (it.documentUiState.isEmpty()) {
-                Toast.makeText(requireContext(), "주소가 올바르지 않습니다. 다시한번 확인해주세요!!", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                Toast.makeText(requireContext(), "주소가 확인 되었습니다!!", Toast.LENGTH_SHORT).show()
-                placeLocation = PlaceLocation(
-                    it.documentUiState[0].addressName,
-                    it.documentUiState[0].latitude,
-                    it.documentUiState[0].longitude
-                )
-            }
-        }
-
-        recruitmentViewModel.imageTrans.observe(viewLifecycleOwner) {
-            imageValue = it
-        }
-
-        binding.bLocation.setOnClickListener {
-            if (binding.etLocation.text.toString().isEmpty()) {
-                Toast.makeText(requireContext(), "모임장소를 적어주세요!!", Toast.LENGTH_SHORT).show()
-            } else {
-                recruitmentViewModel.getLocation(binding.etLocation.text.toString(), "similar")
-            }
-        }
-
-        val members: List<String> = listOf()
-        val pendingMembers: List<String> = listOf()
-        val attendanceCheck: List<String> = listOf()
-        val activation = true
-
-        binding.backButton.setOnClickListener {
-            findNavController().popBackStack()
-        }
-
-        binding.completeButton.setOnClickListener {
-            var costTypeByPerson = ""
-            val date = binding.dateEdit.text.toString()
-            val time = binding.timeEdit.text.toString()
-            when (binding.costEdit.text.toString().toInt()) {
-                in (0..29_999) -> {
-                    costTypeByPerson = "1"
-                }
-
-                in (30_000..49_999) -> {
-                    costTypeByPerson = "2"
-                }
-
-                in (50_000..69_999) -> {
-                    costTypeByPerson = "3"
-                }
-
-                in (70_000..99_999) -> {
-                    costTypeByPerson = "4"
-                }
-
-                else -> {
-                    Toast.makeText(requireContext(), "돈 한도를 초과합니다.", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-            }
-            val meet: MeetingResponse = MeetingResponse(
-                //임시
-                meetingDocumentID = "",
-                title = binding.nameEdit.text.toString(),
-                titleImage = imageValue,
-                placeLocation = placeLocation,
-                time = "$date $time",
-                recruits = binding.numberCheckEdit.text.toString().toInt(),
-                description = binding.descriptionEdit.editText!!.text.toString(),
-                mainMenu = chipType,
-                costValueByPerson = binding.costEdit.text.toString().toInt(),
-                costTypeByPerson = costTypeByPerson.toInt(),
-                hostUserDocumentID = hostKey,
-                members = members,
-                pendingMembers = pendingMembers,
-                attendanceCheck = attendanceCheck,
-                activation = activation,
-            )
-
-
-            recruitmentViewModel.registerMeeting(meet)
-        }
-
-        recruitmentViewModel.recruit.observe(viewLifecycleOwner) {
-            if (it) {
-                Toast.makeText(requireContext(), "모임 모집글이 정상적으로 등록되었습니다.", Toast.LENGTH_SHORT)
-                    .show()
-                findNavController().popBackStack()
-            } else {
-                Toast.makeText(context, "모집글 양식에 맞게 작성 해주세요!!", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        binding.timeButton.setOnClickListener {
-            val timeCalendar = Calendar.getInstance()
-            val hourCal = timeCalendar.get(Calendar.HOUR_OF_DAY)
-            val minCal = timeCalendar.get(Calendar.MINUTE)
-            val timePicker = TimePickerDialog.OnTimeSetListener { _, h, m ->
-                when (h) {
-                    in 0..9 -> {
-                        if (m <= 9) {
-                            val time = "0%d:0%d".format(h, m)
-                            binding.timeEdit.setText(time)
-                        } else {
-                            val time = "0%d:%d".format(h, m)
-                            binding.timeEdit.setText(time)
-                        }
-                    }
-
-                    in 10..24 -> {
-                        if (m <= 9) {
-                            val time = "%d:0%d".format(h, m)
-                            binding.timeEdit.setText(time)
-                        } else {
-                            val time = "%d:%d".format(h, m)
-                            binding.timeEdit.setText(time)
-                        }
-                    }
-                }
-            }
-
-            val picker = TimePickerDialog(requireContext(), timePicker, hourCal, minCal, true)
-            picker.show()
-        }
-
-        binding.calendarButton.setOnClickListener {
-            val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-            val listener = DatePickerDialog.OnDateSetListener { _, i, i2, i3 ->
-                val date = "$i.${i2 + 1}.$i3"
-                binding.dateEdit.setText(date)
-            }
-
-            val picker = DatePickerDialog(requireContext(), listener, year, month, day)
-            picker.show()
-        }
-    }
-
-    private fun transLauncher() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.setDataAndType(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            "image/*"
-        )
-        imageLauncher.launch(intent)
-    }
-
-    private fun permissionCheck() {
-        binding.titleImage.setOnClickListener {
-            transLauncher()
-            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                when {
-                    ContextCompat.checkSelfPermission(requireContext(),
-                        Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
-                    -> {
-                        transLauncher()
-                    }
-                    shouldShowRequestPermissionRationale(Manifest.permission.READ_MEDIA_IMAGES) -> {
-                        AlertDialog.Builder(requireContext())
-                            .setTitle("권한 설정")
-                            .setMessage("내부 저장소를 켜시려면 동의 버튼을 눌러주세요")
-                            .setPositiveButton("동의",
-                                DialogInterface.OnClickListener { _, _ ->
-                                    galleryPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
-                                })
-                            .setNegativeButton("거부",
-                                DialogInterface.OnClickListener { _, _ ->
-                                    Toast.makeText(context, "권한설정을 거부하였습니다.", Toast.LENGTH_SHORT).show()
-                                })
-                            .show()
-                    }
-                    else -> {
-                        galleryPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
-                    }
-                }
-            } else {
-                when {
-                    ContextCompat.checkSelfPermission(requireContext(),
-                        Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                    -> {
-                        transLauncher()
-                    }
-                    shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
-                        AlertDialog.Builder(requireContext())
-                            .setTitle("권한 설정")
-                            .setMessage("내부 저장소를 켜시려면 동의 버튼을 눌러주세요")
-                            .setPositiveButton("동의",
-                                DialogInterface.OnClickListener { _, _ ->
-                                    galleryPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-                                })
-                            .setNegativeButton("거부",
-                                DialogInterface.OnClickListener { _, _ ->
-                                    Toast.makeText(context, "권한설정을 거부하였습니다.", Toast.LENGTH_SHORT).show()
-                                })
-                            .show()
-                    }
-                    else -> {
-                        galleryPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    }
-                }
-            }*/
-        }
-    }
-
-    private fun checkList() {
-        binding.nameEdit.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun afterTextChanged(p0: Editable?) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                dropBox()
-            }
-        })
-
-        binding.costEdit.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun afterTextChanged(p0: Editable?) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                dropBox()
-            }
-        })
-
-        binding.numberCheckEdit.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun afterTextChanged(p0: Editable?) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                dropBox()
-            }
-        })
-
-        binding.textCount.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun afterTextChanged(p0: Editable?) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                dropBox()
-            }
-        })
-
-        binding.etLocation.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun afterTextChanged(p0: Editable?) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                dropBox()
-            }
-        })
-
-        binding.dateEdit.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun afterTextChanged(p0: Editable?) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                dropBox()
-            }
-        })
-
-        binding.timeEdit.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun afterTextChanged(p0: Editable?) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                dropBox()
-            }
-        })
-    }
-
-    private fun dropBox() {
-        binding.completeButton.isClickable =
-            (binding.nameEdit.text.toString().isNotEmpty()
-                    && binding.numberCheckEdit.text.toString().isNotEmpty()
-                    && binding.costEdit.text.toString().isNotEmpty()
-                    && binding.costEdit.text.toString().isNotEmpty()
-                    && binding.textCount.text.toString().isNotEmpty()
-                    && binding.etLocation.text.toString().isNotEmpty()
-                    && binding.dateEdit.text.toString().isNotEmpty()
-                    && binding.timeEdit.text.toString().isNotEmpty())
-        binding.completeButton.isEnabled =
-            (binding.nameEdit.text.toString().isNotEmpty()
-                    && binding.numberCheckEdit.text.toString().isNotEmpty()
-                    && binding.costEdit.text.toString().isNotEmpty()
-                    && binding.costEdit.text.toString().isNotEmpty()
-                    && binding.textCount.text.toString().isNotEmpty()
-                    && binding.etLocation.text.toString().isNotEmpty()
-                    && binding.dateEdit.text.toString().isNotEmpty()
-                    && binding.timeEdit.text.toString().isNotEmpty())
-
-        if (binding.nameEdit.text.toString().isNotEmpty()
-            && binding.numberCheckEdit.text.toString().isNotEmpty()
-            && binding.costEdit.text.toString().isNotEmpty()
-            && binding.costEdit.text.toString().isNotEmpty()
-            && binding.textCount.text.toString().isNotEmpty()
-            && binding.etLocation.text.toString().isNotEmpty()
-            && binding.dateEdit.text.toString().isNotEmpty()
-            && binding.timeEdit.text.toString().isNotEmpty()
-        ) {
-            binding.completeButton.setBackgroundColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.main_color
-                )
-            )
-        } else {
-            binding.completeButton.setBackgroundColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.main_color_transparent_20
-                )
-            )
-        }
-    }
-
-    private fun selectLister() {
-        binding.chipGroup.setOnCheckedStateChangeListener { chipGroup, _ ->
-            val chipType = chipGroup.checkedChipId
-            when (chipType) {
-                R.id.first_type -> {
-                    chipGroupType(ChipType.FIRST)
-                }
-
-                R.id.second_type -> {
-                    chipGroupType(ChipType.SECOND)
-                }
-
-                R.id.third_type -> {
-                    chipGroupType(ChipType.THIRD)
-                }
-
-                R.id.fourth_type -> {
-                    chipGroupType(ChipType.FOURTH)
-                }
-
-                R.id.fifth_type -> {
-                    chipGroupType(ChipType.FIFTH)
-                }
-
-                R.id.sixth_type -> {
-                    chipGroupType(ChipType.SIXTH)
-                }
-
-                R.id.seventh_type -> {
-                    chipGroupType(ChipType.SEVENTH)
-                }
-
-                R.id.eighth_type -> {
-                    chipGroupType(ChipType.EIGHTH)
-                }
-
-                R.id.nineth_type -> {
-                    chipGroupType(ChipType.NINETH)
-                }
-            }
-        }
-    }
-
-    private fun chipGroupType(type: ChipType) {
-        when (type) {
-            ChipType.FIRST -> {
-                chipType = "파스타"
-                finalCheck()
-                checkList()
-            }
-
-            ChipType.SECOND -> {
-                chipType = "찌개"
-                finalCheck()
-                checkList()
-            }
-
-            ChipType.THIRD -> {
-                chipType = "백반"
-                finalCheck()
-                checkList()
-            }
-
-            ChipType.FOURTH -> {
-                chipType = "구이"
-                finalCheck()
-                checkList()
-            }
-
-            ChipType.FIFTH -> {
-                chipType = "떡볶이"
-                finalCheck()
-                checkList()
-            }
-
-            ChipType.SIXTH -> {
-                chipType = "샌드위치"
-                finalCheck()
-                checkList()
-            }
-
-            ChipType.SEVENTH -> {
-                chipType = "베이커리"
-                finalCheck()
-                checkList()
-            }
-
-            ChipType.EIGHTH -> {
-                chipType = "전"
-                finalCheck()
-                checkList()
-            }
-
-            ChipType.NINETH -> {
-                chipType = "기타"
-                finalCheck()
-                checkList()
-            }
-        }
-    }
-
-    private fun finalCheck() {
-        if (binding.nameEdit.text.toString().isNotEmpty()
-            && binding.numberCheckEdit.text.toString().isNotEmpty()
-            && binding.costEdit.text.toString().isNotEmpty()
-            && binding.costEdit.text.toString().isNotEmpty()
-            && binding.textCount.text.toString().isNotEmpty()
-            && binding.etLocation.text.toString().isNotEmpty()
-            && binding.dateEdit.text.toString().isNotEmpty()
-            && binding.timeEdit.text.toString().isNotEmpty()
-        ) {
-            dropBox()
-        } else {
-            Toast.makeText(requireContext(), "작성하지 않은부분이 있습니다.", Toast.LENGTH_SHORT).show()
-        }
     }
 }

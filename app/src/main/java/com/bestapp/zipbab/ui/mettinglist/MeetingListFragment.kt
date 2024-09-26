@@ -163,7 +163,7 @@ class MeetingListFragment : Fragment() {
         iv.clipToOutline = true
 
         tvTitle.text = meetingListUi.title
-        tvLocation.text = meetingListUi.placeLocationArgs.locationAddress
+        tvLocation.text = meetingListUi.address
 
         itemMyMeeting.visibility = View.VISIBLE
     }

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.verification.VerificationFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/abl"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/mt"
+            style="@style/AppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:navigationIcon="@drawable/baseline_arrow_back_24"
+            app:title="@string/verification_app_bar"
+            app:titleCentered="true" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <TextView
+        android:id="@+id/tv_email_header"
+        style="@style/body_title16"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/default_margin20"
+        android:layout_marginTop="@dimen/default_margin16"
+        android:text="@string/verification_email"
+        app:layout_constraintEnd_toStartOf="@id/tv_email_action"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/abl" />
+
+    <TextView
+        android:id="@+id/tv_email_body"
+        style="@style/body_content14"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/gray"
+        app:layout_constraintEnd_toEndOf="@id/tv_email_header"
+        app:layout_constraintStart_toStartOf="@id/tv_email_header"
+        app:layout_constraintTop_toBottomOf="@id/tv_email_header"
+        tools:text="naver@naver.com" />
+
+    <TextView
+        android:id="@+id/tv_email_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/default_margin20"
+        android:gravity="center"
+        android:minWidth="@dimen/default_margin48"
+        android:minHeight="@dimen/default_margin48"
+        android:textColor="@color/main_color"
+        app:layout_constraintBottom_toBottomOf="@id/tv_email_body"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_email_header"
+        tools:text="@string/verification_change" />
+
+    <TextView
+        android:id="@+id/tv_phone_header"
+        style="@style/body_title16"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/default_margin20"
+        android:layout_marginTop="@dimen/default_margin16"
+        android:text="@string/verification_phone"
+        app:layout_constraintEnd_toStartOf="@id/tv_phone_action"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_email_action" />
+
+    <TextView
+        android:id="@+id/tv_phone_body"
+        style="@style/body_content14"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/gray"
+        app:layout_constraintEnd_toEndOf="@id/tv_phone_header"
+        app:layout_constraintStart_toStartOf="@id/tv_phone_header"
+        app:layout_constraintTop_toBottomOf="@id/tv_phone_header"
+        tools:text="-" />
+
+    <TextView
+        android:id="@+id/tv_phone_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/default_margin20"
+        android:gravity="center"
+        android:minWidth="@dimen/default_margin48"
+        android:enabled="false"
+        android:minHeight="@dimen/default_margin48"
+        android:textColor="@color/main_color"
+        app:layout_constraintBottom_toBottomOf="@id/tv_phone_body"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_phone_header"
+        tools:text="@string/verification_register" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

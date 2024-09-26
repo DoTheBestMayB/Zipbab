@@ -20,8 +20,8 @@ android {
         applicationId = "com.bestapp.zipbab"
         minSdk = 26
         targetSdk = 34
-        versionCode = 9
-        versionName = "1.0.8"
+        versionCode = 10
+        versionName = "1.0.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -75,6 +75,9 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.hilt.work)
 
+    // webkit
+    implementation(libs.androidx.webkit.webkit)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -110,4 +113,5 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.firebase.auth.ktx)
 }

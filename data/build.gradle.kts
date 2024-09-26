@@ -28,6 +28,7 @@ android {
         buildConfigField("String", "KAKAO_ADMIN_KEY", getValue("kakao_admin_key"))
         buildConfigField("String", "GOOGLE_TOKEN_BASE_URL", getValue("google_token_base_url"))
         buildConfigField("String", "GOOGLE_REFRESH_BASE_URL", getValue("google_refresh_base_url"))
+        buildConfigField("String", "FIREBASE_HOSTING_LINK", getValue("firebase_hosting_link"))
     }
 
     buildTypes {
@@ -82,7 +83,11 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.firebase.auth.ktx)
 
+    implementation(libs.gms.play.service.auth)
+
+    // test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

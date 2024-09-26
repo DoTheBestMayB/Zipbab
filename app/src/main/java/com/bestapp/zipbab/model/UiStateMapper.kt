@@ -14,10 +14,12 @@ import com.bestapp.zipbab.data.model.remote.Review
 import com.bestapp.zipbab.data.model.remote.SignUpResponse
 import com.bestapp.zipbab.data.model.remote.TermInfoResponse
 import com.bestapp.zipbab.data.model.remote.UserResponse
+import com.bestapp.zipbab.data.model.remote.VerifyStateEntity
 import com.bestapp.zipbab.ui.mettinginfo.MemberInfo
 import com.bestapp.zipbab.ui.profileedit.ProfileEditUiState
 import com.bestapp.zipbab.ui.profilepostimageselect.model.PostGalleryUiState
 import com.bestapp.zipbab.ui.profilepostimageselect.model.SelectedImageUiState
+import com.bestapp.zipbab.ui.recruitment.viewpager.categoryselect.FoodCategory
 import com.bestapp.zipbab.ui.signup.SignUpState
 
 // Data -> UiState
@@ -41,17 +43,24 @@ fun FilterResponse.Food.toUi() = FilterUiState.FoodUiState(
     name = name,
 )
 
+fun FilterResponse.Food.toCategory() = FoodCategory(
+    name = name,
+    isSelected = false,
+)
+
 fun MeetingResponse.toUi() = MeetingUiState(
     meetingDocumentID = meetingDocumentID,
     title = title,
     titleImage = titleImage,
-    placeLocationUiState = placeLocation.toUi(),
-    time = time,
-    recruits = recruits,
+    address = address,
+    zipCode = zipCode,
+    date = date,
+    hour = hour,
+    minute = minute,
+    participantCount = participantCount,
     description = description,
-    mainMenu = mainMenu,
+    mainMenu = category,
     costValueByPerson = costValueByPerson,
-    costTypeByPerson = costTypeByPerson,
     hostUserDocumentID = hostUserDocumentID,
     members = members,
     pendingMembers = pendingMembers,
@@ -96,7 +105,19 @@ fun UserResponse.toUi() = UserUiState(
     meetingReviews = meetingReviews,
     postDocumentIds = posts,
     placeLocationUiState = placeLocation.toUi(),
+    verifiedEmail = verifiedEmail,
+    verifiedPhone = verifiedPhone,
 )
+
+fun VerifyStateEntity.toUi(): VerifyState {
+    return when(this) {
+        VerifyStateEntity.AlreadyUsedEmail -> VerifyState.AlreadyUsedEmail
+        VerifyStateEntity.Fail -> VerifyState.Fail
+        VerifyStateEntity.FailAtSendVerificationEmail -> VerifyState.FailAtSendVerificationEmail
+        VerifyStateEntity.Success -> VerifyState.Success
+        VerifyStateEntity.PasswordTooShort -> VerifyState.PasswordTooShort
+    }
+}
 
 fun UploadStateEntity.toArgs(): UploadState {
     return when (this) {

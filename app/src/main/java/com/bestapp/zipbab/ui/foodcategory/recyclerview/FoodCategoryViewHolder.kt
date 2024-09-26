@@ -22,7 +22,7 @@ class FoodCategoryViewHolder(
     ) {
         binding.iv.load(meetingUiState.titleImage)
         binding.tvTitle.text = meetingUiState.title
-        binding.tvLocation.text = meetingUiState.placeLocationUiState.locationAddress
+        binding.tvLocation.text = meetingUiState.address
         binding.root.setOnClickListener {
             onFoodCategoryClick(meetingUiState)
         }

@@ -1,6 +1,9 @@
 package com.bestapp.zipbab.data.repository
 
+import android.net.Uri
+import com.bestapp.zipbab.data.model.remote.MeetingCreationInfo
 import com.bestapp.zipbab.data.model.remote.MeetingResponse
+import com.bestapp.zipbab.data.model.remote.isEmptyData
 import com.bestapp.zipbab.data.remote.datasource.MeetingRemoteDataSource
 import javax.inject.Inject
 
@@ -42,8 +45,16 @@ internal class MeetingRepositoryImpl @Inject constructor(
         return meetingRemoteDataSource.getCostMeeting(costType, onlyActivation)
     }
 
-    override suspend fun createMeeting(meetingResponse: MeetingResponse): Boolean {
-        return meetingRemoteDataSource.createMeeting(meetingResponse)
+    override suspend fun createMeeting(meetingCreationInfo: MeetingCreationInfo): Boolean {
+        val imageUrl = if (meetingCreationInfo.profileUri.isNotBlank()) {
+            storageRepository.uploadImage(Uri.parse(meetingCreationInfo.profileUri))
+        } else {
+            meetingCreationInfo.profileUri
+        }
+
+        return meetingRemoteDataSource.createMeeting(meetingCreationInfo.copy(
+            profileUri = imageUrl,
+        ))
     }
 
     override suspend fun updateAttendanceCheckMeeting(

@@ -24,7 +24,7 @@ class SearchAdapter(
             }
 
             binding.tvTitle.text = meetingUiState.title
-            binding.tvLocation.text = meetingUiState.placeLocationUiState.locationAddress
+            binding.tvLocation.text = meetingUiState.address
             binding.iv.load(meetingUiState.titleImage)
         }
     }

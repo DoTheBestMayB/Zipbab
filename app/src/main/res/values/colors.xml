@@ -40,4 +40,8 @@
     <color name="snackbar_text">#ffffff</color>
     <color name="bottomsheet_background_color">#FFFFFF</color>
     <color name="instruction_view_color">#202123</color>
+
+    <color name="step_selected_color">#FF000000</color>
+    <color name="step_not_selected_color">#D3D3D3</color>
+    <color name="category_select_color">#2E3034</color>
 </resources>

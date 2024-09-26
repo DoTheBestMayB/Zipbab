@@ -1,5 +1,6 @@
 package com.bestapp.zipbab.data.repository
 
+import com.bestapp.zipbab.data.model.remote.MeetingCreationInfo
 import com.bestapp.zipbab.data.model.remote.MeetingResponse
 
 interface MeetingRepository {
@@ -17,7 +18,7 @@ interface MeetingRepository {
 
     suspend fun getCostMeeting(costType: Int, onlyActivation: Boolean = true): List<MeetingResponse>
 
-    suspend fun createMeeting(meetingResponse: MeetingResponse): Boolean
+    suspend fun createMeeting(meetingCreationInfo: MeetingCreationInfo): Boolean
 
     suspend fun updateAttendanceCheckMeeting(
         meetingDocumentID: String,

@@ -26,4 +26,6 @@ interface UserRemoteDataSource {
     suspend fun updateProfileImage(userDocumentID: String, imageUri: String): Boolean
 
     suspend fun addPost(userDocumentID: String, postDocumentId: String): Boolean
+
+    suspend fun updateEmail(userDocumentID: String, email: String): Boolean
 }

@@ -1,9 +1,8 @@
 package com.bestapp.zipbab.model
 
 /**
- * Empty -> default parameter로 대체하기
- * Pacelable을 위한 별도의 클래스 만들기
- * sealed interface로 loading
+ * @property verifiedEmail 인증된 이메일
+ * @property verifiedPhone 인증된 전화번호
  */
 data class UserUiState(
     val userDocumentID: String = "",
@@ -17,6 +16,8 @@ data class UserUiState(
     val meetingReviews: List<String> = listOf(),
     val postDocumentIds: List<String> = listOf(),
     val placeLocationUiState: PlaceLocationUiState = PlaceLocationUiState(),
+    val verifiedEmail: String = "",
+    val verifiedPhone: String = "",
 ) {
     val isLoggedIn: Boolean
         get() = userDocumentID.isNotBlank()

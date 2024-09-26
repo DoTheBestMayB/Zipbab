@@ -12,6 +12,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -86,6 +87,10 @@ class SettingFragment : Fragment() {
         viewProfile.tvTitle.text = getString(R.string.setting_profile_row_title)
         viewProfile.tvDescription.text = getString(R.string.setting_profile_row_description)
         viewProfile.ivIcon.setImageResource(R.drawable.baseline_person_24)
+
+        viewVerification.tvTitle.text = getString(R.string.setting_verification_row_title)
+        viewVerification.tvDescription.text = getString(R.string.setting_verification_row_description)
+        viewVerification.ivIcon.setImageResource(R.drawable.baseline_verified_user_24)
 
         viewMeeting.tvTitle.text = getString(R.string.setting_meeting_row_title)
         viewMeeting.tvDescription.text = getString(R.string.setting_meeting_row_description)
@@ -231,6 +236,14 @@ class SettingFragment : Fragment() {
                 SettingFragmentDirections.actionSettingFragmentToProfileFragment(userUiState.userDocumentID)
             action.safeNavigate(this@SettingFragment)
         }
+        viewVerification.root.setOnClickListener {
+            if (isNotLoadingYet) {
+                showNotYetLoaded(getString(R.string.user_info))
+                return@setOnClickListener
+            }
+            val action = SettingFragmentDirections.actionSettingFragmentToVerificationFragment()
+            action.safeNavigate(this@SettingFragment)
+        }
         viewMeeting.root.setOnClickListener {
             if (isNotLoadingYet) {
                 showNotYetLoaded(getString(R.string.user_info))
@@ -337,17 +350,11 @@ class SettingFragment : Fragment() {
     }
 
     private fun setMeetingAndProfileEnabled(isEnabled: Boolean) = with(binding) {
-        viewProfile.root.isEnabled = isEnabled
-        viewProfile.tvTitle.isEnabled = isEnabled
-        viewProfile.tvDescription.isEnabled = isEnabled
-        viewProfile.ivIcon.isEnabled = isEnabled
-        viewProfile.ivEnter.isEnabled = isEnabled
-
-        viewMeeting.root.isEnabled = isEnabled
-        viewMeeting.tvTitle.isEnabled = isEnabled
-        viewMeeting.tvDescription.isEnabled = isEnabled
-        viewMeeting.ivIcon.isEnabled = isEnabled
-        viewMeeting.ivEnter.isEnabled = isEnabled
+        listOf(viewProfile.root, viewVerification.root, viewMeeting.root).forEach { layout ->
+            layout.children.forEach { view ->
+                view.isEnabled = isEnabled
+            }
+        }
     }
 
     fun dispatchTouchEvent(event: MotionEvent): Boolean {

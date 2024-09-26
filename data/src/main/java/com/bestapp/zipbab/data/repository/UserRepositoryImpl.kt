@@ -42,6 +42,7 @@ internal class UserRepositoryImpl @Inject constructor(
     private val meetingRepository: MeetingRepository,
     private val postRepository: PostRepository,
     private val userLocalDataSource: UserLocalDataSource,
+    private val verifyRepository: VerifyRepository,
     @ApplicationContext private val context: Context,
     moshi: Moshi,
 ) : UserRepository {
@@ -94,6 +95,13 @@ internal class UserRepositoryImpl @Inject constructor(
         // 프로필 이미지 삭제하기
         deleteUserProfileImage(userDocumentID)
 
+        // 인증 정보 삭제하기
+        val userResponse = getUser(userDocumentID)
+        val isRemoveAuthSuccess = verifyRepository.removeAuth(userResponse.pw)
+        if (isRemoveAuthSuccess.not()) {
+            return SignOutEntity.Fail
+        }
+
         // 회원 탈퇴하기
         val isSuccess = userRemoteDataSource.signOutUser(userDocumentID)
 
@@ -145,6 +153,10 @@ internal class UserRepositoryImpl @Inject constructor(
     override suspend fun deleteUserProfileImage(userDocumentID: String) {
         val userResponse = userRemoteDataSource.getUser(userDocumentID)
         storageRepository.deleteImage(userResponse.profileImage)
+    }
+
+    override suspend fun updateEmail(userDocumentID: String, email: String): Boolean {
+        return userRemoteDataSource.updateEmail(userDocumentID, email)
     }
 
     override fun addPostWithAsync(
