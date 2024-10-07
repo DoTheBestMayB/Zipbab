@@ -6,6 +6,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ImageArgs(
-    val uri: Uri,
-    val name: String,
+    val uri: Uri = Uri.EMPTY,
+    val name: String = "",
 ) : Parcelable

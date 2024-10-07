@@ -20,6 +20,7 @@ hiltNavigation = "1.2.0"
 work = "2.9.0"
 androidxHilt = "1.2.0"
 paging = "3.3.0"
+webkit = "1.9.0"
 
 compose-bom = "2024.06.00"
 
@@ -43,6 +44,8 @@ ballon = "1.6.5"
 mapSdk = "3.18.0"
 playServicesLocation = "21.3.0"
 
+playServiceAuth = "21.2.0"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -53,9 +56,10 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
-androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work"}
-androidx-hilt-compiler = { group = "androidx.hilt", name="hilt-compiler", version.ref = "androidxHilt" }
-androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging"}
+androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
+androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "androidxHilt" }
+androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
+androidx-webkit-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
 
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
@@ -66,10 +70,10 @@ androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "l
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose" }
 
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
-hilt-compiler = { group = "com.google.dagger", name="hilt-compiler", version.ref="hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 hilt-navigation-fragment = { module = "androidx.hilt:hilt-navigation-fragment", version.ref = "hiltNavigation" }
-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref="androidxHilt"}
+hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "androidxHilt" }
 
 # naverMap, GooglePlayServicesLocation
 map-sdk = { module = "com.naver.maps:map-sdk", version.ref = "mapSdk" }
@@ -100,6 +104,9 @@ firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
 firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
 firebase-perf-ktx = { group = "com.google.firebase", name = "firebase-perf-ktx", version.ref = "firebasePerfKtx" }
+firebase-firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx" }
+
+gms-play-service-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServiceAuth" }
 
 # dataStore
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }

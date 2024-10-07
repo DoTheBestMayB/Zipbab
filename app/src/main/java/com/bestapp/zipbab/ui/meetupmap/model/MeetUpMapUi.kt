@@ -1,22 +1,23 @@
 package com.bestapp.zipbab.ui.meetupmap.model
 
 import com.bestapp.zipbab.data.model.remote.MeetingResponse
-import com.bestapp.zipbab.args.PlaceLocationArgs
-import com.bestapp.zipbab.args.toUi
 
 data class MeetUpMapUi(
     val meetingDocumentID: String,
     val title: String,
     val titleImage: String,
-    val placeLocationArgs: PlaceLocationArgs,
-    val time: String,
-    val recruits: Int,
+    val address: String,
+    val latitude: Double,
+    val longitude: Double,
+    val zipCode: String,
+    val date: String,
+    val hour: Int,
+    val minute: Int,
+    val participantCount: Int,
     val description: String,
     val mainMenu: String,
     val costValueByPerson: Int,
-    val costTypeByPerson: Int,
     val hostUserDocumentID: String,
-    val hostTemperature: Double,
     val members: List<String>,
     val pendingMembers: List<String>,
     val attendanceCheck: List<String>,
@@ -34,24 +35,27 @@ data class MeetUpMapUi(
         }
 }
 
-fun MeetingResponse.toUi(distance: Double, isHost: Boolean) = MeetUpMapUi(
+fun MeetingResponse.toUi(distance: Double, isHost: Boolean, latitude: Double, longitude: Double) = MeetUpMapUi(
     meetingDocumentID = meetingDocumentID,
     title = title,
     titleImage = titleImage,
-    placeLocationArgs = placeLocation.toUi(),
-    time = time,
-    recruits = recruits,
+    address = address,
+    latitude = latitude,
+    longitude = longitude,
+    zipCode = zipCode,
+    date = date,
+    hour = hour,
+    minute = minute,
+    participantCount = participantCount,
     description = description,
-    mainMenu = mainMenu,
+    mainMenu = category,
     costValueByPerson = costValueByPerson,
-    costTypeByPerson = costTypeByPerson,
     hostUserDocumentID = hostUserDocumentID,
-    hostTemperature = hostTemperature,
     members = members,
     pendingMembers = pendingMembers,
     attendanceCheck = attendanceCheck,
     activation = activation,
     distance = distance,
     distanceByUser = "",
-    isHost = isHost
+    isHost = isHost,
 )

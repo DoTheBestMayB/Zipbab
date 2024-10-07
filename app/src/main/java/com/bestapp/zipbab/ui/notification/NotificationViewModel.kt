@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bestapp.zipbab.data.model.remote.NotificationTypeResponse
 import com.bestapp.zipbab.data.model.remote.UserResponse
-import com.bestapp.zipbab.data.notification.fcm.PushNotification
 import com.bestapp.zipbab.data.repository.AppSettingRepository
 import com.bestapp.zipbab.data.repository.MeetingRepository
 import com.bestapp.zipbab.data.repository.NotificationRepository
@@ -32,7 +31,7 @@ class NotificationViewModel @Inject constructor (
         }
     }
 
-    fun sendMsgKaKao(message: PushNotification, token: String) = viewModelScope.launch {
+    fun sendMsgKaKao(message: com.bestapp.zipbab.data.remote.notification.fcm.PushNotification, token: String) = viewModelScope.launch {
         notificationRepository.sendNotification(message, token)
     }
 

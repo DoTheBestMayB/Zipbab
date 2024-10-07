@@ -36,9 +36,17 @@ class MeetUpListAdapter(
             tvTitle.text = meetUpMapUi.title
             tvDistance.text = meetUpMapUi.distanceByUser
 
-            tvDateTime.text = meetUpMapUi.time
+            val meetTime = root.context.getString(R.string.time_format).format(
+                meetUpMapUi.hour,
+                meetUpMapUi.minute,
+                0,
+            )
+            tvDateTime.text = root.context.getString(R.string.meeting_info_time).format(
+                meetUpMapUi.date,
+                meetTime
+            )
             tvPeopleCount.text = root.context.getString(R.string.meet_up_map_recruits)
-                .format(meetUpMapUi.members.size + HOST_COUNT, meetUpMapUi.recruits)
+                .format(meetUpMapUi.members.size + HOST_COUNT, meetUpMapUi.participantCount)
             tvPrice.text = root.context.getString(R.string.meet_up_map_price)
                 .format(meetUpMapUi.costValueByPerson)
             tvDescription.text = meetUpMapUi.description

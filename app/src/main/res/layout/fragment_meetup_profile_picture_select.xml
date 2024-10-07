@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.recruitment.viewpager.profile.MeetupProfilePictureSelectFragment">
+
+    <TextView
+        android:id="@+id/tv_header"
+        style="@style/header_title20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin20"
+        android:layout_marginTop="@dimen/default_margin16"
+        android:text="@string/meetup_profile_picture_select_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_body"
+        style="@style/body_content16"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/default_margin20"
+        android:layout_marginTop="@dimen/default_margin24"
+        android:text="@string/meetup_profile_picture_select_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_header" />
+
+    <ImageView
+        android:id="@+id/iv_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin20"
+        android:layout_marginTop="@dimen/default_margin16"
+        android:background="@drawable/background_outline_square"
+        android:padding="@dimen/default_margin12"
+        android:src="@drawable/baseline_photo_camera_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_body" />
+
+    <View
+        android:id="@+id/v_preview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/default_margin20"
+        android:layout_marginTop="@dimen/default_margin16"
+        android:background="@drawable/background_outline_square"
+        app:layout_constraintBottom_toBottomOf="@id/iv_preview_menu_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_profile" />
+
+    <ImageView
+        android:id="@+id/iv_preview_profile"
+        style="@style/GalleryItemStyle"
+        android:layout_width="@dimen/profile_image72"
+        android:layout_height="@dimen/profile_image72"
+        android:background="@drawable/background_outline_square"
+        android:layout_marginStart="@dimen/default_margin16"
+        app:layout_constraintBottom_toBottomOf="@id/v_preview"
+        app:layout_constraintStart_toStartOf="@id/v_preview"
+        app:layout_constraintTop_toTopOf="@id/v_preview"
+        tools:src="@drawable/sample_image_salary" />
+
+    <TextView
+        android:id="@+id/tv_preview_title"
+        style="@style/header_title18"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin16"
+        android:layout_marginTop="@dimen/default_margin16"
+        app:layout_constraintStart_toEndOf="@id/iv_preview_profile"
+        app:layout_constraintTop_toTopOf="@id/v_preview"
+        tools:text="모임명" />
+
+    <TextView
+        android:id="@+id/tv_preview_description"
+        style="@style/body_content16"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/default_margin16"
+        android:layout_marginBottom="@dimen/default_margin12"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintEnd_toEndOf="@id/v_preview"
+        app:layout_constraintStart_toEndOf="@id/iv_preview_profile"
+        app:layout_constraintTop_toBottomOf="@id/tv_preview_title"
+        tools:text="모임 설명입니다. 모임 설명입니다. 모임 설명입니다. " />
+
+    <ImageView
+        android:id="@+id/iv_preview_location_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="@dimen/default_margin16"
+        android:layout_marginTop="@dimen/default_margin8"
+        android:src="@drawable/location"
+        app:layout_constraintStart_toEndOf="@id/iv_preview_profile"
+        app:layout_constraintTop_toBottomOf="@id/tv_preview_description" />
+
+    <TextView
+        android:id="@+id/tv_preview_location"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin8"
+        android:layout_marginEnd="@dimen/default_margin16"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintEnd_toEndOf="@id/v_preview"
+        app:layout_constraintStart_toEndOf="@id/iv_preview_location_icon"
+        app:layout_constraintTop_toTopOf="@id/iv_preview_location_icon"
+        tools:text="서울 영등포구 여의대로 8" />
+
+    <ImageView
+        android:id="@+id/iv_preview_menu_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin16"
+        android:layout_marginTop="@dimen/default_margin4"
+        android:layout_marginBottom="@dimen/default_margin16"
+        android:paddingBottom="@dimen/default_margin16"
+        android:src="@drawable/restaurant_menu_24"
+        app:layout_constraintStart_toEndOf="@id/iv_preview_profile"
+        app:layout_constraintTop_toBottomOf="@id/iv_preview_location_icon" />
+
+    <TextView
+        android:id="@+id/tv_preview_menu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin8"
+        android:layout_marginEnd="@dimen/default_margin16"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintEnd_toEndOf="@id/v_preview"
+        app:layout_constraintStart_toEndOf="@id/iv_preview_menu_icon"
+        app:layout_constraintTop_toTopOf="@id/iv_preview_menu_icon"
+        tools:text="샐러드" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

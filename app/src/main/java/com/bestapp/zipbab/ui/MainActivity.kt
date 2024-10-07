@@ -1,5 +1,7 @@
 package com.bestapp.zipbab.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -14,11 +16,15 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
+import com.bestapp.zipbab.BuildConfig
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.databinding.ActivityMainBinding
 import com.bestapp.zipbab.ui.profile.ProfileFragment
 import dagger.hilt.android.AndroidEntryPoint
 import com.bestapp.zipbab.ui.setting.SettingFragment
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -30,10 +36,20 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
 
+        configureFirebaseServices()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUi()
         setNavController()
+        handleIntent(intent)
+    }
+
+    private fun configureFirebaseServices() {
+        // DUBUG시 실제 FirebaseDB가 아닌 로컬 DB에서 테스트하기 위한 설정 코드
+//        if (BuildConfig.DEBUG) {
+//            Firebase.auth.useEmulator(LOCALHOST, AUTH_PORT)
+//            Firebase.firestore.useEmulator(LOCALHOST, FIRESTORE_PORT)
+//        }
     }
 
     private fun setUi() {
@@ -68,6 +84,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun handleIntent(intent: Intent) {
+        val appLinkData: Uri? = intent.data
+        if (Intent.ACTION_VIEW == intent.action) {
+            intent.data?.lastPathSegment?.also { recipeId ->
+                Uri.parse("content://")
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+
+        handleIntent(intent)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val navController = findNavController(R.id.fcv)
         return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
@@ -75,7 +106,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         if (ev == null) {
-            return super.dispatchTouchEvent(ev)
+            return super.dispatchTouchEvent(null)
         }
         val fragment =
             supportFragmentManager.findFragmentById(R.id.fcv)?.childFragmentManager?.fragments?.lastOrNull()
@@ -94,5 +125,11 @@ class MainActivity : AppCompatActivity() {
 
             else -> return super.dispatchTouchEvent(ev)
         }
+    }
+
+    companion object {
+        private const val LOCALHOST = "10.0.2.2"
+        private const val AUTH_PORT = 9099
+        private const val FIRESTORE_PORT = 8080
     }
 }

@@ -100,20 +100,24 @@ class MeetingInfoFragment : Fragment() {
                     viewModel.meeting.collect { meetingUiState ->
                         binding.ivMeetingImage.load(meetingUiState.titleImage)
                         binding.tvTitle.text = meetingUiState.title
-                        binding.tvPeopleCount.text =
-                            resources.getString(R.string.meeting_info_count).format(
-                                meetingUiState.members.size + HOST_COUNT, meetingUiState.recruits
-                            )
-                        binding.tvLocation.text =
-                            meetingUiState.placeLocationUiState.locationAddress
-                        binding.tvTime.text = meetingUiState.time
-                        binding.tvMainMenu.text = meetingUiState.mainMenu
-                        binding.tvCost.text = String.format(
-                            resources.getString(
-                                R.string.meeting_info_cost,
-                                meetingUiState.costValueByPerson
-                            )
+                        binding.tvPeopleCount.text = getString(R.string.meeting_info_count).format(
+                            meetingUiState.members.size + HOST_COUNT,
+                            meetingUiState.participantCount
                         )
+                        binding.tvLocation.text = meetingUiState.address
+
+                        val meetTime = getString(R.string.time_format).format(
+                            meetingUiState.hour,
+                            meetingUiState.minute,
+                            0,
+                        )
+                        binding.tvTime.text = getString(R.string.meeting_info_time).format(
+                            meetingUiState.date,
+                            meetTime
+                        )
+                        binding.tvMainMenu.text = meetingUiState.mainMenu
+                        binding.tvCost.text =
+                            getString(R.string.meeting_info_cost).format(meetingUiState.costValueByPerson)
                         binding.tvContent.text = meetingUiState.description
                     }
                 }
@@ -128,7 +132,8 @@ class MeetingInfoFragment : Fragment() {
 
                             RegisterState.NotLoggedIn -> {
                                 binding.btnRegister.isEnabled = false
-                                binding.btnRegister.text = getString(R.string.meeting_register_not_logged_in)
+                                binding.btnRegister.text =
+                                    getString(R.string.meeting_register_not_logged_in)
                             }
 
                             RegisterState.NotYet -> {

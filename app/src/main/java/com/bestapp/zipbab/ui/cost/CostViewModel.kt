@@ -3,13 +3,13 @@ package com.bestapp.zipbab.ui.cost
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bestapp.zipbab.args.FilterArgs
 import com.bestapp.zipbab.data.repository.AppSettingRepository
 import com.bestapp.zipbab.data.repository.CategoryRepository
 import com.bestapp.zipbab.data.repository.MeetingRepository
 import com.bestapp.zipbab.model.FilterUiState
 import com.bestapp.zipbab.model.MeetingUiState
-import com.bestapp.zipbab.args.FilterArgs
-import com.bestapp.zipbab.model.toUiState
+import com.bestapp.zipbab.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +23,7 @@ class CostViewModel @Inject constructor(
     private val meetingRepository: MeetingRepository,
     private val categoryRepository: CategoryRepository,
     private val appSettingRepository: AppSettingRepository,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _meetingList = MutableStateFlow<List<MeetingUiState>>(emptyList())
@@ -37,9 +37,7 @@ class CostViewModel @Inject constructor(
     val goMeetingNavi: SharedFlow<Pair<MoveMeetingNavi, String>>
         get() = _goMeetingNavi
 
-    private val _isLogin = MutableStateFlow<Boolean>(false)
-    val isLogin: StateFlow<Boolean>
-        get() = _isLogin
+    private val isLogin = MutableStateFlow(false)
 
     private var selectCost = DEFAULT_COST_TYPE
     private var selectIndex = DEFAULT_INDEX
@@ -51,24 +49,17 @@ class CostViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            runCatching {
-                categoryRepository.getCostCategory()
-            }.onSuccess {
-                val costUiStateList = it.mapIndexed { index, filter ->
-                    savedStateHandle.get<FilterArgs.CostArgs>("costCategory")
-                        ?.let { costUiState ->
-                            if (costUiState.type == filter.toUiState().type) {
-                                selectIndex = index
-                            }
-                        }
-                    filter.toUiState()
-
+            val costUiStateList =
+                categoryRepository.getCostCategory().cost.mapIndexed { index, filter ->
+                    if (filter.toUi().type == selectCost) {
+                        selectIndex = index
+                    }
+                    filter.toUi()
                 }
-                _costCategory.value = costUiStateList
+            _costCategory.value = costUiStateList
 
-                appSettingRepository.userDocumentID.collect { userDocumentId ->
-                    _isLogin.emit(userDocumentId.isNotEmpty())
-                }
+            appSettingRepository.userDocumentID.collect { userDocumentId ->
+                isLogin.emit(userDocumentId.isNotEmpty())
             }
         }
 
@@ -81,7 +72,7 @@ class CostViewModel @Inject constructor(
             }.onSuccess {
 
                 val meetingUiStateList = it.map { meeting ->
-                    meeting.toUiState()
+                    meeting.toUi()
                 }
                 _meetingList.emit(meetingUiStateList)
             }

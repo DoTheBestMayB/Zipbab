@@ -27,7 +27,6 @@ import com.bestapp.zipbab.model.MeetingBadge
 import com.bestapp.zipbab.model.PostUiState
 import com.bestapp.zipbab.model.UploadState
 import com.bestapp.zipbab.model.UserTemperature
-import com.bestapp.zipbab.model.toProfileEditArgs
 import com.bestapp.zipbab.ui.profile.util.PostLinearSnapHelper
 import com.bestapp.zipbab.ui.profile.util.SnapOnScrollListener
 import com.bestapp.zipbab.ui.profileedit.ProfileEditFragment

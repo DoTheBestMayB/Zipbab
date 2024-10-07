@@ -141,7 +141,8 @@ class LoginFragment : Fragment() {
 
                             LoginState.Success -> {
                                 loginViewModel.onLoginStateUsed()
-                                if (!findNavController().popBackStack()) {
+
+                                if (!findNavController().popBackStack(R.id.loginGraph, true)) {
                                     requireActivity().finish()
                                 }
                             }

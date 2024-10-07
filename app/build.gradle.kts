@@ -20,8 +20,8 @@ android {
         applicationId = "com.bestapp.zipbab"
         minSdk = 26
         targetSdk = 34
-        versionCode = 9
-        versionName = "1.0.8"
+        versionCode = 10
+        versionName = "1.0.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -29,7 +29,6 @@ android {
         buildConfigField("String", "KAKAO_NATIVE_KEY", getValue("kakao_map_native_key"))
         buildConfigField("String", "KAKAO_REST_API_KEY", getValue("kakao_map_rest_api_key"))
         buildConfigField("String", "KAKAO_MAP_BASE_URL", getValue("kakao_map_base_url"))
-        buildConfigField("String", "KAKAO_NOTIFY_BASE_URL", getValue("kakao_notify_base_url"))
         buildConfigField("String", "KAKAO_ADMIN_KEY", getValue("kakao_admin_key"))
         buildConfigField("String", "GOOGLE_TOKEN_BASE_URL", getValue("google_token_base_url"))
         buildConfigField("String", "GOOGLE_REFRESH_BASE_URL", getValue("google_refresh_base_url"))
@@ -90,6 +89,9 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.hilt.work)
 
+    // webkit
+    implementation(libs.androidx.webkit.webkit)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -129,4 +131,5 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.firebase.auth.ktx)
 }

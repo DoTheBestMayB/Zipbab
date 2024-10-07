@@ -24,14 +24,14 @@ fun haversine(latlng1: LatLng, latlng2: LatLng) =
     haversine(latlng1.latitude, latlng1.longitude, latlng2.latitude, latlng2.longitude)
 
 fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-    val R = 6371.0 // 지구 반지름 (킬로미터)
+    val r = 6371.0 // 지구 반지름 (킬로미터)
     val dLat = Math.toRadians(lat2 - lat1)
     val dLon = Math.toRadians(lon2 - lon1)
     val a = sin(dLat / 2) * sin(dLat / 2) +
             cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
             sin(dLon / 2) * sin(dLon / 2)
     val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-    return R * c // 거리 (킬로미터)
+    return r * c // 거리 (킬로미터)
 }
 
 fun NaverMap.switchNightMode(isEnable: Boolean, meetingMarkers: List<Marker>) {
@@ -68,7 +68,7 @@ fun addMeetingMarkers(
     meetUpMapUiState: MeetUpMapUiState,
     goMeetingDetailFragment: (String, Boolean) -> Unit
 ): List<Marker> {
-    var markerList = MutableList<Marker>(meetUpMapUiState.meetUpMapMeetingUis.size) { Marker() }
+    val markerList = MutableList(meetUpMapUiState.meetUpMapMeetingUis.size) { Marker() }
     val makerClickListenerInfoWindow = setInfoWindow(context, meetUpMapUiState, goMeetingDetailFragment)
 
     val markerWidth = 170
@@ -77,8 +77,7 @@ fun addMeetingMarkers(
     val textSize = 13f
 
     meetUpMapUiState.meetUpMapMeetingUis.forEachIndexed { index, meetUpMapMeeting ->
-        val placeLocationUi = meetUpMapMeeting.placeLocationArgs
-        val latLng = LatLng(placeLocationUi.locationLat.toDouble(), placeLocationUi.locationLong.toDouble())
+        val latLng = LatLng(meetUpMapMeeting.latitude, meetUpMapMeeting.longitude)
 
         val marker = markerList[index]
 
@@ -117,11 +116,11 @@ private fun setInfoWindow(
         } else {
             infoWindow.open(marker)
 
-            if (lastOpenedInfoWindow == null) {
-                lastOpenedInfoWindow = infoWindow
+            lastOpenedInfoWindow = if (lastOpenedInfoWindow == null) {
+                infoWindow
             } else {
                 lastOpenedInfoWindow!!.close()
-                lastOpenedInfoWindow = infoWindow
+                infoWindow
             }
         }
 

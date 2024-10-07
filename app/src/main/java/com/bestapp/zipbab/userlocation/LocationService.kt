@@ -22,7 +22,7 @@ class LocationService @Inject constructor(
     override fun onBind(intent: Intent?): IBinder? = null
 
     suspend fun requestLocation(): LatLng? {
-        var LatLng: LatLng? = null
+        var latLng: LatLng? = null
 
         if (ContextCompat.checkSelfPermission(
                 context,
@@ -32,7 +32,7 @@ class LocationService @Inject constructor(
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            LatLng = suspendCancellableCoroutine { continuation ->
+            latLng = suspendCancellableCoroutine { continuation ->
                 locationClient.getCurrentLocation(
                     Priority.PRIORITY_HIGH_ACCURACY,
                     null
@@ -52,7 +52,7 @@ class LocationService @Inject constructor(
             }
         }
 
-        return LatLng
+        return latLng
     }
 
     private fun createLatLng(latitude: Double, longitude: Double): LatLng {

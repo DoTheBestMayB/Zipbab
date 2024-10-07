@@ -7,8 +7,9 @@ import com.bestapp.zipbab.data.model.remote.Privacy
 import com.bestapp.zipbab.data.repository.AppSettingRepository
 import com.bestapp.zipbab.data.repository.UserRepository
 import com.bestapp.zipbab.model.UserUiState
-import com.bestapp.zipbab.model.toUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import com.bestapp.zipbab.model.toUi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -33,7 +34,10 @@ class SettingViewModel @Inject constructor(
             if (userDocumentID.isBlank()) {
                 UserUiState()
             } else {
-                userRepository.getUser(userDocumentID).toUiState()
+                _userInfoLoadState.emit(LoadingState.OnLoading)
+                val user = userRepository.getUser(userDocumentID).toUi()
+                _userInfoLoadState.emit(LoadingState.Done)
+                user
             }
         }.stateIn(
             scope = viewModelScope,
@@ -50,17 +54,21 @@ class SettingViewModel @Inject constructor(
     private val _message = MutableSharedFlow<SettingMessage>()
     val message: SharedFlow<SettingMessage> = _message.asSharedFlow()
 
+    private val _requestDeleteUrl = MutableStateFlow(Privacy())
+    val requestDeleteUrl: StateFlow<Privacy> = _requestDeleteUrl.asStateFlow()
+
     private val _requestPrivacyUrl = MutableStateFlow(Privacy())
     val requestPrivacyUrl: StateFlow<Privacy> = _requestPrivacyUrl.asStateFlow()
 
     private val _requestLocationPolicyUrl = MutableStateFlow(Privacy())
     val requestLocationPolicyUrl: StateFlow<Privacy> = _requestLocationPolicyUrl.asStateFlow()
 
-    private var requestDeleteUrl = ""
+    private val _userInfoLoadState = MutableStateFlow<LoadingState>(LoadingState.Default)
+    val userInfoLodeState: StateFlow<LoadingState> = _userInfoLoadState.asStateFlow()
 
     init {
         viewModelScope.launch {
-            requestDeleteUrl = appSettingRepository.getDeleteRequestUrl()
+            _requestDeleteUrl.value = appSettingRepository.getDeleteRequestUrl()
             _requestPrivacyUrl.emit(appSettingRepository.getPrivacyInfo())
             _requestLocationPolicyUrl.emit(appSettingRepository.getLocationPolicyInfo())
         }
@@ -115,10 +123,12 @@ class SettingViewModel @Inject constructor(
     }
 
     private fun logout() {
-        viewModelScope.launch {
-            runCatching {
-                appSettingRepository.removeUserDocumentId()
-                _message.emit(SettingMessage.LogoutSuccess)
+        viewModelScope.launch(Dispatchers.IO) {
+            val isSuccess = appSettingRepository.removeUserDocumentId()
+            if (isSuccess) {
+                _message.emit(SettingMessage.LOGOUT_FAIL)
+            } else {
+                _message.emit(SettingMessage.LOGOUT_SUCCESS)
             }
         }
     }

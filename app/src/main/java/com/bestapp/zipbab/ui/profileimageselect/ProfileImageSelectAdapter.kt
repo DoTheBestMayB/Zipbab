@@ -6,28 +6,22 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import coil.load
-import com.bestapp.zipbab.data.model.local.GalleryImageInfo
 import com.bestapp.zipbab.databinding.ItemProfileImageSelectGalleryBinding
+import com.bestapp.zipbab.model.GalleryImage
 
 class ProfileImageSelectAdapter(
-    private val onClick: (GalleryImageInfo) -> Unit,
-) : PagingDataAdapter<GalleryImageInfo, ProfileImageSelectAdapter.ProfileImageSelectViewHolder>(diff) {
+    private val onClick: (GalleryImage) -> Unit,
+) : PagingDataAdapter<GalleryImage, ProfileImageSelectAdapter.ProfileImageSelectViewHolder>(diff) {
 
     class ProfileImageSelectViewHolder(
         private val binding: ItemProfileImageSelectGalleryBinding,
-        private val onClick: (GalleryImageInfo) -> Unit,
+        private val onClick: (GalleryImage) -> Unit,
     ) : ViewHolder(binding.root) {
 
-        private var item: GalleryImageInfo = GalleryImageInfo.empty()
-
-        init {
+        fun bind(item: GalleryImage) {
             binding.root.setOnClickListener {
                 onClick(item)
             }
-        }
-
-        fun bind(item: GalleryImageInfo) {
-            this.item = item
             binding.ivThumbnail.load(item.uri)
             binding.tvName.text = item.name
         }
@@ -53,17 +47,17 @@ class ProfileImageSelectAdapter(
     }
 
     companion object {
-        private val diff = object : DiffUtil.ItemCallback<GalleryImageInfo>() {
+        private val diff = object : DiffUtil.ItemCallback<GalleryImage>() {
             override fun areItemsTheSame(
-                oldItem: GalleryImageInfo,
-                newItem: GalleryImageInfo
+                oldItem: GalleryImage,
+                newItem: GalleryImage
             ): Boolean {
                 return oldItem.uri == newItem.uri
             }
 
             override fun areContentsTheSame(
-                oldItem: GalleryImageInfo,
-                newItem: GalleryImageInfo
+                oldItem: GalleryImage,
+                newItem: GalleryImage
             ): Boolean {
                 return oldItem == newItem
             }

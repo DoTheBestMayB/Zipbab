@@ -1,22 +1,21 @@
 package com.bestapp.zipbab.ui.mettinglist
 
 import com.bestapp.zipbab.data.model.remote.MeetingResponse
-import com.bestapp.zipbab.data.model.remote.PlaceLocation
-import com.bestapp.zipbab.args.PlaceLocationArgs
 
 data class MeetingListUi(
     val meetingDocumentID: String,
     val title: String,
     val titleImage: String,
-    val placeLocationArgs: PlaceLocationArgs,
-    val time: String,
-    val recruits: Int,
+    val address: String,
+    val zipCode: String,
+    val date: String,
+    val hour: Int,
+    val minute: Int,
+    val participantCount: Int,
     val description: String,
     val mainMenu: String,
     val costValueByPerson: Int,
-    val costTypeByPerson: Int,
     val hostUserDocumentID: String,
-    val hostTemperature: Double,
     val members: List<String>,
     val pendingMembers: List<String>,
     val attendanceCheck: List<String>,
@@ -33,25 +32,20 @@ fun MeetingResponse.toMeetingListUi(
     meetingDocumentID = meetingDocumentID,
     title = title,
     titleImage = titleImage,
-    placeLocationArgs = placeLocation.toPlaceLocationUi(),
-    time = time,
-    recruits = recruits,
+    address = address,
+    zipCode = zipCode,
+    date = date,
+    hour = hour,
+    minute = minute,
+    participantCount = participantCount,
     description = description,
-    mainMenu = mainMenu,
+    mainMenu = category,
     costValueByPerson = costValueByPerson,
-    costTypeByPerson = costTypeByPerson,
     hostUserDocumentID = hostUserDocumentID,
-    hostTemperature = hostTemperature,
     members = members,
     pendingMembers = pendingMembers,
     attendanceCheck = attendanceCheck,
     activation = activation,
     isDoneReview = isDoneReview,
     isHost = isHost
-)
-
-fun PlaceLocation.toPlaceLocationUi() = PlaceLocationArgs(
-    locationAddress = locationAddress,
-    locationLat = locationLat,
-    locationLong = locationLong
 )

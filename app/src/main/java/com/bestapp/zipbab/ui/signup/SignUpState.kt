@@ -8,4 +8,5 @@ sealed interface SignUpState {
     ): SignUpState
     data object DuplicateEmail: SignUpState
     data object Fail: SignUpState
+    data object SaveDocumentIdFail: SignUpState
 }

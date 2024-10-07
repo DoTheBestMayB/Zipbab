@@ -1,36 +1,30 @@
 package com.bestapp.zipbab.model
 
+import com.bestapp.zipbab.args.ProfileEditArgs
 import com.bestapp.zipbab.data.model.UploadStateEntity
+import com.bestapp.zipbab.data.model.local.GalleryImageInfo
+import com.bestapp.zipbab.data.model.local.SignOutEntity
 import com.bestapp.zipbab.data.model.remote.FilterResponse
+import com.bestapp.zipbab.data.model.remote.LoginResponse
 import com.bestapp.zipbab.data.model.remote.MeetingResponse
 import com.bestapp.zipbab.data.model.remote.NotificationTypeResponse
 import com.bestapp.zipbab.data.model.remote.PlaceLocation
 import com.bestapp.zipbab.data.model.remote.PostResponse
 import com.bestapp.zipbab.data.model.remote.Review
+import com.bestapp.zipbab.data.model.remote.SignUpResponse
 import com.bestapp.zipbab.data.model.remote.TermInfoResponse
 import com.bestapp.zipbab.data.model.remote.UserResponse
-import com.bestapp.zipbab.args.FilterArgs
-import com.bestapp.zipbab.args.ImageArgs
-import com.bestapp.zipbab.args.ImagePostSubmitArgs
-import com.bestapp.zipbab.args.MeetingArgs
-import com.bestapp.zipbab.args.PlaceLocationArgs
-import com.bestapp.zipbab.args.ProfileEditArgs
-import com.bestapp.zipbab.args.SelectImageArgs
-import com.bestapp.zipbab.ui.profile.ProfileUiState
-import com.bestapp.zipbab.ui.profileedit.ProfileEditUiState
-import com.bestapp.zipbab.data.model.local.GalleryImageInfo
-import com.bestapp.zipbab.data.model.local.SignOutEntity
-import com.bestapp.zipbab.data.model.remote.LoginResponse
-import com.bestapp.zipbab.data.model.remote.SignUpResponse
+import com.bestapp.zipbab.data.model.remote.VerifyStateEntity
 import com.bestapp.zipbab.ui.mettinginfo.MemberInfo
+import com.bestapp.zipbab.ui.profileedit.ProfileEditUiState
 import com.bestapp.zipbab.ui.profilepostimageselect.model.PostGalleryUiState
 import com.bestapp.zipbab.ui.profilepostimageselect.model.SelectedImageUiState
-import com.bestapp.zipbab.ui.profilepostimageselect.model.SubmitInfo
+import com.bestapp.zipbab.ui.recruitment.viewpager.categoryselect.FoodCategory
 import com.bestapp.zipbab.ui.signup.SignUpState
 
 // Data -> UiState
 
-fun SignOutEntity.toUiState(): SignOutState {
+fun SignOutEntity.toUi(): SignOutState {
     return when (this) {
         SignOutEntity.Fail -> SignOutState.Fail
         SignOutEntity.IsNotAllowed -> SignOutState.IsNotAllowed
@@ -38,66 +32,49 @@ fun SignOutEntity.toUiState(): SignOutState {
     }
 }
 
-fun FilterResponse.Cost.toUiState() = FilterUiState.CostUiState(
+fun FilterResponse.Cost.toUi() = FilterUiState.CostUiState(
     name = name,
     icon = icon,
     type = type,
 )
 
-fun FilterResponse.Food.toUiState() = FilterUiState.FoodUiState(
+fun FilterResponse.Food.toUi() = FilterUiState.FoodUiState(
     icon = icon,
     name = name,
 )
 
-fun MeetingResponse.toUiState() = MeetingUiState(
+fun FilterResponse.Food.toCategory() = FoodCategory(
+    name = name,
+    isSelected = false,
+)
+
+fun MeetingResponse.toUi() = MeetingUiState(
     meetingDocumentID = meetingDocumentID,
     title = title,
     titleImage = titleImage,
-    placeLocationUiState = placeLocation.toUiState(),
-    time = time,
-    recruits = recruits,
+    address = address,
+    zipCode = zipCode,
+    date = date,
+    hour = hour,
+    minute = minute,
+    participantCount = participantCount,
     description = description,
-    mainMenu = mainMenu,
+    mainMenu = category,
     costValueByPerson = costValueByPerson,
-    costTypeByPerson = costTypeByPerson,
     hostUserDocumentID = hostUserDocumentID,
-    hostTemperature = hostTemperature,
     members = members,
     pendingMembers = pendingMembers,
     attendanceCheck = attendanceCheck,
     activation = activation
 )
 
-fun MeetingResponse.toArgs() = MeetingArgs(
-    meetingDocumentID = meetingDocumentID,
-    title = title,
-    titleImage = titleImage,
-    placeLocationArgs = PlaceLocationArgs(
-        locationAddress = placeLocation.locationAddress,
-        locationLat = placeLocation.locationLat,
-        locationLong = placeLocation.locationLong,
-    ),
-    time = time,
-    recruits = recruits,
-    description = description,
-    mainMenu = mainMenu,
-    costValueByPerson = costValueByPerson,
-    costTypeByPerson = costTypeByPerson,
-    hostUserDocumentID = hostUserDocumentID,
-    hostTemperature = hostTemperature,
-    members = members,
-    pendingMembers = pendingMembers,
-    attendanceCheck = attendanceCheck,
-    activation = activation,
-)
-
-fun PlaceLocation.toUiState() = PlaceLocationUiState(
+fun PlaceLocation.toUi() = PlaceLocationUiState(
     locationAddress = locationAddress,
     locationLat = locationLat,
     locationLong = locationLong,
 )
 
-fun PostResponse.toUiState() = PostUiState(
+fun PostResponse.toUi() = PostUiState(
     postDocumentID = postDocumentID,
     images = images,
     state = UploadState.Default(
@@ -105,18 +82,18 @@ fun PostResponse.toUiState() = PostUiState(
     ),
 )
 
-fun Review.toUiState() = ReviewUiState(
+fun Review.toUi() = ReviewUiState(
     id = id,
     votingPoint = votingPoint,
 )
 
-fun TermInfoResponse.toUiState() = TermInfoState(
+fun TermInfoResponse.toUi() = TermInfoState(
     id = id,
     content = content,
     date = date,
 )
 
-fun UserResponse.toUiState() = UserUiState(
+fun UserResponse.toUi() = UserUiState(
     userDocumentID = userDocumentID,
     nickname = nickname,
     id = id,
@@ -124,11 +101,23 @@ fun UserResponse.toUiState() = UserUiState(
     profileImage = profileImage,
     temperature = temperature,
     meetingCount = meetingCount,
-    notificationUiState = notifications.map { it.toUiState() },
+    notificationUiState = notifications.map { it.toUi() },
     meetingReviews = meetingReviews,
     postDocumentIds = posts,
-    placeLocationUiState = placeLocation.toUiState(),
+    placeLocationUiState = placeLocation.toUi(),
+    verifiedEmail = verifiedEmail,
+    verifiedPhone = verifiedPhone,
 )
+
+fun VerifyStateEntity.toUi(): VerifyState {
+    return when(this) {
+        VerifyStateEntity.AlreadyUsedEmail -> VerifyState.AlreadyUsedEmail
+        VerifyStateEntity.Fail -> VerifyState.Fail
+        VerifyStateEntity.FailAtSendVerificationEmail -> VerifyState.FailAtSendVerificationEmail
+        VerifyStateEntity.Success -> VerifyState.Success
+        VerifyStateEntity.PasswordTooShort -> VerifyState.PasswordTooShort
+    }
+}
 
 fun UploadStateEntity.toArgs(): UploadState {
     return when (this) {
@@ -172,55 +161,14 @@ fun SignUpResponse.toUi(): SignUpState {
     }
 }
 
-// UiState -> Data
-
-fun NotificationTypeResponse.toUiState(): NotificationUiState.UserNotification {
+fun NotificationTypeResponse.toUi(): NotificationUiState.UserNotification {
     return NotificationUiState.UserNotification(dec = "", uploadDate = uploadDate)
 }
 
-fun PlaceLocationUiState.toData() = PlaceLocation(
-    locationAddress = locationAddress,
-    locationLat = locationLat,
-    locationLong = locationLong
-)
-
-fun PostUiState.toData() = PostResponse(
-    postDocumentID = postDocumentID,
-    images = images,
-)
-
-
-// UiState -> ActionArgs
-
-fun FilterUiState.FoodUiState.toArgs() = FilterArgs.FoodArgs(
-    icon = icon,
-    name = name,
-)
-
-fun FilterUiState.CostUiState.toArgs() = FilterArgs.CostArgs(
-    icon = icon,
-    name = name,
-    type = type,
-)
-
-fun ProfileUiState.toProfileEditArgs() = ProfileEditArgs(
-    userDocumentID = userDocumentID,
-    nickname = nickname,
-    profileImage = profileImage,
-)
-
-fun GalleryImageInfo.toArgs() = ImageArgs(
+fun GalleryImageInfo.toUi() = GalleryImage(
     uri = uri,
     name = name,
-)
-
-fun SelectedImageUiState.toArgs() = SelectImageArgs(
-    uri = uri,
-)
-
-fun SubmitInfo.toArgs() = ImagePostSubmitArgs(
-    userDocumentID = userDocumentID,
-    images = images,
+    orderId = orderId,
 )
 
 // UiState -> UiState
@@ -250,7 +198,7 @@ fun UserUiState.toMemberInfo(isHost: Boolean) = MemberInfo(
 
 // Args -> UiState
 
-fun ProfileEditArgs.toUiState() = ProfileEditUiState(
+fun ProfileEditArgs.toUi() = ProfileEditUiState(
     userDocumentID = userDocumentID,
     nickname = nickname,
     profileImage = profileImage,

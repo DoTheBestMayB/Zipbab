@@ -20,7 +20,6 @@ import androidx.navigation.fragment.navArgs
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.databinding.FragmentProfilePostImageSelectBinding
 import com.bestapp.zipbab.model.toGalleryUiState
-import com.bestapp.zipbab.model.toArgs
 import com.bestapp.zipbab.permission.ImagePermissionType
 import com.bestapp.zipbab.permission.PermissionManager
 import com.bestapp.zipbab.ui.profile.ProfileFragmentArgs

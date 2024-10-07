@@ -52,8 +52,4 @@ class ImagePermissionModalBottomSheet : BottomSheetDialogFragment() {
         _binding = null
         super.onDestroyView()
     }
-
-    companion object {
-        const val TAG = "PermissionModalBottomSheet"
-    }
 }

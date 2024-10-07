@@ -3,7 +3,7 @@
     <string name="home">홈</string>
     <string name="meetUpMap">지도</string>
     <string name="setting">내 정보</string>
-    <string name="recruit_text">모집 글쓰기</string>
+    <string name="recruit_app_bar">모임 등록</string>
     <string name="title_image">대표 사진</string>
     <string name="first_chip">파스타</string>
     <string name="second_chip">찌개</string>
@@ -66,6 +66,8 @@
     <string name="version_format">Version %1$s</string>
     <string name="setting_profile_row_title">프로필 수정</string>
     <string name="setting_profile_row_description">프로필을 수정합니다.</string>
+    <string name="setting_verification_row_title">본인 인증</string>
+    <string name="setting_verification_row_description">이메일, 휴대폰 본인 인증을 합니다.</string>
     <string name="setting_meeting_row_title">모임</string>
     <string name="setting_meeting_row_description">참가중인 모임과 참여했던 모임을 확인합니다.</string>
     <string name="setting_alert_row_title">알림 설정</string>
@@ -73,8 +75,10 @@
     <string name="setting_privacy_policy_row_title">개인정보 처리방침</string>
     <string name="setting_privacy_policy_row_description">개인정보 처리방침을 확인합니다.</string>
     <string name="setting_version_row_title">버전</string>
+    <string name="message_when_log_out_success">로그아웃 처리되었습니다.</string>
     <string name="message_when_log_out_fail">로그아웃에 실패했습니다. 잠시 후 다시 시도해주세요.</string>
     <string name="message_when_sign_out_fail">회원 탈퇴에 실패했습니다. 잠시 후 다시 시도해주세요.</string>
+    <string name="message_when_sign_out_success">회원 탈퇴 처리되었습니다.</string>
     <string name="sign_out_dialog_title">회원 탈퇴 안내</string>
     <string name="sign_out_dialog_message">정말 회원 탈퇴를 하시겠습니까?</string>
     <string name="sign_out_dialog_neutral">취소</string>
@@ -178,7 +182,6 @@
     <string name="search_empty_text">모임이 없어요.</string>
 
     <string name="done">완료</string>
-    <string name="logout_done">로그아웃이 완료되었습니다.</string>
     <string name="signup_compare_text">비밀번호를 다시한번 입력해주세요!</string>
     <string name="recruit_default_image"><![CDATA[https://firebasestorage.googleapis.com/v0/b/food-879fc.appspot.com/o/dummy%2F30120875_7640343.jpg?alt=media&token=eee9fbba-8544-451f-857b-c0bea1b2e768]]></string>
     <string name="message_when_sign_out_success">회원 탈퇴 처리 되었습니다.</string>
@@ -197,4 +200,77 @@
     <string name="meeting_end_fail">모임 종료에 실패했습니다.</string>
     <string name="meeting_end_success">모임이 종료되었습니다.</string>
     <string name="meeting_register_not_logged_in">비회원은 가입할 수 없습니다</string>
+    <string name="signup_save_document_fail">회원가입에 성공했으나, 로그인 처리에 실패했습니다. 다시 시도해주세요.</string>
+
+    <string name="before">이전</string>
+    <string name="next">다음</string>
+    <string name="create_meeting">모임 생성하기</string>
+    <string name="category_select_header">어떤 음식을 만들까요?</string>
+    <string name="detail_info_header">모임을 소개해주세요</string>
+    <string name="meet_name_header">모임명</string>
+    <string name="meet_participant_count_header">참여 인원수</string>
+    <string name="meet_cost_header">1인당 비용</string>
+    <string name="hint_for_recruitment_participant">최소 2명, 최대 99명까지 입력 가능해요</string>
+    <string name="hint_for_recruitment_cost">최대 10,000,000원까지 입력 가능해요</string>
+    <string name="meet_description_header">모임 소개</string>
+    <string name="location_and_date_header">모임 장소와 날짜를 설정해주세요</string>
+    <string name="location_header">장소</string>
+    <string name="recruit_location_hint">도로명 주소 검색</string>
+    <string name="date_header">날짜</string>
+    <string name="recruit_date_hint">날짜 선택하기</string>
+    <string name="time_header">시간</string>
+    <string name="recruit_time_hint">시간 선택하기</string>
+    <string name="recruit_date_picker_title">모임 날짜 선택하기</string>
+    <string name="recruit_time_picker_title">모임 시간 선택하기</string>
+    <string name="join_condition_header">가입은 어떻게 받을까요?</string>
+    <string name="recruit_condition_immediate_header">바로 가입</string>
+    <string name="recruit_condition_immediate_body">누구나 가입할 수 있어요.</string>
+    <string name="recruit_condition_approval_header">승인 후 가입</string>
+    <string name="recruit_condition_approval_body">모임장이 승인해야 가입할 수 있어요.</string>
+    <string name="member_verification_condition_header">본인 인증이 필요한 모임인가요?</string>
+    <string name="recruit_leader_verification_required">모임장도 본인 인증이 필요해요</string>
+    <string name="recruit_no_verification_required_header">No</string>
+    <string name="recruit_no_verification_required_body">누구나 가입할 수 있어요.</string>
+    <string name="recruit_email_verification_required_header">이메일 인증</string>
+    <string name="recruit_email_verification_required_body">이메일 인증한 회원만 가입할 수 있어요.</string>
+    <string name="recruit_phone_verification_required_header">휴대폰 인증</string>
+    <string name="recruit_phone_verification_required_body">휴대폰 인증한 회원만 가입할 수 있어요.</string>
+    <string name="recruit_leader_verification">본인 인증 하러 가기</string>
+
+    <string name="address_finder_app_bar">주소 검색</string>
+
+    <string name="verification_app_bar">본인 인증</string>
+    <string name="verification_email_header">이메일 인증</string>
+    <string name="hint_for_email_address">이메일 주소</string>
+    <string name="get_email_verification">인증 메일 받기</string>
+    <string name="hint_for_verification_code">인증 번호</string>
+    <string name="verification_confirm">확인하기</string>
+    <string name="verify_mail_app_bar">이메일 인증</string>
+    <string name="verify_email_header">이메일을 입력해주세요</string>
+    <string name="verification_email">이메일</string>
+    <string name="verification_change">변경</string>
+    <string name="verification_phone">휴대폰 번호</string>
+    <string name="verification_register">등록</string>
+    <string name="verify_phone_app_bar">휴대폰 인증</string>
+    <string name="verify_phone_header">전화번호를 입력해주세요</string>
+    <string name="hint_for_phone">전화번호</string>
+    <string name="verification_not_verified_value">-</string>
+    <string name="send_email_verification_fail">인증 메일 발송에 실패했습니다.</string>
+    <string name="send_email_verification_success">인증 메일이 발송되었습니다. 메일함을 확인해주세요.</string>
+    <string name="email_verification_done">이메일 인증이 완료되었습니다.</string>
+    <string name="update_email_auth_state_fail">인증 정보 갱신에 실패했습니다. 다시 시도해주세요.</string>
+    <string name="already_used_email">이미 사용중인 이메일입니다.</string>
+    <string name="password_too_short">인증 계정을 생성하기 위해 비밀번호를 6자리 이상으로 변경해주세요.</string>
+    <string name="check_email_verification_status">인증 상태 갱신</string>
+    <string name="get_phone_verification">인증 번호 받기</string>
+    <string name="verification_not_supported">미지원</string>
+    <string name="phone_verification_not_support_yet">현재 전화번호 인증을 지원하지 않고 있어요</string>
+    <string name="meetup_profile_picture_select_header">대표사진을 등록해주세요</string>
+    <string name="meetup_profile_picture_select_description">전체 모임 목록에서 보이는 대표 이미지예요.</string>
+    <string name="recruitment_login_required">로그인 후 다시 시도해주세요.</string>
+    <string name="recruitment_create_complete">모임 생성을 완료했습니다.</string>
+    <string name="recruitment_create_fail">모임 생성에 실패했습니다. 잠시 후 다시 시도해주세요.</string>
+
+    <string name="meeting_info_time">%1$s %2$s</string>
+    <string name="time_format">%1$d:%2$d:%3$d</string>
 </resources>

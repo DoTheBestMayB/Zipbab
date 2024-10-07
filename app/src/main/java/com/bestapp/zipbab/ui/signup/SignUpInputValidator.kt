@@ -3,13 +3,12 @@ package com.bestapp.zipbab.ui.signup
 import android.content.Context
 import com.bestapp.zipbab.R
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 class SignUpInputValidator @Inject constructor(@ApplicationContext context: Context) {
 
     private val emailRegex =
-        """^[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{3,})$"""
+        """^[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{3,})$""".toRegex()
 
     private val allowNicknameLength =
         context.resources.getInteger(R.integer.min_nickname_length)..context.resources.getInteger(R.integer.max_nickname_length)
@@ -40,11 +39,12 @@ class SignUpInputValidator @Inject constructor(@ApplicationContext context: Cont
         nickname.length in allowNicknameLength
 
     private fun checkEmailValid(email: String): Boolean =
-        email.length in allowedEmailLength && Pattern.matches(emailRegex, email)
+        email.length in allowedEmailLength && emailRegex.matches(email)
 
     private fun checkPasswordValid(password: String): Boolean {
         return password.length in allowedPasswordLength && password.isNotBlank()
     }
+
     private fun checkPasswordCompareValid(password: String, passwordCompare: String): Boolean {
         return password == passwordCompare
     }
