@@ -108,12 +108,15 @@ class SettingFragment : Fragment() {
                         ActionIntent.Default -> Unit
                         is ActionIntent.DirectToRequestDelete -> {
                             if (currentActionIntent.url.isBlank()) {
-                                ToastMessage(
-                                    message = getString(
+
+                                Toast.makeText(
+                                    context,
+                                    stringResource(
                                         R.string.not_yet_loaded,
-                                        getString(R.string.text_for_delete_request_title)
-                                    )
-                                )
+                                        stringResource(R.string.text_for_delete_request_title)
+                                    ),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             } else {
                                 val intent =
                                     Intent(Intent.ACTION_VIEW, Uri.parse(currentActionIntent.url))
@@ -125,7 +128,7 @@ class SettingFragment : Fragment() {
                         ActionIntent.NotYetImplemented -> {
                             Toast.makeText(
                                 context,
-                                context.getString(R.string.not_yet_implemented),
+                                stringResource(R.string.not_yet_implemented),
                                 Toast.LENGTH_SHORT
                             ).show()
                             settingViewModel.onActionIntentConsumed()
@@ -393,6 +396,7 @@ fun SignOutAlertDialog(
                 )
             }
         },
+        containerColor = LocalCustomColorsPalette.current.defaultBackgroundColor,
         title = {
             Text(text = stringResource(id = R.string.sign_out_dialog_title))
         },
@@ -519,14 +523,13 @@ fun ProfileStatus(
         }
     }
     if (isShowClipboardToastMessage.value) {
-        ToastMessage(stringResource(id = R.string.user_document_id_is_copied))
+        Toast.makeText(
+            LocalContext.current,
+            stringResource(id = R.string.user_document_id_is_copied),
+            Toast.LENGTH_SHORT
+        ).show()
         isShowClipboardToastMessage.value = false
     }
-}
-
-@Composable
-fun ToastMessage(message: String) {
-    Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
 }
 
 @Composable
