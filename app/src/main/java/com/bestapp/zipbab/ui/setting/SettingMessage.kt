@@ -6,4 +6,5 @@ sealed interface SettingMessage {
     data object SignOutFail : SettingMessage
     data object SignOutIsNotAllowed : SettingMessage
     data object LogoutSuccess : SettingMessage
+    data object LogoutFail : SettingMessage
 }

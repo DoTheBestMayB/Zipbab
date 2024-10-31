@@ -68,7 +68,7 @@ class SettingViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _requestDeleteUrl.value = appSettingRepository.getDeleteRequestUrl()
+            _requestDeleteUrl.value = appSettingRepository.getDeleteRequestInfo()
             _requestPrivacyUrl.emit(appSettingRepository.getPrivacyInfo())
             _requestLocationPolicyUrl.emit(appSettingRepository.getLocationPolicyInfo())
         }
@@ -104,7 +104,7 @@ class SettingViewModel @Inject constructor(
 
             SettingIntent.RequestDelete -> {
                 _actionIntent.value = ActionIntent.DirectToRequestDelete(
-                    url = requestDeleteUrl
+                    url = requestDeleteUrl.value.link
                 )
             }
 
@@ -126,9 +126,9 @@ class SettingViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val isSuccess = appSettingRepository.removeUserDocumentId()
             if (isSuccess) {
-                _message.emit(SettingMessage.LOGOUT_FAIL)
+                _message.emit(SettingMessage.LogoutFail)
             } else {
-                _message.emit(SettingMessage.LOGOUT_SUCCESS)
+                _message.emit(SettingMessage.LogoutSuccess)
             }
         }
     }

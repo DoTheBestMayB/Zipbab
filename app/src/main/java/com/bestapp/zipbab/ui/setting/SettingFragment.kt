@@ -166,7 +166,8 @@ class SettingFragment : Fragment() {
                                 SettingMessage.SignOutFail -> context.getString(R.string.message_when_sign_out_fail)
                                 SettingMessage.SingOutSuccess -> context.getString(R.string.message_when_sign_out_success)
                                 SettingMessage.SignOutIsNotAllowed -> context.getString(R.string.sign_out_is_not_allowed)
-                                SettingMessage.LogoutSuccess -> context.getString(R.string.logout_done)
+                                SettingMessage.LogoutSuccess -> context.getString(R.string.message_when_log_out_success)
+                                SettingMessage.LogoutFail -> context.getString(R.string.message_when_log_out_fail)
                             }
                             Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
                         }
@@ -178,7 +179,7 @@ class SettingFragment : Fragment() {
                         }
 
                         NavActionIntent.Default -> null
-                        is NavActionIntent.Login -> SettingFragmentDirections.actionSettingFragmentToLoginGraph()
+                        NavActionIntent.Login -> SettingFragmentDirections.actionSettingFragmentToLoginGraph()
 
                         NavActionIntent.SignUp -> {
                             settingViewModel.onNavActionIntentConsumed()
@@ -191,6 +192,7 @@ class SettingFragment : Fragment() {
                         is NavActionIntent.Profile -> SettingFragmentDirections.actionSettingFragmentToProfileFragment(
                             intent.userDocumentID
                         )
+
                     }
                     if (action != null) {
                         settingViewModel.onNavActionIntentConsumed()
