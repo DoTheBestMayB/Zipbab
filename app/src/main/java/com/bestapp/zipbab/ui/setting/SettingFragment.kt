@@ -214,9 +214,9 @@ class SettingFragment : Fragment() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen(
-    modifier: Modifier = Modifier,
     userUiState: UserUiState,
     onAction: (SettingIntent) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier
@@ -253,10 +253,10 @@ fun SettingScreen(
 
 @Composable
 fun ScrollContent(
-    modifier: Modifier = Modifier,
     innerPadding: PaddingValues,
     userUiState: UserUiState,
     onAction: (SettingIntent) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
@@ -368,9 +368,9 @@ fun ScrollContent(
 
 @Composable
 fun SignOutAlertDialog(
-    modifier: Modifier = Modifier,
     onConfirmation: () -> Unit,
     onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     AlertDialog(
         modifier = modifier,
@@ -404,9 +404,9 @@ fun SignOutAlertDialog(
 
 @Composable
 fun ProfileStatus(
-    modifier: Modifier = Modifier,
     userUiState: UserUiState,
     onAction: (SettingIntent) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val clipboardManager = LocalClipboardManager.current
     val isShowClipboardToastMessage = remember {
@@ -531,13 +531,13 @@ fun ToastMessage(message: String) {
 
 @Composable
 fun SettingItem(
-    modifier: Modifier = Modifier,
     @DrawableRes iconResource: Int,
     title: String,
     description: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     isNoActionItem: Boolean = false,
-    onClick: () -> Unit,
 ) {
     Row(
         modifier = modifier
