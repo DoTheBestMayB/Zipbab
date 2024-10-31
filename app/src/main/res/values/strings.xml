@@ -4,42 +4,7 @@
     <string name="meetUpMap">지도</string>
     <string name="setting">내 정보</string>
     <string name="recruit_app_bar">모임 등록</string>
-    <string name="title_image">대표 사진</string>
-    <string name="first_chip">파스타</string>
-    <string name="second_chip">찌개</string>
-    <string name="third_chip">백반</string>
-    <string name="fourth_chip">구이</string>
-    <string name="fifth_chip">떡볶이</string>
-    <string name="sixth_chip">샌드위치</string>
-    <string name="seventh_chip">베이커리</string>
-    <string name="eighth_chip">전</string>
-    <string name="nineth_chip">기타</string>
-    <string name="party_name">모임 이름</string>
-    <string name="count_people">참여 인원수</string>
-    <string name="count_9">최대 9명</string>
-    <string name="person_cost">1인당 비용</string>
-    <string name="cost_ex">최대 99,999원</string>
-    <string name="location_ex">모임 위치</string>
-    <string name="party_date">모임 시간</string>
-    <string name="date_ex">2024.05.24</string>
-    <string name="time_ex">00시00분</string>
-    <string name="make_food">만들 음식</string>
-    <string name="detail_answer">자세한 설명</string>
-    <string name="des_text">내용</string>
-    <string name="complete_text">작성 완료</string>
-    <string name="name_text">이름</string>
     <string name="notify_notification">알림</string>
-    <string name="nick_name">닉네임</string>
-    <string name="birthday">Birth of date</string>
-    <string name="password">Password</string>
-    <string name="register_check">회원가입 및 이용약관에 동의하겠습니까?</string>
-    <string name="register_text">회원가입</string>
-    <string name="password_english">Password</string>
-    <string name="sign_up">Sign Up</string>
-    <string name="don_t_have_an_account">Don\'t have an account?</string>
-    <string name="password_compare">PasswordCompare</string>
-    <string name="remember_id">Remember id</string>
-    <string name="login_text">로그인</string>
     <string name="profile_edit_app_bar">프로필 수정</string>
     <string name="edit_done">수정 완료</string>
     <string name="message_when_edit_nickname_fail">닉네임 변경에 실패했습니다. 잠시 후 다시 시도해주세요.</string>
@@ -66,8 +31,6 @@
     <string name="version_format">Version %1$s</string>
     <string name="setting_profile_row_title">프로필 수정</string>
     <string name="setting_profile_row_description">프로필을 수정합니다.</string>
-    <string name="setting_verification_row_title">본인 인증</string>
-    <string name="setting_verification_row_description">이메일, 휴대폰 본인 인증을 합니다.</string>
     <string name="setting_meeting_row_title">모임</string>
     <string name="setting_meeting_row_description">참가중인 모임과 참여했던 모임을 확인합니다.</string>
     <string name="setting_alert_row_title">알림 설정</string>
@@ -93,10 +56,8 @@
     <string name="image_permission_partial">더 많은 사진 선택</string>
     <string name="profile_image_select_app_bar">이미지 선택</string>
     <string name="home_search_hint">검색어를 입력하세요.</string>
-    <string name="home_my_meet_title">다가오는 모임</string>
     <string name="home_food_menu_title">메뉴 별로 모임을 찾아줄게요!</string>
     <string name="home_cost_title">금액에 따른 모임을 찾아줄게요!</string>
-    <string name="home_my_meet_empty">현재 모임이 없어요</string>
 
     <string name="login_email">이메일</string>
     <string name="login_password">비밀번호</string>
@@ -104,7 +65,6 @@
     <string name="login_signup">회원가입</string>
     <string name="login_remember">이메일 기억하기</string>
     <string name="signup_name">닉네임</string>
-    <string name="signup_birth_date">Birth_date</string>
     <string name="signup_email">이메일</string>
     <string name="signup_password">비밀번호</string>
     <string name="signup_compare_password">비밀번호 확인</string>
@@ -115,22 +75,14 @@
     <string name="signup_email_format_not_correct">이메일 양식에 맞게 입력해주세요.</string>
     <string name="signup_password_compare_not_correct">비밀번호가 일치하지 않습니다.</string>
 
-    <string name="meeting_info_location_tag">장소</string>
     <string name="meeting_info_count">%d / %d명</string>
     <string name="meeting_info_cost">%,d원</string>
 
     <string name="input_cost_empty_text">모임이 없어요.</string>
 
-    <string name="meeting_management_people_count">인원수: %d/%d명</string>
-    <string name="meeting_management_location">장소: %s</string>
-    <string name="meeting_management_time">시간: %s</string>
-    <string name="meeting_management_main_menu">주 메뉴: %s</string>
-    <string name="meeting_management_cost">가격: %,d원</string>
-
     <string name="user_document_id_instruction">계정 삭제 요청 시 사용하는 고유번호입니다.</string>
     <string name="text_for_delete_request_url"><u>삭제 요청 바로가기</u></string>
     <string name="text_for_delete_request_title"><u>삭제 요청 주소</u></string>
-    <string name="label_user_document_id">사용자 고유 식별 번호</string>
     <string name="user_document_id_is_copied">사용자 고유 식별 번호가 복사되었습니다.</string>
     <string name="meeting_list_title">내 모임 보기</string>
     <string name="meeting_list_item_review_text">리뷰하러 가기</string>
@@ -138,21 +90,12 @@
     <string name="meeting_list_end">종료된 모임</string>
     <string name="input_food_category_empty_test">모임이 없어요.</string>
     <string name="post_image_select_min_select_item">한 개 이상의 이미지를 선택해주세요.</string>
-    <string name="message_when_uploading_image_post_start">서버에 게시물 업로드를 시작합니다.</string>
     <string name="header_for_selected_image">선택된 사진</string>
     <string name="progress">%1$d/%2$d</string>
-    <string name="message_when_uploading_post_fail">포스트 업로드에 실패했습니다. 잠시 후 다시 시도해주세요.</string>
-    <string name="meeting_management_host_title">호스트</string>
-    <string name="meeting_management_members_title">참여 멤버</string>
-    <string name="meeting_management_empty_text">참여 멤버가 없습니다.</string>
     <string name="search_search_hint">검색어를 입력하세요.</string>
     <string name="do_report"><u>신고하기</u></string>
     <string name="report_done">신고가 완료됐습니다.</string>
     <string name="report_fail">신고에 실패했습니다. 잠시 후 다시 시도해주세요.</string>
-
-    <string name="signup_password_min_edittext">최소 5자 이상으로 적어주세요!!</string>
-    <string name="location_edittext">주소를 정확하게 적어주세요!!</string>
-    <string name="search_tv">검색</string>
 
     <string name="delete_post_dialog_title">게시물 삭제 안내</string>
     <string name="delete_post_dialog_message">정말 게시물을 삭제 하시겠습니까?</string>
@@ -173,7 +116,6 @@
     <string name="meet_up_map_go_meeting_info">모임 보러 가기 -></string>
 
 
-    <string name="home_my_meeting_empty_text">현재 참여 중인 모임이 없어요.</string>
     <string name="login_fail">이메일 또는 비밀번호를 확인해주세요.</string>
     <string name="not_yet_implemented">이 기능은 업데이트 예정입니다.</string>
 
@@ -182,10 +124,7 @@
     <string name="search_empty_text">모임이 없어요.</string>
 
     <string name="done">완료</string>
-    <string name="signup_compare_text">비밀번호를 다시한번 입력해주세요!</string>
-    <string name="recruit_default_image"><![CDATA[https://firebasestorage.googleapis.com/v0/b/food-879fc.appspot.com/o/dummy%2F30120875_7640343.jpg?alt=media&token=eee9fbba-8544-451f-857b-c0bea1b2e768]]></string>
     <string name="not_yet_loaded">%1$s가(이) 아직 로딩 되지 않았습니다. 인터넷 연결 상태를 확인해주세요.</string>
-    <string name="user_info">사용자 정보</string>
     <string name="sign_out_is_not_allowed">회원 탈퇴가 허용되지 않은 계정입니다.</string>
     <string name="meeting_info_app_bar">모임 참가</string>
     <string name="meeting_sample_content">5성급 호텔 주방장 출신\n셀러드의 깊은 맛에 빠져보세요.\n\n30종류의 와인, 위스키 등 주류 리스트가 준비되어 있습니다.</string>
@@ -239,7 +178,6 @@
     <string name="address_finder_app_bar">주소 검색</string>
 
     <string name="verification_app_bar">본인 인증</string>
-    <string name="verification_email_header">이메일 인증</string>
     <string name="hint_for_email_address">이메일 주소</string>
     <string name="get_email_verification">인증 메일 받기</string>
     <string name="hint_for_verification_code">인증 번호</string>

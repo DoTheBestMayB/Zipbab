@@ -35,15 +35,6 @@
         <item name="android:scaleType">centerCrop</item>
     </style>
 
-    <style name="RoundButton" parent="ShapeAppearance.Material3.SmallComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">50dp</item>
-    </style>
-
-    <style name="FloatingButton" parent="@style/Widget.MaterialComponents.FloatingActionButton">
-        <item name="shapeAppearanceOverlay">@style/RoundButton</item>
-    </style>
-
     <style name="CircleProfile">
         <item name="android:background">@drawable/background_for_circle_profile</item>
         <item name="android:scaleType">centerCrop</item>
@@ -91,10 +82,6 @@
 
     <style name="AlertDialogText" parent="Widget.Material3.Button.TextButton.Dialog">
         <item name="android:textColor">@color/black</item>
-    </style>
-
-    <style name="ModalBottomSheet" parent="Widget.Material3.BottomSheet.Modal">
-        <!-- Apply attributes here -->
     </style>
 
     <style name="ModalBottomSheetDialog" parent="Theme.Material3.DayNight.BottomSheetDialog">
