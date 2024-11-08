@@ -126,9 +126,9 @@ class SettingViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val isSuccess = appSettingRepository.removeUserDocumentId()
             if (isSuccess) {
-                _message.emit(SettingMessage.LogoutFail)
-            } else {
                 _message.emit(SettingMessage.LogoutSuccess)
+            } else {
+                _message.emit(SettingMessage.LogoutFail)
             }
         }
     }
