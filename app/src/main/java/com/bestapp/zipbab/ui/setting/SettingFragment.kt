@@ -497,13 +497,13 @@ fun ProfileStatus(
                             text = stringResource(id = R.string.user_document_id_instruction),
                             color = LocalCustomColorsPalette.current.defaultBackgroundColor,
                         )
-                        ClickableText(
+                        Text(
                             text = AnnotatedString(stringResource(id = R.string.text_for_delete_request_url)),
                             style = TextStyle(
                                 color = LocalCustomColorsPalette.current.defaultBackgroundColor,
                                 textDecoration = TextDecoration.Underline
                             ),
-                            onClick = {
+                            modifier = Modifier.clickable {
                                 onAction(SettingIntent.RequestDelete)
                             }
                         )
