@@ -148,6 +148,7 @@ class SettingFragment : Fragment() {
                                     Intent(Intent.ACTION_VIEW, Uri.parse(locationPolicyUrl.link))
                                 context.startActivity(intent)
                             }
+                            settingViewModel.onActionIntentConsumed()
                         }
 
                         ActionIntent.SignOutTry -> {
