@@ -19,10 +19,11 @@
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/cg"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/default_margin20"
+        android:layout_marginHorizontal="@dimen/default_margin20"
         android:layout_marginTop="@dimen/default_margin16"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_header"
         app:selectionRequired="true"

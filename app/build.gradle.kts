@@ -53,6 +53,10 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
 }
 
@@ -62,6 +66,16 @@ fun getValue(propertyKey: String): String {
 
 dependencies {
     implementation(project(":data"))
+
+    implementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.ui.preview)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    androidTestImplementation(libs.androidx.compose.ui.test)
+    debugImplementation(libs.androidx.ui.tooling)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -101,11 +115,15 @@ dependencies {
 
     // coil
     implementation(libs.coil.kt)
+    implementation(libs.coil.kt.compose)
 
     // 네이버 지도 SDK
     implementation(libs.map.sdk)
     // FusedLocationSource
     implementation(libs.play.services.location)
+
+    // skydoves ballon
+    implementation(libs.skydoves.ballon.compose)
 
     // Import the Firebase BoM
     implementation(platform(libs.firebase.bom))

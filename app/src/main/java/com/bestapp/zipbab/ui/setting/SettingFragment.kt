@@ -1,381 +1,632 @@
 package com.bestapp.zipbab.ui.setting
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
-import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.children
-import androidx.core.view.isVisible
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
+import coil.compose.AsyncImage
 import com.bestapp.zipbab.BuildConfig
 import com.bestapp.zipbab.R
-import com.bestapp.zipbab.databinding.FragmentSettingBinding
+import com.bestapp.zipbab.model.PlaceLocationUiState
 import com.bestapp.zipbab.model.UserUiState
-import com.bestapp.zipbab.util.loadOrDefault
-import com.bestapp.zipbab.util.safeNavigate
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.bestapp.zipbab.ui.theme.LocalCustomColorsPalette
+import com.bestapp.zipbab.ui.theme.MainColor
+import com.bestapp.zipbab.ui.theme.PretendardBold
+import com.bestapp.zipbab.ui.theme.PretendardRegular
+import com.bestapp.zipbab.ui.theme.SquareButton
+import com.bestapp.zipbab.ui.theme.ZipbabTheme
+import com.skydoves.balloon.ArrowPositionRules
+import com.skydoves.balloon.BalloonAnimation
+import com.skydoves.balloon.BalloonSizeSpec
+import com.skydoves.balloon.compose.Balloon
+import com.skydoves.balloon.compose.rememberBalloonBuilder
+import com.skydoves.balloon.compose.setBackgroundColor
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingFragment : Fragment() {
 
-    private var _binding: FragmentSettingBinding? = null
-    private val binding: FragmentSettingBinding
-        get() = _binding!!
+    private val settingViewModel: SettingViewModel by viewModels()
 
-    private val viewModel: SettingViewModel by viewModels()
-    private lateinit var clipboardManager: ClipboardManager
-
-    private var userUiState: UserUiState = UserUiState()
-
-    private val signOutDialog by lazy {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.sign_out_dialog_title))
-            .setMessage(getString(R.string.sign_out_dialog_message))
-            .setNeutralButton(getString(R.string.sign_out_dialog_neutral)) { _, _ ->
-
-            }
-            .setPositiveButton(getString(R.string.sign_out_dialog_positive)) { _, _ ->
-                signOut()
-            }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel.init()
-        clipboardManager =
-            requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    }
+    private val signUpDeepLink = Uri.parse("android-app://com.bestapp.zipbab/signup")
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSettingBinding.inflate(inflater, container, false)
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                ZipbabTheme {
+                    val userUiState by settingViewModel.userUiState.collectAsStateWithLifecycle()
+                    val privacyUrl by settingViewModel.requestPrivacyUrl.collectAsStateWithLifecycle()
+                    val locationPolicyUrl by settingViewModel.requestLocationPolicyUrl.collectAsStateWithLifecycle()
+                    val navActionIntent by settingViewModel.navActionIntent.collectAsStateWithLifecycle()
+                    val actionIntent by settingViewModel.actionIntent.collectAsStateWithLifecycle()
+                    val loadState by settingViewModel.userInfoLodeState.collectAsStateWithLifecycle()
 
-        return binding.root
-    }
+                    val context = LocalContext.current
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+                    when (val currentActionIntent = actionIntent) {
+                        ActionIntent.Default -> Unit
+                        is ActionIntent.DirectToRequestDelete -> {
+                            if (currentActionIntent.url.isBlank()) {
 
-        setDefaultUI()
-        setObserve()
-        setListener()
-    }
-
-    private fun setDefaultUI() = with(binding) {
-        // minSdk로 인해 xml attribute가 아닌 코드에서 설정함
-        ivProfileImage.clipToOutline = true
-
-        viewProfile.tvTitle.text = getString(R.string.setting_profile_row_title)
-        viewProfile.tvDescription.text = getString(R.string.setting_profile_row_description)
-        viewProfile.ivIcon.setImageResource(R.drawable.baseline_person_24)
-
-        viewVerification.tvTitle.text = getString(R.string.setting_verification_row_title)
-        viewVerification.tvDescription.text = getString(R.string.setting_verification_row_description)
-        viewVerification.ivIcon.setImageResource(R.drawable.baseline_verified_user_24)
-
-        viewMeeting.tvTitle.text = getString(R.string.setting_meeting_row_title)
-        viewMeeting.tvDescription.text = getString(R.string.setting_meeting_row_description)
-        viewMeeting.ivIcon.setImageResource(R.drawable.baseline_people_24)
-
-        viewAlert.tvTitle.text = getString(R.string.setting_alert_row_title)
-        viewAlert.tvDescription.text = getString(R.string.setting_alert_row_description)
-        viewAlert.ivIcon.setImageResource(R.drawable.baseline_notifications_none_24)
-
-        viewPrivacyPolicy.tvTitle.text =
-            getString(R.string.setting_privacy_policy_row_title)
-        viewPrivacyPolicy.tvDescription.text =
-            getString(R.string.setting_privacy_policy_row_description)
-        viewPrivacyPolicy.ivIcon.setImageResource(R.drawable.baseline_remove_red_eye_24)
-
-        viewLocationPolicy.tvTitle.text = getString(R.string.setting_location_policy_row_title)
-        viewLocationPolicy.tvDescription.text =
-            getString(R.string.setting_location_policy_row_description)
-        viewLocationPolicy.ivIcon.setImageResource(R.drawable.baseline_my_location_24)
-
-        viewVersion.tvTitle.text = getString(R.string.setting_version_row_title)
-        viewVersion.tvDescription.text =
-            getString(R.string.version_format).format(BuildConfig.VERSION_NAME)
-        viewVersion.ivIcon.setImageResource(R.drawable.baseline_code_24)
-        viewVersion.ivEnter.visibility = View.GONE
-    }
-
-    private fun setObserve() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.userInfoLodeState.collect { state ->
-                        when (state) {
-                            LoadingState.Default -> {
-                                setListenerRequireInternet(isNotLoadingYet = false)
-                            }
-                            is LoadingState.Done -> {
-                                setListenerRequireInternet(isNotLoadingYet = false)
-                            }
-                            LoadingState.OnLoading -> {
-                                setListenerRequireInternet(isNotLoadingYet = true)
-                            }
-                        }
-                    }
-                }
-                launch {
-                    viewModel.userUiState.collect { userUiState ->
-                        this@SettingFragment.userUiState = userUiState
-                        setUI(userUiState)
-                        copyTextThenShow(userUiState.userDocumentID)
-                    }
-                }
-                launch {
-                    viewModel.message.collect { message ->
-                        val text = when (message) {
-                            SettingMessage.LOGOUT_SUCCESS -> getString(R.string.message_when_log_out_success)
-                            SettingMessage.LOGOUT_FAIL -> getString(R.string.message_when_log_out_fail)
-                            SettingMessage.SIGN_OUT_SUCCESS -> getString(R.string.message_when_sign_out_success)
-                            SettingMessage.SIGN_OUT_FAIL -> getString(R.string.message_when_sign_out_fail)
-                            SettingMessage.SIGN_OUT_IS_NOT_ALLOWED -> getString(R.string.sign_out_is_not_allowed)
-                        }
-                        Toast.makeText(requireContext(), text, Toast.LENGTH_LONG).show()
-                    }
-                }
-                launch {
-                    viewModel.requestDeleteUrl.collect { privacy ->
-                        binding.userDocumentIdInstructionView.tvUrl.setOnClickListener {
-                            // 인터넷 연결이 느려서 로딩이 안 된 경우 대응
-                            if (privacy.link.isBlank()) {
-                                showNotYetLoaded(getString(R.string.text_for_delete_request_title))
-                                return@setOnClickListener
-                            }
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(privacy.link))
-                            startActivity(intent)
-                        }
-                    }
-                }
-                launch {
-                    viewModel.requestPrivacyUrl
-                        .collect { privacy ->
-                            binding.viewPrivacyPolicy.root.setOnClickListener {
-                                // 인터넷 연결이 느려서 로딩이 안 된 경우 대응
-                                if (privacy.link.isBlank()) {
-                                    showNotYetLoaded(getString(R.string.setting_privacy_policy_row_title))
-                                    return@setOnClickListener
-                                }
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(privacy.link))
+                                Toast.makeText(
+                                    context,
+                                    stringResource(
+                                        R.string.not_yet_loaded,
+                                        stringResource(R.string.text_for_delete_request_title)
+                                    ),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                val intent =
+                                    Intent(Intent.ACTION_VIEW, Uri.parse(currentActionIntent.url))
                                 startActivity(intent)
                             }
+                            settingViewModel.onActionIntentConsumed()
                         }
-                }
-                launch {
-                    viewModel.requestLocationPolicyUrl
-                        .collect { privacy ->
-                            binding.viewLocationPolicy.root.setOnClickListener {
-                                // 인터넷 연결이 느려서 로딩이 안 된 경우 대응
-                                if (privacy.link.isBlank()) {
-                                    showNotYetLoaded(getString(R.string.setting_location_policy_row_title))
-                                    return@setOnClickListener
-                                }
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(privacy.link))
-                                startActivity(intent)
+
+                        ActionIntent.NotYetImplemented -> {
+                            Toast.makeText(
+                                context,
+                                stringResource(R.string.not_yet_implemented),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            settingViewModel.onActionIntentConsumed()
+                        }
+
+                        ActionIntent.PrivacyPolicy -> {
+                            if (privacyUrl.link.isNotBlank()) {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(privacyUrl.link))
+                                context.startActivity(intent)
                             }
+                            settingViewModel.onActionIntentConsumed()
                         }
+
+                        ActionIntent.LocationPolicy -> {
+                            if (locationPolicyUrl.link.isNotBlank()) {
+                                val intent =
+                                    Intent(Intent.ACTION_VIEW, Uri.parse(locationPolicyUrl.link))
+                                context.startActivity(intent)
+                            }
+                            settingViewModel.onActionIntentConsumed()
+                        }
+
+                        ActionIntent.SignOutTry -> {
+                            SignOutAlertDialog(
+                                onConfirmation = {
+                                    settingViewModel.handleAction(SettingIntent.SignOut)
+                                    settingViewModel.onActionIntentConsumed()
+                                },
+                                onDismiss = {
+                                    settingViewModel.onActionIntentConsumed()
+                                }
+                            )
+                        }
+                    }
+                    LaunchedEffect(true) {
+                        settingViewModel.message.collect { message ->
+                            val text = when (message) {
+                                SettingMessage.Default -> return@collect
+                                SettingMessage.SignOutFail -> context.getString(R.string.message_when_sign_out_fail)
+                                SettingMessage.SingOutSuccess -> context.getString(R.string.message_when_sign_out_success)
+                                SettingMessage.SignOutIsNotAllowed -> context.getString(R.string.sign_out_is_not_allowed)
+                                SettingMessage.LogoutSuccess -> context.getString(R.string.message_when_log_out_success)
+                                SettingMessage.LogoutFail -> context.getString(R.string.message_when_log_out_fail)
+                            }
+                            Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    val action: NavDirections? = when (val intent = navActionIntent) {
+                        NavActionIntent.Alert -> {
+                            SettingFragmentDirections.actionSettingFragmentToAlertSettingFragment()
+                        }
+
+                        NavActionIntent.Default -> null
+                        NavActionIntent.Login -> SettingFragmentDirections.actionSettingFragmentToLoginGraph()
+
+                        NavActionIntent.SignUp -> {
+                            settingViewModel.onNavActionIntentConsumed()
+
+                            findNavController().navigate(signUpDeepLink)
+                            return@ZipbabTheme
+                        }
+
+                        NavActionIntent.Meeting -> SettingFragmentDirections.actionSettingFragmentToMeetingListFragment()
+                        is NavActionIntent.Profile -> SettingFragmentDirections.actionSettingFragmentToProfileFragment(
+                            intent.userDocumentID
+                        )
+
+                    }
+                    if (action != null) {
+                        settingViewModel.onNavActionIntentConsumed()
+
+                        findNavController().navigate(action)
+                    }
+                    SettingScreen(
+                        userUiState = userUiState,
+                        loadState = loadState,
+                        onAction = { intent ->
+                            settingViewModel.handleAction(intent)
+                        }
+                    )
                 }
             }
         }
     }
+}
 
-    private fun setListener() = with(binding) {
-        viewAlert.root.setOnClickListener {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.not_yet_implemented), Toast.LENGTH_SHORT
-            ).show()
-//            val action = SettingFragmentDirections.actionSettingFragmentToAlertSettingFragment()
-//            findNavController().navigate(action)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingScreen(
+    userUiState: UserUiState,
+    loadState: LoadingState,
+    onAction: (SettingIntent) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Scaffold(
+        modifier = modifier
+            .fillMaxWidth()
+            .fillMaxHeight(),
+        topBar = {
+            CenterAlignedTopAppBar(
+                colors = TopAppBarColors(
+                    containerColor = LocalCustomColorsPalette.current.defaultBackgroundColor,
+                    scrolledContainerColor = LocalCustomColorsPalette.current.defaultBackgroundColor,
+                    navigationIconContentColor = LocalCustomColorsPalette.current.defaultForegroundColor,
+                    titleContentColor = LocalCustomColorsPalette.current.defaultForegroundColor,
+                    actionIconContentColor = MainColor,
+                ),
+                windowInsets = WindowInsets(0, 0, 0, 0),
+                title = {
+                    Text(
+                        stringResource(id = R.string.setting_app_bar),
+                        maxLines = 1,
+                        fontSize = 20.sp,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+            )
         }
-        ivDistinguishNumInfo.setOnClickListener {
-            userDocumentIdInstructionView.root.isVisible = true
+    ) { innerPadding ->
+        // 로딩이 완료 되지 않으면 content를 표시하지 않는다.
+        when (loadState) {
+            LoadingState.Default -> Unit
+            LoadingState.Done -> {
+                ScrollContent(
+                    innerPadding = innerPadding,
+                    userUiState = userUiState,
+                    onAction = onAction,
+                )
+            }
+            LoadingState.OnLoading -> {
+                Unit
+            }
         }
     }
+}
 
-    private fun setListenerRequireInternet(isNotLoadingYet: Boolean) = with(binding) {
-        ivProfileImage.setOnClickListener {
-            if (isNotLoadingYet) {
-                showNotYetLoaded(getString(R.string.user_info))
-                return@setOnClickListener
+@Composable
+fun ScrollContent(
+    innerPadding: PaddingValues,
+    userUiState: UserUiState,
+    onAction: (SettingIntent) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .padding(innerPadding)
+            .padding(horizontal = 20.dp)
+
+    ) {
+        ProfileStatus(
+            userUiState = userUiState,
+            onAction = onAction,
+        )
+        Text(
+            text = stringResource(id = R.string.header_for_setting_row),
+            modifier = Modifier.padding(top = 24.dp)
+        )
+        SettingItem(
+            iconResource = R.drawable.baseline_person_24,
+            title = stringResource(id = R.string.setting_profile_row_title),
+            description = stringResource(id = R.string.setting_profile_row_description),
+            enabled = userUiState.isLoggedIn,
+            onClick = {
+                onAction(SettingIntent.Profile)
             }
-            val action = if (userUiState.isLoggedIn) {
-                SettingFragmentDirections.actionSettingFragmentToProfileFragment(userUiState.userDocumentID)
+        )
+        SettingItem(
+            iconResource = R.drawable.baseline_people_24,
+            title = stringResource(id = R.string.setting_meeting_row_title),
+            description = stringResource(id = R.string.setting_meeting_row_description),
+            enabled = userUiState.isLoggedIn,
+            onClick = {
+                onAction(SettingIntent.Meeting)
+            }
+        )
+        SettingItem(
+            iconResource = R.drawable.baseline_notifications_none_24,
+            title = stringResource(id = R.string.setting_alert_row_title),
+            description = stringResource(id = R.string.setting_alert_row_description),
+            onClick = {
+                onAction(SettingIntent.NotYetImplemented)
+//            navAction(NavActionType.ALERT, "")
+            }
+        )
+        HorizontalDivider(modifier = Modifier.padding(top = 16.dp))
+        Text(
+            text = stringResource(id = R.string.header_for_etc_row),
+            modifier = Modifier.padding(top = 12.dp)
+        )
+        SettingItem(
+            iconResource = R.drawable.baseline_remove_red_eye_24,
+            title = stringResource(id = R.string.setting_privacy_policy_row_title),
+            description = stringResource(id = R.string.setting_privacy_policy_row_description),
+            onClick = {
+                onAction(SettingIntent.PrivacyPolicy)
+            },
+        )
+        SettingItem(
+            iconResource = R.drawable.baseline_my_location_24,
+            title = stringResource(id = R.string.setting_location_policy_row_title),
+            description = stringResource(id = R.string.setting_location_policy_row_description),
+            onClick = {
+                onAction(SettingIntent.LocationPolicy)
+            },
+        )
+        SettingItem(
+            iconResource = R.drawable.baseline_code_24,
+            title = stringResource(id = R.string.setting_version_row_title),
+            description = stringResource(id = R.string.version_format, BuildConfig.VERSION_NAME),
+            onClick = {},
+            isNoActionItem = true,
+        )
+        SquareButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp), text = stringResource(
+                id = if (userUiState.isLoggedIn) {
+                    R.string.logout
+                } else {
+                    R.string.login
+                }
+            ),
+            onClick = {
+                if (userUiState.isLoggedIn) {
+                    onAction(SettingIntent.Logout)
+                } else {
+                    onAction(SettingIntent.Login)
+                }
+            }
+        )
+        SquareButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp), text = stringResource(
+                id = if (userUiState.isLoggedIn) {
+                    R.string.unregister
+                } else {
+                    R.string.register
+                }
+            ),
+            onClick = {
+                if (userUiState.isLoggedIn) {
+                    onAction(SettingIntent.SignOutTry)
+                } else {
+                    onAction(SettingIntent.SignUp)
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun SignOutAlertDialog(
+    onConfirmation: () -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    AlertDialog(
+        modifier = modifier,
+        onDismissRequest = { onDismiss() },
+        confirmButton = {
+            TextButton(onClick = {
+                onConfirmation()
+            }) {
+                Text(
+                    text = stringResource(id = R.string.sign_out_dialog_positive),
+                    color = LocalCustomColorsPalette.current.defaultForegroundColor
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { onDismiss() }) {
+                Text(
+                    text = stringResource(id = R.string.sign_out_dialog_neutral),
+                    color = LocalCustomColorsPalette.current.defaultForegroundColor
+                )
+            }
+        },
+        containerColor = LocalCustomColorsPalette.current.defaultBackgroundColor,
+        title = {
+            Text(text = stringResource(id = R.string.sign_out_dialog_title))
+        },
+        text = {
+            Text(text = stringResource(id = R.string.sign_out_dialog_message))
+        },
+    )
+}
+
+@Composable
+fun ProfileStatus(
+    userUiState: UserUiState,
+    onAction: (SettingIntent) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val clipboardManager = LocalClipboardManager.current
+    val isShowClipboardToastMessage = remember {
+        mutableStateOf(false)
+    }
+
+    val backgroundColor = LocalCustomColorsPalette.current.defaultForegroundColor
+    val balloonBuilder = rememberBalloonBuilder {
+        setArrowSize(10)
+        setArrowPosition(0.5f)
+        setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
+        setWidth(BalloonSizeSpec.WRAP)
+        setHeight(BalloonSizeSpec.WRAP)
+        setPadding(12)
+        setMarginHorizontal(12)
+        setCornerRadius(8f)
+        setBackgroundColor(backgroundColor)
+        setBalloonAnimation(BalloonAnimation.ELASTIC)
+    }
+
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (userUiState.isLoggedIn && userUiState.profileImage.isNotBlank()) {
+            AsyncImage(
+                model = userUiState.profileImage, contentDescription = null,
+                placeholder = painterResource(
+                    id = R.drawable.sample_profile_image
+                ),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .height(44.dp)
+                    .width(44.dp)
+                    .clickable(enabled = userUiState.isLoggedIn) {
+                        onAction(SettingIntent.Profile)
+                    },
+            )
+        } else {
+            Image(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .height(44.dp)
+                    .width(44.dp),
+                painter = painterResource(id = R.drawable.sample_profile_image),
+                contentDescription = "",
+                contentScale = ContentScale.Crop,
+            )
+        }
+        Text(
+            modifier = Modifier.padding(start = 8.dp),
+            text = if (userUiState.isLoggedIn) {
+                userUiState.nickname
             } else {
-                SettingFragmentDirections.actionSettingFragmentToLoginGraph()
-            }
-            action.safeNavigate(this@SettingFragment)
-        }
-        viewProfile.root.setOnClickListener {
-            if (isNotLoadingYet) {
-                showNotYetLoaded(getString(R.string.user_info))
-                return@setOnClickListener
-            }
-            val action =
-                SettingFragmentDirections.actionSettingFragmentToProfileFragment(userUiState.userDocumentID)
-            action.safeNavigate(this@SettingFragment)
-        }
-        viewVerification.root.setOnClickListener {
-            if (isNotLoadingYet) {
-                showNotYetLoaded(getString(R.string.user_info))
-                return@setOnClickListener
-            }
-            val action = SettingFragmentDirections.actionSettingFragmentToVerificationFragment()
-            action.safeNavigate(this@SettingFragment)
-        }
-        viewMeeting.root.setOnClickListener {
-            if (isNotLoadingYet) {
-                showNotYetLoaded(getString(R.string.user_info))
-                return@setOnClickListener
-            }
-            val action =
-                SettingFragmentDirections.actionSettingFragmentToMeetingListFragment()
-            action.safeNavigate(this@SettingFragment)
-        }
-        btnLogin.setOnClickListener {
-            if (isNotLoadingYet) {
-                showNotYetLoaded(getString(R.string.user_info))
-                return@setOnClickListener
-            }
-            val action = SettingFragmentDirections.actionSettingFragmentToLoginGraph()
-            action.safeNavigate(this@SettingFragment)
-        }
-        btnLogout.setOnClickListener {
-            if (isNotLoadingYet) {
-                showNotYetLoaded(getString(R.string.user_info))
-                return@setOnClickListener
-            }
-            viewModel.logout()
-        }
-        btnRegister.setOnClickListener {
-            if (isNotLoadingYet) {
-                showNotYetLoaded(getString(R.string.user_info))
-                return@setOnClickListener
-            }
-            val uri = Uri.parse("android-app://com.bestapp.zipbab/signup")
-            findNavController().navigate(uri)
-        }
-        btnUnregister.setOnClickListener {
-            if (isNotLoadingYet) {
-                showNotYetLoaded(getString(R.string.user_info))
-                return@setOnClickListener
-            }
-            signOutDialog.show()
-        }
-    }
-
-    private fun showNotYetLoaded(actionInfo: String) {
-        val message = getString(R.string.not_yet_loaded, actionInfo)
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun copyTextThenShow(text: String) {
-        binding.tvDistinguishNum.setOnClickListener {
-            val clip = ClipData.newPlainText(getString(R.string.label_user_document_id), text)
-            clipboardManager.setPrimaryClip(clip)
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.user_document_id_is_copied), Toast.LENGTH_LONG
-            ).show()
-        }
-
-    }
-
-    private fun signOut() {
-        viewModel.signOut()
-    }
-
-    private fun setUI(userUiState: UserUiState) {
+                stringResource(id = R.string.nonmember)
+            },
+            fontFamily = PretendardBold,
+            fontSize = 20.sp
+        )
         if (userUiState.isLoggedIn) {
-            setMemberUI(userUiState)
-            return
-        }
-        setNonMemberUI()
-    }
+            Text(
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .clickable(enabled = userUiState.isLoggedIn) {
+                        clipboardManager.setText(AnnotatedString(userUiState.userDocumentID))
+                        isShowClipboardToastMessage.value = true
+                    },
+                text = stringResource(
+                    id = R.string.profile_distinguish_format_8,
+                    userUiState.userDocumentID
+                ),
+                style = TextStyle(textDecoration = TextDecoration.Underline),
+                color = Color.Gray,
+                fontFamily = PretendardRegular,
+                fontSize = 16.sp
+            )
 
-    private fun setNonMemberUI() = with(binding) {
-        tvNickname.text = getString(R.string.nonmember)
-        tvDistinguishNum.visibility = View.GONE
-        ivDistinguishNumInfo.visibility = View.GONE
-        ivProfileImage.setImageResource(R.drawable.sample_profile_image)
-
-        btnLogin.visibility = View.VISIBLE
-        btnLogout.visibility = View.GONE
-
-        btnRegister.visibility = View.VISIBLE
-        btnUnregister.visibility = View.GONE
-
-        setMeetingAndProfileEnabled(false)
-    }
-
-    private fun setMemberUI(userUiState: UserUiState) = with(binding) {
-        tvNickname.text = userUiState.nickname
-        tvDistinguishNum.visibility = View.VISIBLE
-        ivDistinguishNumInfo.visibility = View.VISIBLE
-
-        tvDistinguishNum.text =
-            getString(R.string.profile_distinguish_format_8).format(userUiState.userDocumentID)
-        tvDistinguishNum.paintFlags =
-            tvDistinguishNum.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-        ivProfileImage.loadOrDefault(userUiState.profileImage)
-
-        btnLogin.visibility = View.GONE
-        btnLogout.visibility = View.VISIBLE
-
-        btnRegister.visibility = View.GONE
-        btnUnregister.visibility = View.VISIBLE
-
-        setMeetingAndProfileEnabled(true)
-    }
-
-    private fun setMeetingAndProfileEnabled(isEnabled: Boolean) = with(binding) {
-        listOf(viewProfile.root, viewVerification.root, viewMeeting.root).forEach { layout ->
-            layout.children.forEach { view ->
-                view.isEnabled = isEnabled
+            Balloon(builder = balloonBuilder,
+                balloonContent = {
+                    Column {
+                        Text(
+                            text = stringResource(id = R.string.user_document_id_instruction),
+                            color = LocalCustomColorsPalette.current.defaultBackgroundColor,
+                        )
+                        Text(
+                            text = AnnotatedString(stringResource(id = R.string.text_for_delete_request_url)),
+                            style = TextStyle(
+                                color = LocalCustomColorsPalette.current.defaultBackgroundColor,
+                                textDecoration = TextDecoration.Underline
+                            ),
+                            modifier = Modifier.clickable {
+                                onAction(SettingIntent.RequestDelete)
+                            }
+                        )
+                    }
+                }
+            ) { balloonWindow ->
+                Image(
+                    modifier = Modifier
+                        .padding(start = 4.dp)
+                        .clickable {
+                            balloonWindow.showAlignBottom()
+                        },
+                    painter = painterResource(id = R.drawable.baseline_info_outline_24),
+                    contentDescription = "",
+                    colorFilter = ColorFilter.tint(Color.Gray),
+                )
             }
         }
     }
+    if (isShowClipboardToastMessage.value) {
+        Toast.makeText(
+            LocalContext.current,
+            stringResource(id = R.string.user_document_id_is_copied),
+            Toast.LENGTH_SHORT
+        ).show()
+        isShowClipboardToastMessage.value = false
+    }
+}
 
-    fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        val instructionView = binding.userDocumentIdInstructionView.root
-        if (instructionView.isVisible && isWithOutViewBounds(instructionView, event)) {
-            instructionView.visibility = View.GONE
-            return true
+@Composable
+fun SettingItem(
+    @DrawableRes iconResource: Int,
+    title: String,
+    description: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    isNoActionItem: Boolean = false,
+) {
+    Row(
+        modifier = modifier
+            .padding(top = 8.dp)
+            .fillMaxWidth()
+            .alpha(if (enabled) 1f else 0.5f)
+            .clickable(enabled = enabled && isNoActionItem.not()) {
+                onClick()
+            },
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            modifier = Modifier
+                .height(24.dp)
+                .width(24.dp),
+            painter = painterResource(id = iconResource),
+            contentDescription = ""
+        )
+        Column(
+            modifier = Modifier.padding(start = 8.dp)
+        ) {
+            Text(
+                text = title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontFamily = PretendardBold,
+                fontSize = 16.sp
+            )
+            Text(
+                text = description,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontFamily = PretendardRegular,
+                fontSize = 12.sp
+            )
         }
-        return false
+        if (isNoActionItem.not()) {
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                modifier = Modifier
+                    .height(24.dp)
+                    .width(24.dp),
+                painter = painterResource(id = R.drawable.baseline_arrow_forward_ios_24),
+                contentDescription = ""
+            )
+        }
     }
+}
 
-    private fun isWithOutViewBounds(view: View, event: MotionEvent): Boolean {
-        val xy = IntArray(2)
-        view.getLocationOnScreen(xy)
-        val (x, y) = xy
 
-        return event.x < x || event.x > x + view.width || event.y < y || event.y > y + view.height
-    }
-
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
+@Preview
+@Composable
+fun SettingScreenPreview() {
+    ZipbabTheme {
+        SettingScreen(
+            userUiState = UserUiState(
+                userDocumentID = "userDocumentID",
+                nickname = "부캠이",
+                id = "",
+                pw = "",
+                profileImage = "",
+                temperature = 0.0,
+                meetingCount = 0,
+                notificationUiState = listOf(),
+                meetingReviews = listOf(),
+                postDocumentIds = listOf(),
+                placeLocationUiState = PlaceLocationUiState(
+                    locationAddress = "",
+                    locationLat = "",
+                    locationLong = ""
+                )
+            ),
+            loadState = LoadingState.Done,
+            onAction = {},
+        )
     }
 }

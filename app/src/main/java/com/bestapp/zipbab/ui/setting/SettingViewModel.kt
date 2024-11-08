@@ -2,13 +2,13 @@ package com.bestapp.zipbab.ui.setting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bestapp.zipbab.data.model.local.SignOutEntity
 import com.bestapp.zipbab.data.model.remote.Privacy
 import com.bestapp.zipbab.data.repository.AppSettingRepository
 import com.bestapp.zipbab.data.repository.UserRepository
-import com.bestapp.zipbab.model.SignOutState
 import com.bestapp.zipbab.model.UserUiState
-import com.bestapp.zipbab.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
+import com.bestapp.zipbab.model.toUi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,6 +45,12 @@ class SettingViewModel @Inject constructor(
             initialValue = UserUiState(),
         )
 
+    private val _navActionIntent = MutableStateFlow<NavActionIntent>(NavActionIntent.Default)
+    val navActionIntent: StateFlow<NavActionIntent> = _navActionIntent.asStateFlow()
+
+    private val _actionIntent = MutableStateFlow<ActionIntent>(ActionIntent.Default)
+    val actionIntent: StateFlow<ActionIntent> = _actionIntent.asStateFlow()
+
     private val _message = MutableSharedFlow<SettingMessage>()
     val message: SharedFlow<SettingMessage> = _message.asSharedFlow()
 
@@ -60,38 +66,95 @@ class SettingViewModel @Inject constructor(
     private val _userInfoLoadState = MutableStateFlow<LoadingState>(LoadingState.Default)
     val userInfoLodeState: StateFlow<LoadingState> = _userInfoLoadState.asStateFlow()
 
-    fun init() {
+    init {
         viewModelScope.launch {
-            _requestDeleteUrl.emit(appSettingRepository.getDeleteRequestInfo())
+            _requestDeleteUrl.value = appSettingRepository.getDeleteRequestInfo()
             _requestPrivacyUrl.emit(appSettingRepository.getPrivacyInfo())
             _requestLocationPolicyUrl.emit(appSettingRepository.getLocationPolicyInfo())
         }
     }
 
-    fun logout() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val isSuccess = appSettingRepository.removeUserDocumentId()
-            if (isSuccess) {
-                _message.emit(SettingMessage.LOGOUT_FAIL)
-            } else {
-                _message.emit(SettingMessage.LOGOUT_SUCCESS)
+    fun handleAction(settingIntent: SettingIntent) {
+        when (settingIntent) {
+            SettingIntent.Default -> {
+                _navActionIntent.value = NavActionIntent.Default
+            }
+
+            SettingIntent.SignOut -> signOut()
+            SettingIntent.SignOutTry -> {
+                _actionIntent.value = ActionIntent.SignOutTry
+            }
+
+            SettingIntent.Logout -> logout()
+            SettingIntent.Login -> {
+                _navActionIntent.value = NavActionIntent.Login
+            }
+
+            SettingIntent.Profile -> {
+                _navActionIntent.value = NavActionIntent.Profile(userUiState.value.userDocumentID)
+            }
+
+            SettingIntent.Meeting -> {
+                _navActionIntent.value = NavActionIntent.Meeting
+            }
+
+            SettingIntent.SignUp -> {
+                _navActionIntent.value = NavActionIntent.SignUp
+            }
+
+            SettingIntent.RequestDelete -> {
+                _actionIntent.value = ActionIntent.DirectToRequestDelete(
+                    url = requestDeleteUrl.value.link
+                )
+            }
+
+            SettingIntent.NotYetImplemented -> {
+                _actionIntent.value = ActionIntent.NotYetImplemented
+            }
+
+            SettingIntent.PrivacyPolicy -> {
+                _actionIntent.value = ActionIntent.PrivacyPolicy
+            }
+
+            SettingIntent.LocationPolicy -> {
+                _actionIntent.value = ActionIntent.LocationPolicy
             }
         }
     }
 
-    fun signOut() {
+    private fun logout() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val isSuccess = appSettingRepository.removeUserDocumentId()
+            if (isSuccess) {
+                _message.emit(SettingMessage.LogoutSuccess)
+            } else {
+                _message.emit(SettingMessage.LogoutFail)
+            }
+        }
+    }
+
+    private fun signOut() {
         viewModelScope.launch {
             runCatching {
                 val userDocumentID = userUiState.firstOrNull()?.userDocumentID ?: return@runCatching
-                val signOutState = userRepository.signOutUser(userDocumentID).toUi()
+                val signOutState = userRepository.signOutUser(userDocumentID)
                 when (signOutState) {
-                    SignOutState.Fail -> _message.emit(SettingMessage.SIGN_OUT_FAIL)
-                    SignOutState.IsNotAllowed -> _message.emit(SettingMessage.SIGN_OUT_IS_NOT_ALLOWED)
-                    SignOutState.Success -> _message.emit(SettingMessage.SIGN_OUT_SUCCESS)
+                    SignOutEntity.Fail -> _message.emit(SettingMessage.SignOutFail)
+                    SignOutEntity.IsNotAllowed -> _message.emit(SettingMessage.SignOutIsNotAllowed)
+                    SignOutEntity.Success -> {
+                        appSettingRepository.removeUserDocumentId()
+                        _message.emit(SettingMessage.SingOutSuccess)
+                    }
                 }
-            }.onFailure {
-                throw it
             }
         }
+    }
+
+    fun onActionIntentConsumed() {
+        _actionIntent.value = ActionIntent.Default
+    }
+
+    fun onNavActionIntentConsumed() {
+        _navActionIntent.value = NavActionIntent.Default
     }
 }
