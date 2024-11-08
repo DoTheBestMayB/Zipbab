@@ -100,6 +100,7 @@ class SettingFragment : Fragment() {
                     val locationPolicyUrl by settingViewModel.requestLocationPolicyUrl.collectAsStateWithLifecycle()
                     val navActionIntent by settingViewModel.navActionIntent.collectAsStateWithLifecycle()
                     val actionIntent by settingViewModel.actionIntent.collectAsStateWithLifecycle()
+                    val loadState by settingViewModel.userInfoLodeState.collectAsStateWithLifecycle()
 
                     val context = LocalContext.current
 
@@ -204,6 +205,7 @@ class SettingFragment : Fragment() {
                     }
                     SettingScreen(
                         userUiState = userUiState,
+                        loadState = loadState,
                         onAction = { intent ->
                             settingViewModel.handleAction(intent)
                         }
@@ -218,6 +220,7 @@ class SettingFragment : Fragment() {
 @Composable
 fun SettingScreen(
     userUiState: UserUiState,
+    loadState: LoadingState,
     onAction: (SettingIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -246,11 +249,20 @@ fun SettingScreen(
             )
         }
     ) { innerPadding ->
-        ScrollContent(
-            innerPadding = innerPadding,
-            userUiState = userUiState,
-            onAction = onAction,
-        )
+        // 로딩이 완료 되지 않으면 content를 표시하지 않는다.
+        when (loadState) {
+            LoadingState.Default -> Unit
+            LoadingState.Done -> {
+                ScrollContent(
+                    innerPadding = innerPadding,
+                    userUiState = userUiState,
+                    onAction = onAction,
+                )
+            }
+            LoadingState.OnLoading -> {
+                Unit
+            }
+        }
     }
 }
 
@@ -613,6 +625,7 @@ fun SettingScreenPreview() {
                     locationLong = ""
                 )
             ),
+            loadState = LoadingState.Done,
             onAction = {},
         )
     }
