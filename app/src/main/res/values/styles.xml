@@ -40,6 +40,11 @@
         <item name="android:scaleType">centerCrop</item>
         <!--        <item name="android:clipToOutline">true</item> min API 때문에 코드에서 지정해야 함 -->
     </style>
+    
+    <style name="HomeQuickFlashStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
 
     <style name="SquareButton">
         <item name="android:textColor">@color/white</item>

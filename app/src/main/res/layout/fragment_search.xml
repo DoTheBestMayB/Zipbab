@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/default_margin20"
         android:layout_marginTop="@dimen/default_margin20"
-        android:background="@drawable/shape_back_round_layout_bg"
+        android:background="@drawable/home_search_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ib_back"
         app:layout_constraintTop_toTopOf="parent">

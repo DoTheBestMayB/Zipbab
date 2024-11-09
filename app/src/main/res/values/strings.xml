@@ -55,7 +55,6 @@
     <string name="image_permission_all">모든 사진에 대한 접근 권한 허용</string>
     <string name="image_permission_partial">더 많은 사진 선택</string>
     <string name="profile_image_select_app_bar">이미지 선택</string>
-    <string name="home_search_hint">검색어를 입력하세요.</string>
     <string name="home_food_menu_title">메뉴 별로 모임을 찾아줄게요!</string>
     <string name="home_cost_title">금액에 따른 모임을 찾아줄게요!</string>
 
@@ -210,4 +209,10 @@
 
     <string name="meeting_info_time">%1$s %2$s</string>
     <string name="time_format">%1$d:%2$d:%3$d</string>
+
+    <!-- 홈 화면 -->
+    <string name="home_search_hint">검색어를 입력하세요.</string>
+    <string name="flash_meet">번개 모임</string>
+    <string name="meet">모임</string>
+    <string name="quick_flash_meet_header">가장 빠른 번개 모임</string>
 </resources>
