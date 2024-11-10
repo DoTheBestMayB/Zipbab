@@ -77,6 +77,11 @@ dependencies {
     implementation(libs.androidx.datastore.datastore)
     implementation(libs.protobuf.javalite)
 
+    // room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.compiler)
+
     // Import the Firebase BoM
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore)
