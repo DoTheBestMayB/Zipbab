@@ -20,9 +20,6 @@
             android:id="@+id/action_homeFragment_to_notificationFragment"
             app:destination="@id/notificationFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_costFragment"
-            app:destination="@id/costFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_recruitmentFragment"
             app:destination="@id/recruitmentFragment" />
         <action
