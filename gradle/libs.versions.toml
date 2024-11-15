@@ -44,6 +44,7 @@ mapSdk = "3.18.0"
 playServicesLocation = "21.3.0"
 
 playServiceAuth = "21.2.0"
+jetbrainsKotlinJvm = "1.9.24"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -128,3 +129,4 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 googleService = { id = "com.google.gms.google-services", version.ref = "googleService" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobuf" }
+jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
