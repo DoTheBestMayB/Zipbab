@@ -3,7 +3,7 @@ package com.bestapp.zipbab.model
 import android.net.Uri
 import com.bestapp.zipbab.args.ImageArgs
 
-data class GalleryImage(
+data class GalleryImageUi(
     val uri: Uri = Uri.EMPTY,
     val name: String = "",
     val orderId: Int = 0,

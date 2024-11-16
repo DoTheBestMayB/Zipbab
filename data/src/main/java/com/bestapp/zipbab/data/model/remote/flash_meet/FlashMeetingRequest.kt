@@ -1,6 +1,6 @@
-package com.bestapp.zipbab.data.model.remote
+package com.bestapp.zipbab.data.model.remote.flash_meet
 
-data class MeetingCreationInfo(
+data class FlashMeetingRequest(
     val hostDocumentID: String,
     val category: String,
     val meetingName: String,
