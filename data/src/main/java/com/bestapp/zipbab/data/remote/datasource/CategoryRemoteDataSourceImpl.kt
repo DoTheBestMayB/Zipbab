@@ -1,27 +1,37 @@
 package com.bestapp.zipbab.data.remote.datasource
 
-import com.bestapp.zipbab.data.model.remote.FilterResponse
+import com.bestapp.zipbab.data.model.remote.category.FoodCategoryResponse
+import com.bestapp.zipbab.data.model.remote.category.FoodIconResponse
+import com.bestapp.zipbab.data.networking.safeFirebaseCall
 import com.bestapp.zipbab.data.remote.firestoreDB.FirestoreDB
-import com.google.firebase.firestore.toObject
+import com.bestapp.zipbab.domain.util.NetworkError
+import com.bestapp.zipbab.domain.util.Result
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 internal class CategoryRemoteDataSourceImpl @Inject constructor(
     private val firestoreDB: FirestoreDB,
 ) : CategoryRemoteDataSource {
-    override suspend fun getFoodCategory(): FilterResponse.FoodCategory {
-        val documentSnapshot = firestoreDB.getCategoryDB().document("food")
-            .get()
-            .await()
 
-        return documentSnapshot.toObject<FilterResponse.FoodCategory>() ?: FilterResponse.FoodCategory()
-    }
+    @Suppress("UNCHECKED_CAST")
+    override suspend fun getFoodCategory(): Result<FoodCategoryResponse, NetworkError> {
+        return safeFirebaseCall<FoodCategoryResponse> {
+            val documentSnapshot = firestoreDB.getCategoryDB().document("food")
+                .get()
+                .await()
 
-    override suspend fun getCostCategory(): FilterResponse.CostCategory {
-        val documentSnapshot = firestoreDB.getCategoryDB().document("cost")
-            .get()
-            .await()
+            val iconResponses = documentSnapshot.data?.map { (_, value) ->
+                val categoryData = value as? Map<String, String> ?: emptyMap()
+                val imageUrl = categoryData["imageUrl"]?.let {
+                    firestoreDB.getImageUrl(it)
+                } ?: ""
+                FoodIconResponse(
+                    imageUrl = imageUrl,
+                    name = categoryData["name"] ?: "",
+                )
+            } ?: emptyList()
 
-        return documentSnapshot.toObject<FilterResponse.CostCategory>() ?: FilterResponse.CostCategory()
+            FoodCategoryResponse(iconResponses)
+        }
     }
 }
