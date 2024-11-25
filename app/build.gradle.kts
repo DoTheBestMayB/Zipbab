@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.googleService)
     alias(libs.plugins.navigationSafeArgs)
-    alias(libs.plugins.kotlinParcelize)
+    alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     id ("kotlin-parcelize")
@@ -66,6 +66,7 @@ fun getValue(propertyKey: String): String {
 
 dependencies {
     implementation(project(":data"))
+    implementation(project(":domain"))
 
     implementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -82,7 +83,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.firebase.perf.ktx)
     implementation(libs.androidx.lifecycle.service)
     implementation(libs.play.services.location)
     implementation(libs.androidx.core.splashscreen)
@@ -127,6 +127,7 @@ dependencies {
 
     // Import the Firebase BoM
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.perf.ktx)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.messaging)

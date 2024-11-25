@@ -6,8 +6,8 @@ plugins {
     alias(libs.plugins.protobuf)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-    id ("kotlin-parcelize")
-    kotlin("kapt")
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -66,12 +66,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
 
     // retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.moshi)
-    implementation(libs.moshi)
-    implementation(libs.moshi.adapters)
-    implementation(libs.moshi.kotlin)
-    implementation(libs.okhttp)
+    implementation(libs.bundles.ktor)
 
     // dataStore
     implementation(libs.androidx.datastore.preferences)
@@ -105,9 +100,6 @@ dependencies {
     ksp(libs.androidx.hilt.compiler)
     ksp(libs.hilt.android.compiler)
 
-    // OkHttp3
-    implementation (libs.okhttp)
-    implementation (libs.logging.interceptor)
 }
 
 protobuf {

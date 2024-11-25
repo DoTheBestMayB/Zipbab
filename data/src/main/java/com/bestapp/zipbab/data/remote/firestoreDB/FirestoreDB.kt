@@ -12,8 +12,8 @@ class FirestoreDB @Inject constructor(
     private val firebaseFirestore: FirebaseFirestore,
     private val firebaseStorage: FirebaseStorage
 ){
-    fun getPrivacyDB(): CollectionReference{
-        return firebaseFirestore.collection("privacy")
+    fun getTermsDB(): CollectionReference{
+        return firebaseFirestore.collection("terms")
     }
 
     fun getCategoryDB(): CollectionReference{

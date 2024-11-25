@@ -7,5 +7,5 @@ data class UserPrivate(
     val email: String,
     val phone: String,
     val notifications: List<Notification>,
-    val joinedMeetings: List<JoinedMeeting>
+    val joinedFlashMeetings: List<JoinedFlashMeeting>
 )

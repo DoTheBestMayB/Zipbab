@@ -9,7 +9,8 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.navigationSafeArgs) apply false
-    alias(libs.plugins.kotlinParcelize) apply false
+    alias(libs.plugins.kotlin.parcelize) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.androidLibrary) apply false
     alias(libs.plugins.googleService) apply false
     alias(libs.plugins.protobuf) apply false

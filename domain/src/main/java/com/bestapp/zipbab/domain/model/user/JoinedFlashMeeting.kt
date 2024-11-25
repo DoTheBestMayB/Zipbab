@@ -2,8 +2,7 @@ package com.bestapp.zipbab.domain.model.user
 
 import java.time.ZonedDateTime
 
-data class JoinedMeeting(
-    val uuid: String,
+data class JoinedFlashMeeting(
     val meetId: String,
     val joinedAt: ZonedDateTime,
     val type: MeetType,
