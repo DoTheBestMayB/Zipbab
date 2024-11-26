@@ -1,7 +1,7 @@
 package com.bestapp.zipbab.data.model.remote.kakaomap
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * @property addressName    전체 도로명 주소, 경기 시흥시 봉우재로23번안길 7-1
@@ -17,18 +17,18 @@ import com.squareup.moshi.JsonClass
  * @property longitude 경도 127,xxxxxxxxxxx
  * @property latitude 위도 37.xxxxxxxxxxxxx
  */
-@JsonClass(generateAdapter = true)
+@Serializable
 data class RoadAddressResponse(
-    @Json(name = "address_name") val addressName: String?,
-    @Json(name = "x") val longitude: String?,
-    @Json(name = "y") val latitude: String?,
-    @Json(name = "region_1depth_name") val regionDepthName1: String?,
-    @Json(name = "region_2depth_name") val regionDepthName2: String?,
-    @Json(name = "region_3depth_name") val regionDepthName3: String?,
-    @Json(name = "road_name") val roadName: String?,
-    @Json(name = "underground_yn") val undergroundYn: String?,
-    @Json(name = "main_building_no") val mainBuildingNo: String?,
-    @Json(name = "sub_building_no") val subBuildingNo: String?,
-    @Json(name = "building_name") val buildingName: String?,
-    @Json(name = "zone_no") val zoneNo: String?,
+    @SerialName("address_name") val addressName: String?,
+    @SerialName("x") val longitude: String?,
+    @SerialName("y") val latitude: String?,
+    @SerialName("region_1depth_name") val regionDepthName1: String?,
+    @SerialName("region_2depth_name") val regionDepthName2: String?,
+    @SerialName("region_3depth_name") val regionDepthName3: String?,
+    @SerialName("road_name") val roadName: String?,
+    @SerialName("underground_yn") val undergroundYn: String?,
+    @SerialName("main_building_no") val mainBuildingNo: String?,
+    @SerialName("sub_building_no") val subBuildingNo: String?,
+    @SerialName("building_name") val buildingName: String?,
+    @SerialName("zone_no") val zoneNo: String?,
 )

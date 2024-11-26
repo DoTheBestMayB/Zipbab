@@ -1,7 +1,7 @@
 package com.bestapp.zipbab.data.model.remote.kakaomap
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * @property addressResponse 지명 주소지 정보
@@ -11,12 +11,12 @@ import com.squareup.moshi.JsonClass
  * @property longitude 경도 127,xxxxxxxxxxx
  * @property latitude 위도 37.xxxxxxxxxxxxx
  */
-@JsonClass(generateAdapter = true)
+@Serializable
 data class DocumentResponse(
-    @field:Json(name = "address") val addressResponse: AddressResponse?,
-    @Json(name = "x") val longitude: String?,
-    @Json(name = "y") val latitude: String?,
-    @Json(name = "address_name") val addressName: String?,
-    @Json(name = "address_type") val addressType: String?,
-    @field:Json(name = "road_address") val roadAddressResponse: RoadAddressResponse?,
+    @SerialName("address") val addressResponse: AddressResponse?,
+    @SerialName("x") val longitude: String?,
+    @SerialName("y") val latitude: String?,
+    @SerialName("address_name") val addressName: String?,
+    @SerialName("address_type") val addressType: String?,
+    @SerialName("road_address") val roadAddressResponse: RoadAddressResponse?,
 )
