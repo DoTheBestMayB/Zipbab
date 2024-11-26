@@ -1,9 +1,6 @@
 package com.bestapp.zipbab.data.remote.di
 
 import com.bestapp.zipbab.data.BuildConfig
-import com.bestapp.zipbab.data.remote.service.FcmService
-import com.bestapp.zipbab.data.remote.service.GooGleRefreshService
-import com.bestapp.zipbab.data.remote.service.GooGleService
 import com.bestapp.zipbab.data.remote.service.SearchLocationService
 import com.bestapp.zipbab.data.remote.upload.UploadStateEntityAdapter
 import com.squareup.moshi.Moshi
@@ -28,18 +25,6 @@ internal object NetworkModule {
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
     annotation class KakaoMapRetrofit
-
-    @Qualifier
-    @Retention(AnnotationRetention.BINARY)
-    annotation class FcmRetrofit
-
-    @Qualifier
-    @Retention(AnnotationRetention.BINARY)
-    annotation class GoogleTokenProvider
-
-    @Qualifier
-    @Retention(AnnotationRetention.BINARY)
-    annotation class GoogleRefreshTokenProvider
 
     @Provides
     @Singleton
@@ -90,57 +75,6 @@ internal object NetworkModule {
     ): SearchLocationService {
         return retrofit.create(SearchLocationService::class.java)
     }
-
-    @FcmRetrofit
-    @Provides
-    @Singleton
-    fun providesFcmRetrofit(
-        okHttpClient: OkHttpClient,
-        moshi: Moshi
-    ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BuildConfig.FCM_BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(okHttpClient)
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    fun providesFcmService(
-        @FcmRetrofit retrofit: Retrofit
-    ): FcmService {
-        return retrofit.create(FcmService::class.java)
-    }
-
-    @GoogleTokenProvider
-    @Provides
-    @Singleton
-    fun providesGooGleToken(
-        okHttpClient: OkHttpClient,
-        moshi: Moshi
-    ) : GooGleService {
-        return Retrofit.Builder()
-            .baseUrl(BuildConfig.GOOGLE_TOKEN_BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(okHttpClient)
-            .build().create(GooGleService::class.java)
-    }
-
-    @GoogleRefreshTokenProvider
-    @Provides
-    @Singleton
-    fun providesGooGleRefreshToken(
-        okHttpClient: OkHttpClient,
-        moshi: Moshi
-    ) : GooGleRefreshService {
-        return Retrofit.Builder()
-            .baseUrl(BuildConfig.GOOGLE_REFRESH_BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(okHttpClient)
-            .build().create(GooGleRefreshService::class.java)
-    }
-
 
     class CustomInterceptor : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {

@@ -30,8 +30,6 @@ android {
         buildConfigField("String", "KAKAO_REST_API_KEY", getValue("kakao_map_rest_api_key"))
         buildConfigField("String", "KAKAO_MAP_BASE_URL", getValue("kakao_map_base_url"))
         buildConfigField("String", "KAKAO_ADMIN_KEY", getValue("kakao_admin_key"))
-        buildConfigField("String", "GOOGLE_TOKEN_BASE_URL", getValue("google_token_base_url"))
-        buildConfigField("String", "GOOGLE_REFRESH_BASE_URL", getValue("google_refresh_base_url"))
     }
 
     buildTypes {

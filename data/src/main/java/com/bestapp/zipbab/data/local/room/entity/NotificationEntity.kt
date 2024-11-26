@@ -2,6 +2,7 @@ package com.bestapp.zipbab.data.local.room.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.time.ZonedDateTime
 
 /**
  * @param type 알림 유형
@@ -12,7 +13,7 @@ import androidx.room.PrimaryKey
 data class NotificationEntity(
     @PrimaryKey val documentId: String,
     val type: NotificationTypeEntity,
-    val createdAt: String,
+    val createdAt: ZonedDateTime,
     val isRead: Boolean,
 )
 
@@ -31,10 +32,12 @@ sealed interface NotificationTypeEntity {
 
     data class FlashMeetApproval(
         val meetId: String,
-    )
+    ): NotificationTypeEntity
 
     data class FlashMeetReject(
         val meetId: String,
         val reason: String,
-    )
+    ): NotificationTypeEntity
+
+    data object None: NotificationTypeEntity
 }
