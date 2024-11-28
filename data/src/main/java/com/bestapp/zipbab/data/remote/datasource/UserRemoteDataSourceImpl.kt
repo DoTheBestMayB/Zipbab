@@ -16,11 +16,14 @@ internal class UserRemoteDataSourceImpl @Inject constructor(
 ) : UserRemoteDataSource {
     override suspend fun getUser(userId: String): Result<UserResponse, NetworkError> {
         return safeFirebaseCall {
-            val user = firestoreDB.getUserDB().document(userId)
+            val querySnapshot = firestoreDB.getUserDB()
+                .whereEqualTo("id", userId)
                 .get()
                 .await()
 
-            user.toObject<UserResponse>()
+            val document = querySnapshot.documents.firstOrNull() ?: return Result.Error(NetworkError.NOT_FOUND)
+
+            document.toObject<UserResponse>()
         }
     }
 
@@ -29,8 +32,13 @@ internal class UserRemoteDataSourceImpl @Inject constructor(
         nickname: String
     ): Result<Boolean, NetworkError> {
         return safeFirebaseCall {
-            firestoreDB.getUserDB().document(userId)
-                .update("nickname", nickname)
+            val querySnapshot = firestoreDB.getUserDB()
+                .whereEqualTo("id", userId)
+                .get()
+                .await()
+            val document = querySnapshot.documents.firstOrNull() ?: return Result.Error(NetworkError.NOT_FOUND)
+
+            document.reference.update("nickname", nickname)
                 .doneSuccessful()
         }
     }
@@ -44,7 +52,7 @@ internal class UserRemoteDataSourceImpl @Inject constructor(
                 .get()
                 .await()
 
-            val document = querySnapshot.documents.firstOrNull() ?: throw IllegalArgumentException()
+            val document = querySnapshot.documents.firstOrNull() ?: return Result.Error(NetworkError.NOT_FOUND)
 
             document.reference.update("profileUrl", imagePath)
                 .doneSuccessful()

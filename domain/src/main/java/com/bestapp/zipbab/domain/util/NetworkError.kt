@@ -8,4 +8,5 @@ enum class NetworkError: Error {
     SERIALIZATION,
     UNKNOWN,
     NOT_AVAILABLE,
+    NOT_FOUND,
 }
