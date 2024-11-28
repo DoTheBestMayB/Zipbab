@@ -1,6 +1,7 @@
 package com.bestapp.zipbab.data.model.remote.flash_meet
 
 /**
+ * @property documentId documentId
  * @property name 재료 이름
  * @property quantity 재료 양
  * @property description 재료 설명
@@ -9,6 +10,7 @@ package com.bestapp.zipbab.data.model.remote.flash_meet
  * @property remainingQuantity 남은 수량
  */
 data class IngredientResponse(
+    val documentId: String = "",
     val name: String = "",
     val quantity: String = "",
     val description: String = "",

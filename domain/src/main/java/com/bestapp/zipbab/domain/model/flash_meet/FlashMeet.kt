@@ -1,5 +1,6 @@
 package com.bestapp.zipbab.domain.model.flash_meet
 
+import com.bestapp.zipbab.domain.model.user.User
 import java.time.ZonedDateTime
 
 data class FlashMeeting(
@@ -19,7 +20,7 @@ data class FlashMeeting(
     val isApprovalRequired: Boolean,
     val verification: String,
     val hostUser: String,
-    val members: List<JoinedMember>,
+    val members: List<User>,
     val menu: List<Menu>,
     val ingredients: List<Ingredient>,
 )

@@ -2,8 +2,8 @@ package com.bestapp.zipbab.data.remote.di
 
 import com.bestapp.zipbab.data.remote.datasource.CategoryRemoteDataSource
 import com.bestapp.zipbab.data.remote.datasource.CategoryRemoteDataSourceImpl
-import com.bestapp.zipbab.data.remote.datasource.MeetingRemoteDataSource
-import com.bestapp.zipbab.data.remote.datasource.MeetingRemoteDataSourceImpl
+import com.bestapp.zipbab.data.remote.datasource.FlashMeetingRemoteDataSource
+import com.bestapp.zipbab.data.remote.datasource.FlashMeetingRemoteDataSourceImpl
 import com.bestapp.zipbab.data.remote.datasource.PrivacyRemoteDataSource
 import com.bestapp.zipbab.data.remote.datasource.PrivacyRemoteDataSourceImpl
 import com.bestapp.zipbab.data.remote.datasource.ReportRemoteDataSource
@@ -26,7 +26,7 @@ internal abstract class RemoteDataSourceModule {
     abstract fun bindsCategoryRemoteDataSource(categoryRemoteDataSourceImpl: CategoryRemoteDataSourceImpl): CategoryRemoteDataSource
 
     @Binds
-    abstract fun bindsMeetingRemoteDataSource(meetingRemoteDataSourceImpl: MeetingRemoteDataSourceImpl): MeetingRemoteDataSource
+    abstract fun bindsMeetingRemoteDataSource(flashMeetingRemoteDataSourceImpl: FlashMeetingRemoteDataSourceImpl): FlashMeetingRemoteDataSource
 
     @Binds
     abstract fun bindsReportRemoteDataSource(reportRemoteDataSourceImpl: ReportRemoteDataSourceImpl): ReportRemoteDataSource

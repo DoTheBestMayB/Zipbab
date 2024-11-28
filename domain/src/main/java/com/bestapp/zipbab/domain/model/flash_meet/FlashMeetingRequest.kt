@@ -1,4 +1,4 @@
-package com.bestapp.zipbab.data.model.remote.flash_meet
+package com.bestapp.zipbab.domain.model.flash_meet
 
 data class FlashMeetingRequest(
     val hostId: String,

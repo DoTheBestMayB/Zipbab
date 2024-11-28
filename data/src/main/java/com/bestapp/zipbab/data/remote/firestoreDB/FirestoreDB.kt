@@ -34,8 +34,8 @@ class FirestoreDB @Inject constructor(
         return firebaseFirestore.collection("users")
     }
 
-    fun getMeetingDB(): CollectionReference {
-        return firebaseFirestore.collection("meeting")
+    fun getFlashMeetingDB(): CollectionReference {
+        return firebaseFirestore.collection("flashMeeting")
     }
 
     fun getImagesDB(): StorageReference {

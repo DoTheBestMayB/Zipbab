@@ -6,6 +6,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 /**
+ * @property id documentId
  * @property title 제목
  * @property status 모임 상태
  * @property mainImageUrl 대표 사진
@@ -26,6 +27,7 @@ import java.time.ZonedDateTime
  * @property ingredients 준비 재료
  */
 data class FlashMeetingResponse(
+    val id: String = "",
     val title: String = "",
     val status: String = "",
     val mainImageUrl: String = "",
@@ -41,7 +43,7 @@ data class FlashMeetingResponse(
     val isApprovalRequired: Boolean = false,
     val verification: String = "NONE",
     val hostUser: String = "",
-    val members: List<JoinedMemberResponse> = emptyList(),
+    val members: List<String> = emptyList(),
     val menu: List<MenuResponse> = emptyList(),
     val ingredients: List<IngredientResponse> = emptyList(),
 )
