@@ -52,6 +52,10 @@ fun getValue(propertyKey: String): String {
     return gradleLocalProperties(rootDir, providers).getProperty(propertyKey)
 }
 
+configurations.configureEach {
+    exclude(group = "com.intellij", module = "annotations")
+}
+
 dependencies {
     implementation(project(":domain"))
 
