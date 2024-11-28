@@ -16,6 +16,7 @@ import com.bestapp.zipbab.model.FilterUiState
 import com.bestapp.zipbab.model.MeetingUiState
 import com.bestapp.zipbab.ui.foodcategory.recyclerview.FoodCategoryAdapter
 import com.bestapp.zipbab.ui.foodcategory.recyclerview.TabItemAdapter
+import com.bestapp.zipbab.util.safeNavigate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -76,9 +77,9 @@ class FoodCategoryFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewModel.scrollEvent.collect{foodCategoryEvent ->
-                    when(foodCategoryEvent){
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.scrollEvent.collect { foodCategoryEvent ->
+                    when (foodCategoryEvent) {
                         FoodCategoryEvent.ScrollEvent -> {
                             binding.rvTl.smoothScrollToPosition(viewModel.getSelectIndex())
                         }
@@ -105,32 +106,6 @@ class FoodCategoryFragment : Fragment() {
                 }
             }
         }
-
-
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.goMeetingNavi.collect { goMeetingNavi ->
-                    when (goMeetingNavi.first) {
-                        MoveMeetingNavi.GO_MEETING_INFO -> {
-                            val action =
-                                FoodCategoryFragmentDirections.actionFoodCategoryFragmentToMeetingInfoFragment(
-                                    goMeetingNavi.second
-                                )
-                            findNavController().navigate(action)
-                        }
-
-                        MoveMeetingNavi.GO_MEETING_MANAGEMENT -> {
-                            val action =
-                                FoodCategoryFragmentDirections.actionFoodCategoryFragmentToMeetingInfoFragment(
-                                    goMeetingNavi.second
-                                )
-                            findNavController().navigate(action)
-                        }
-                    }
-                }
-            }
-        }
     }
 
     private fun setAdapter() {
@@ -145,7 +120,10 @@ class FoodCategoryFragment : Fragment() {
     }
 
     private fun goMeeting(meetingUiState: MeetingUiState) {
-        viewModel.goMeeting(meetingUiState)
+        val action = FoodCategoryFragmentDirections.actionFoodCategoryFragmentToMeetingInfoFragment(
+            meetingUiState.meetingDocumentID
+        )
+        action.safeNavigate(this)
     }
 
     private fun onClickTab(foodUiState: FilterUiState.FoodUiState, position: Int) {

@@ -1,7 +1,5 @@
 package com.bestapp.zipbab.ui.meetupmap.model
 
-import com.bestapp.zipbab.data.model.remote.MeetingResponse
-
 data class MeetUpMapUi(
     val meetingDocumentID: String,
     val title: String,
@@ -34,28 +32,3 @@ data class MeetUpMapUi(
             title
         }
 }
-
-fun MeetingResponse.toUi(distance: Double, isHost: Boolean, latitude: Double, longitude: Double) = MeetUpMapUi(
-    meetingDocumentID = meetingDocumentID,
-    title = title,
-    titleImage = titleImage,
-    address = address,
-    latitude = latitude,
-    longitude = longitude,
-    zipCode = zipCode,
-    date = date,
-    hour = hour,
-    minute = minute,
-    participantCount = participantCount,
-    description = description,
-    mainMenu = category,
-    costValueByPerson = costValueByPerson,
-    hostUserDocumentID = hostUserDocumentID,
-    members = members,
-    pendingMembers = pendingMembers,
-    attendanceCheck = attendanceCheck,
-    activation = activation,
-    distance = distance,
-    distanceByUser = "",
-    isHost = isHost,
-)

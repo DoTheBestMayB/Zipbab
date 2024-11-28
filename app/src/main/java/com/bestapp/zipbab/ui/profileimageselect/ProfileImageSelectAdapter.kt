@@ -7,18 +7,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import coil.load
 import com.bestapp.zipbab.databinding.ItemProfileImageSelectGalleryBinding
-import com.bestapp.zipbab.model.GalleryImage
+import com.bestapp.zipbab.model.GalleryImageUi
 
 class ProfileImageSelectAdapter(
-    private val onClick: (GalleryImage) -> Unit,
-) : PagingDataAdapter<GalleryImage, ProfileImageSelectAdapter.ProfileImageSelectViewHolder>(diff) {
+    private val onClick: (GalleryImageUi) -> Unit,
+) : PagingDataAdapter<GalleryImageUi, ProfileImageSelectAdapter.ProfileImageSelectViewHolder>(diff) {
 
     class ProfileImageSelectViewHolder(
         private val binding: ItemProfileImageSelectGalleryBinding,
-        private val onClick: (GalleryImage) -> Unit,
+        private val onClick: (GalleryImageUi) -> Unit,
     ) : ViewHolder(binding.root) {
 
-        fun bind(item: GalleryImage) {
+        fun bind(item: GalleryImageUi) {
             binding.root.setOnClickListener {
                 onClick(item)
             }
@@ -47,17 +47,17 @@ class ProfileImageSelectAdapter(
     }
 
     companion object {
-        private val diff = object : DiffUtil.ItemCallback<GalleryImage>() {
+        private val diff = object : DiffUtil.ItemCallback<GalleryImageUi>() {
             override fun areItemsTheSame(
-                oldItem: GalleryImage,
-                newItem: GalleryImage
+                oldItem: GalleryImageUi,
+                newItem: GalleryImageUi
             ): Boolean {
                 return oldItem.uri == newItem.uri
             }
 
             override fun areContentsTheSame(
-                oldItem: GalleryImage,
-                newItem: GalleryImage
+                oldItem: GalleryImageUi,
+                newItem: GalleryImageUi
             ): Boolean {
                 return oldItem == newItem
             }

@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bestapp.zipbab.args.ProfileEditArgs
-import com.bestapp.zipbab.data.repository.UserRepository
 import com.bestapp.zipbab.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,7 +17,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileEditViewModel @Inject constructor(
-    private val userRepository: UserRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileEditUiState())
@@ -46,33 +44,33 @@ class ProfileEditViewModel @Inject constructor(
 
     // 지금 닉네임과 프로필 변경 함수가 별도로 있다보니, 두 개가 모두 변경된다는 보장을 할 수 없음
     fun submit() {
-        viewModelScope.launch {
-            _submitUiState.emit(SubmitUiState.Uploading)
-
-            // 닉네임 변경
-            runCatching {
-                userRepository.updateUserNickname(
-                    _uiState.value.userDocumentID,
-                    _uiState.value.nickname
-                )
-            }.onFailure {
-                _submitUiState.emit(SubmitUiState.SubmitNicknameFail)
-                return@launch
-            }
-
-            runCatching {
-                if (!_uiState.value.profileImage.startsWith(FIRE_STORAGE_URL)) {
-                    userRepository.updateUserProfileImage(
-                        _uiState.value.userDocumentID,
-                        _uiState.value.profileImage
-                    )
-                }
-                _submitUiState.emit(SubmitUiState.Success)
-            }.onFailure {
-                _submitUiState.emit(SubmitUiState.SubmitProfileFail)
-                return@launch
-            }
-        }
+//        viewModelScope.launch {
+//            _submitUiState.emit(SubmitUiState.Uploading)
+//
+//            // 닉네임 변경
+//            runCatching {
+//                userRepository.updateUserNickname(
+//                    _uiState.value.userDocumentID,
+//                    _uiState.value.nickname
+//                )
+//            }.onFailure {
+//                _submitUiState.emit(SubmitUiState.SubmitNicknameFail)
+//                return@launch
+//            }
+//
+//            runCatching {
+//                if (!_uiState.value.profileImage.startsWith(FIRE_STORAGE_URL)) {
+//                    userRepository.updateUserProfileImage(
+//                        _uiState.value.userDocumentID,
+//                        _uiState.value.profileImage
+//                    )
+//                }
+//                _submitUiState.emit(SubmitUiState.Success)
+//            }.onFailure {
+//                _submitUiState.emit(SubmitUiState.SubmitProfileFail)
+//                return@launch
+//            }
+//        }
     }
 
     fun onRemoveProfileImage() {
@@ -83,9 +81,4 @@ class ProfileEditViewModel @Inject constructor(
             profileImage = "",
         )
     }
-
-    companion object {
-        private const val FIRE_STORAGE_URL = "https://firebasestorage.googleapis.com"
-    }
-
 }

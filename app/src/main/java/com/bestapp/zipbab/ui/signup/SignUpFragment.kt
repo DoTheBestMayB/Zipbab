@@ -127,15 +127,15 @@ class SignUpFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     signUpViewModel.requestPrivacyUrl.collectLatest { privacy ->
-                        if (privacy.link.isNotEmpty()) {
-                            Linkify.addLinks(
-                                binding.tvTerms,
-                                patternUrl,
-                                privacy.link,
-                                null,
-                                mTransform
-                            )
-                        }
+//                        if (privacy.link.isNotEmpty()) {
+//                            Linkify.addLinks(
+//                                binding.tvTerms,
+//                                patternUrl,
+//                                privacy.link,
+//                                null,
+//                                mTransform
+//                            )
+//                        }
                     }
                 }
 

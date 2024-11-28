@@ -1,13 +1,8 @@
 package com.bestapp.zipbab.ui.login
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bestapp.zipbab.data.repository.AppSettingRepository
-import com.bestapp.zipbab.data.repository.MeetingRepository
-import com.bestapp.zipbab.data.repository.UserRepository
 import com.bestapp.zipbab.model.LoginResult
-import com.bestapp.zipbab.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,10 +13,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val userRepository: UserRepository,
-    private val appSettingRepository: AppSettingRepository,
-    private val meetingRepository: MeetingRepository,
-    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _savedID = MutableStateFlow("")
@@ -40,29 +31,25 @@ class LoginViewModel @Inject constructor(
         id.isNotBlank() && pw.isNotBlank()
     }
 
-
-    private var meetingDocumentID = ""
-    private var hostDocumentID = ""
-
     init {
-        viewModelScope.launch {
-            val rememberId = appSettingRepository.getRememberId()
-            _isRememberId.emit(rememberId.isNotBlank())
-            _savedID.emit(rememberId)
-        }
-
-        savedStateHandle.get<String>("meetingDocumentID")?.let {
-            if (it.isNotEmpty()) {
-                meetingDocumentID = it
-            }
-        }
-        viewModelScope.launch {
-            runCatching {
-                meetingRepository.getMeeting(meetingDocumentID)
-            }.onSuccess { result ->
-                hostDocumentID = result.hostUserDocumentID
-            }
-        }
+//        viewModelScope.launch {
+//            val rememberId = appSettingRepository.getRememberId()
+//            _isRememberId.emit(rememberId.isNotBlank())
+//            _savedID.emit(rememberId)
+//        }
+//
+//        savedStateHandle.get<String>("meetingDocumentID")?.let {
+//            if (it.isNotEmpty()) {
+//                meetingDocumentID = it
+//            }
+//        }
+//        viewModelScope.launch {
+//            runCatching {
+//                meetingRepository.getMeeting(meetingDocumentID)
+//            }.onSuccess { result ->
+//                hostDocumentID = result.hostUserDocumentID
+//            }
+//        }
     }
 
     fun updateId(newId: String) {
@@ -74,34 +61,34 @@ class LoginViewModel @Inject constructor(
     }
 
     fun onLogin() {
-        if (inputId.value.isBlank() || inputPw.value.isBlank()) {
-            return
-        }
-        viewModelScope.launch {
-            when (val loginResult = userRepository.login(inputId.value, inputPw.value).toUi()) {
-                LoginResult.Fail -> {
-                    _loginState.emit(LoginState.Fail)
-                }
-                is LoginResult.Success -> {
-                    var isSuccess = appSettingRepository.updateUserDocumentId(loginResult.userDocumentID)
-                    if (isSuccess.not()) {
-                        _loginState.emit(LoginState.Fail)
-                        return@launch
-                    }
-
-                    isSuccess = if (_isRememberId.value) {
-                        appSettingRepository.updateRememberId(inputId.value)
-                    } else {
-                        appSettingRepository.removeRememberId()
-                    }
-                    if (isSuccess.not()) {
-                        _loginState.emit(LoginState.Fail)
-                        return@launch
-                    }
-                    _loginState.emit(LoginState.Success)
-                }
-            }
-        }
+//        if (inputId.value.isBlank() || inputPw.value.isBlank()) {
+//            return
+//        }
+//        viewModelScope.launch {
+//            when (val loginResult = userRepository.login(inputId.value, inputPw.value).toUi()) {
+//                LoginResult.Fail -> {
+//                    _loginState.emit(LoginState.Fail)
+//                }
+//                is LoginResult.Success -> {
+//                    var isSuccess = appSettingRepository.updateUserDocumentId(loginResult.userDocumentID)
+//                    if (isSuccess.not()) {
+//                        _loginState.emit(LoginState.Fail)
+//                        return@launch
+//                    }
+//
+//                    isSuccess = if (_isRememberId.value) {
+//                        appSettingRepository.updateRememberId(inputId.value)
+//                    } else {
+//                        appSettingRepository.removeRememberId()
+//                    }
+//                    if (isSuccess.not()) {
+//                        _loginState.emit(LoginState.Fail)
+//                        return@launch
+//                    }
+//                    _loginState.emit(LoginState.Success)
+//                }
+//            }
+//        }
     }
 
     fun updateIdRemember(check: Boolean) {
