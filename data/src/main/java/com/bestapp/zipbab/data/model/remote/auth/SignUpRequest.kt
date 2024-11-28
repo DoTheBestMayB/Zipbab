@@ -1,8 +1,11 @@
-package com.bestapp.zipbab.data.model.remote.user
+package com.bestapp.zipbab.data.model.remote.auth
 
-data class UserPrivateResponse(
+import com.bestapp.zipbab.data.model.remote.user.JoinedMeetingResponse
+
+data class SignUpRequest(
     val id: String = "",
     val pw: String = "",
+    val nickname: String = "",
     val email: String = "",
     val phone: String = "",
     val notifications: List<String> = emptyList(),

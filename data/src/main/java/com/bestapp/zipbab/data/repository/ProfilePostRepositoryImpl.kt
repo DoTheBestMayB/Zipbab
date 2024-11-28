@@ -2,6 +2,7 @@ package com.bestapp.zipbab.data.repository
 
 import com.bestapp.zipbab.data.remote.datasource.ProfilePostRemoteDataSource
 import com.bestapp.zipbab.data.remote.datasource.StorageRemoteDataSource
+import com.bestapp.zipbab.data.remote.datasource.UserRemoteDataSource
 import com.bestapp.zipbab.domain.repository.ProfilePostRepository
 import com.bestapp.zipbab.domain.util.NetworkError
 import com.bestapp.zipbab.domain.util.Result
@@ -13,6 +14,7 @@ import javax.inject.Inject
 internal class ProfilePostRepositoryImpl @Inject constructor(
     private val profilePostRemoteDataSource: ProfilePostRemoteDataSource,
     private val storageRemoteDataSource: StorageRemoteDataSource,
+    private val userRemoteDataSource: UserRemoteDataSource,
 ) : ProfilePostRepository {
     override suspend fun deletePost(
         userId: String,
@@ -41,7 +43,18 @@ internal class ProfilePostRepositoryImpl @Inject constructor(
         return Result.Success(true)
     }
 
-    override suspend fun createPost(userId: String, imagePaths: List<String>): Result<String, NetworkError> {
-        return profilePostRemoteDataSource.createPost(userId, imagePaths)
+    override suspend fun createPost(
+        userId: String,
+        imagePaths: List<String>
+    ): Result<String, NetworkError> {
+        val postId =
+            when (val response = profilePostRemoteDataSource.createPost(userId, imagePaths)) {
+                is Result.Error -> return response
+                is Result.Success -> response.data
+            }
+        userRemoteDataSource.addPost(userId, postId).onError {
+            return Result.Error(it)
+        }
+        return Result.Success(postId)
     }
 }

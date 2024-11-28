@@ -1,4 +1,4 @@
-package com.bestapp.zipbab.data.model.remote
+package com.bestapp.zipbab.data.model.remote.auth
 
 sealed interface SignUpResponse {
 

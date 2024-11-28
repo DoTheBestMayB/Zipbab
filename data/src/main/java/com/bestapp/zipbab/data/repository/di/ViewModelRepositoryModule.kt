@@ -14,8 +14,8 @@ import com.bestapp.zipbab.domain.repository.SearchLocationRepository
 import com.bestapp.zipbab.data.repository.SearchLocationRepositoryImpl
 import com.bestapp.zipbab.domain.repository.UserRepository
 import com.bestapp.zipbab.data.repository.UserRepositoryImpl
-import com.bestapp.zipbab.domain.repository.VerifyRepository
-import com.bestapp.zipbab.data.repository.VerifyRepositoryImpl
+import com.bestapp.zipbab.domain.repository.AuthRepository
+import com.bestapp.zipbab.data.repository.AuthRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -47,5 +47,5 @@ internal abstract class ViewModelRepositoryModule {
     abstract fun bindsGalleryRepository(galleryRepositoryImpl: GalleryRepositoryImpl): GalleryRepository
 
     @Binds
-    abstract fun bindsVerifyRepository(verifyRepositoryImpl: VerifyRepositoryImpl): VerifyRepository
+    abstract fun bindsAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
 }

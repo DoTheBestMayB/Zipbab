@@ -8,8 +8,8 @@ import com.bestapp.zipbab.data.remote.datasource.PrivacyRemoteDataSource
 import com.bestapp.zipbab.data.remote.datasource.PrivacyRemoteDataSourceImpl
 import com.bestapp.zipbab.data.remote.datasource.ReportRemoteDataSource
 import com.bestapp.zipbab.data.remote.datasource.ReportRemoteDataSourceImpl
-import com.bestapp.zipbab.data.remote.datasource.VerifyRemoteDataSource
-import com.bestapp.zipbab.data.remote.datasource.VerifyRemoteDataSourceImpl
+import com.bestapp.zipbab.data.remote.datasource.AuthRemoteDataSource
+import com.bestapp.zipbab.data.remote.datasource.AuthRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -26,11 +26,11 @@ internal abstract class RemoteDataSourceModule {
     abstract fun bindsCategoryRemoteDataSource(categoryRemoteDataSourceImpl: CategoryRemoteDataSourceImpl): CategoryRemoteDataSource
 
     @Binds
-    abstract fun bindsMeetingRemoteDataSource(flashMeetingRemoteDataSourceImpl: FlashMeetingRemoteDataSourceImpl): FlashMeetingRemoteDataSource
+    abstract fun bindsFlashMeetingRemoteDataSource(flashMeetingRemoteDataSourceImpl: FlashMeetingRemoteDataSourceImpl): FlashMeetingRemoteDataSource
 
     @Binds
     abstract fun bindsReportRemoteDataSource(reportRemoteDataSourceImpl: ReportRemoteDataSourceImpl): ReportRemoteDataSource
 
     @Binds
-    abstract fun bindsVerifyRemoteDataSource(verifyRemoteDataSourceImpl: VerifyRemoteDataSourceImpl): VerifyRemoteDataSource
+    abstract fun bindsAuthRemoteDataSource(authRemoteDataSourceImpl: AuthRemoteDataSourceImpl): AuthRemoteDataSource
 }

@@ -26,7 +26,10 @@ internal class FlashMeetingRepositoryImpl @Inject constructor(
 ) : FlashMeetingRepository {
 
     private suspend fun fetchUserById(id: String): UserResponse {
-        return userRemoteDataSource.getUser(id)
+        return when (val response = userRemoteDataSource.getUser(id)) {
+            is Result.Error -> UserResponse()
+            is Result.Success -> response.data
+        }
     }
 
     private suspend fun fetchProfilePostById(id: String): ProfilePostResponse {

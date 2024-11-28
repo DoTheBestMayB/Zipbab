@@ -22,7 +22,7 @@ internal class ProfilePostRemoteDataSourceImpl @Inject constructor(
         // 포스트 삭제, 사용자 정보에서 해당 포스트 삭제
         return safeFirebaseCall {
             val postDocumentRef = firestoreDB.getPostDB().document(postDocumentId)
-            val userRef = firestoreDB.getUsersDB().document(userId)
+            val userRef = firestoreDB.getUserDB().document(userId)
 
             firestoreDB.runTransaction { transaction ->
                 transaction.delete(postDocumentRef)

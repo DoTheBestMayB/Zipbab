@@ -43,7 +43,7 @@ internal class FlashMeetingRemoteDataSourceImpl @Inject constructor(
                 .get()
                 .await()
 
-            documentSnapshot.toObject<FlashMeetingResponse>() ?: FlashMeetingResponse()
+            documentSnapshot.toObject<FlashMeetingResponse>()
         }
 
     }

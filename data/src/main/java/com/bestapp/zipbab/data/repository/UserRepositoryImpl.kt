@@ -9,197 +9,95 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.bestapp.zipbab.data.model.UploadStateEntity
-import com.bestapp.zipbab.data.model.local.SignOutEntity
-import com.bestapp.zipbab.data.model.remote.LoginResponse
-import com.bestapp.zipbab.data.model.remote.NotificationType
-import com.bestapp.zipbab.data.model.remote.NotificationTypeResponse
-import com.bestapp.zipbab.data.model.remote.Review
-import com.bestapp.zipbab.data.model.remote.SignUpResponse
-import com.bestapp.zipbab.data.model.remote.UserResponse
-import com.bestapp.zipbab.data.remote.firestoreDB.FirestoreDB
-import com.bestapp.zipbab.data.remote.datasource.UserLocalDataSource
+import com.bestapp.zipbab.data.mapper.toDomain
+import com.bestapp.zipbab.data.model.remote.user.ProfilePostResponse
+import com.bestapp.zipbab.data.remote.datasource.ProfilePostRemoteDataSource
+import com.bestapp.zipbab.data.remote.datasource.StorageRemoteDataSource
 import com.bestapp.zipbab.data.remote.datasource.UserRemoteDataSource
+import com.bestapp.zipbab.data.remote.upload.UploadStateDto
 import com.bestapp.zipbab.data.remote.upload.UploadWorker
-import com.bestapp.zipbab.data.remote.util.doneSuccessful
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.toObject
-import com.squareup.moshi.Moshi
+import com.bestapp.zipbab.domain.model.UploadState
+import com.bestapp.zipbab.domain.model.user.User
+import com.bestapp.zipbab.domain.repository.UserRepository
+import com.bestapp.zipbab.domain.util.NetworkError
+import com.bestapp.zipbab.domain.util.Result
+import com.bestapp.zipbab.domain.util.map
+import com.bestapp.zipbab.domain.util.onError
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.tasks.await
-import java.text.SimpleDateFormat
-import java.util.Locale
+import kotlinx.serialization.json.Json
 import java.util.UUID
 import javax.inject.Inject
 
 internal class UserRepositoryImpl @Inject constructor(
-    private val firestoreDB: FirestoreDB,
     private val userRemoteDataSource: UserRemoteDataSource,
-    private val storageRepository: StorageRepository,
-    private val meetingRepository: MeetingRepository,
-    private val postRepository: PostRepository,
-    private val userLocalDataSource: UserLocalDataSource,
-    private val verifyRepository: VerifyRepository,
+    private val profilePostRemoteDataSource: ProfilePostRemoteDataSource,
+    private val storageRemoteDataSource: StorageRemoteDataSource,
     @ApplicationContext private val context: Context,
-    moshi: Moshi,
 ) : UserRepository {
 
     private val workManager = WorkManager.getInstance(context)
-    private val jsonAdapter = moshi.adapter(UploadStateEntity::class.java)
-
-    private val timeParseFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.KOREA)
-
-    override suspend fun getUser(userDocumentID: String): UserResponse {
-        return userRemoteDataSource.getUser(userDocumentID)
+    private val jsonAdapter = Json {
+        ignoreUnknownKeys = true
     }
 
-    override suspend fun login(id: String, pw: String): LoginResponse {
-        return userRemoteDataSource.login(id, pw)
-    }
-
-    override suspend fun signUpUser(
-        nickname: String,
-        email: String,
-        password: String
-    ): SignUpResponse {
-        return userRemoteDataSource.signUpUser(nickname, email, password)
-    }
-
-    override suspend fun signOutUser(userDocumentID: String): SignOutEntity {
-        // 회원탈퇴가 허용되지 않은 아이디인지 확인
-        if (userRemoteDataSource.checkSignOutIsNotAllowed(userDocumentID)) {
-            return SignOutEntity.IsNotAllowed
-        }
-
-        // 참여중인 모임 정리하기
-        val meetings = meetingRepository.getMeetingByUserDocumentID(userDocumentID) +
-                meetingRepository.getPendingMeetingByUserDocumentID(userDocumentID)
-
-        for (meeting in meetings) {
-            if (meeting.hostUserDocumentID == userDocumentID) {
-                meetingRepository.deleteMeeting(meeting.meetingDocumentID)
-            } else {
-                meetingRepository.deleteMeetingMember(meeting.meetingDocumentID, userDocumentID)
-            }
-        }
-
-        // 작성한 포스트 삭제하기
-        val posts = postRepository.getPosts(userDocumentID)
-        for (post in posts) {
-            postRepository.deletePost(userDocumentID, post.postDocumentID)
-        }
-
-        // 프로필 이미지 삭제하기
-        deleteUserProfileImage(userDocumentID)
-
-        // 인증 정보 삭제하기
-        val userResponse = getUser(userDocumentID)
-        val isRemoveAuthSuccess = verifyRepository.removeAuth(userResponse.pw)
-        if (isRemoveAuthSuccess.not()) {
-            return SignOutEntity.Fail
-        }
-
-        // 회원 탈퇴하기
-        val isSuccess = userRemoteDataSource.signOutUser(userDocumentID)
-
-        if (isSuccess.not()) {
-            return SignOutEntity.Fail
-        }
-
-        // 로컬에서 사용자 documentID 삭제하기
-        val isRemoveUserDocumentSuccess = userLocalDataSource.removeUserDocumentId()
-
-        return if (isRemoveUserDocumentSuccess) {
-            SignOutEntity.Success
-        } else {
-            SignOutEntity.Fail
+    private suspend fun fetchProfilePostById(id: String): ProfilePostResponse {
+        return when (val response = profilePostRemoteDataSource.getPost(id)) {
+            is Result.Error -> ProfilePostResponse() // TODO : 빈 값을 반환 하는 대신 더 나은 방법이 있을까?
+            is Result.Success -> response.data
         }
     }
 
-    override suspend fun updateUserNickname(userDocumentID: String, nickname: String): Boolean {
-        return userRemoteDataSource.updateUserNickname(userDocumentID, nickname)
+    override suspend fun getUser(userId: String): Result<User, NetworkError> {
+        return userRemoteDataSource.getUser(userId).map {
+            it.toDomain(fetchProfilePostById = ::fetchProfilePostById)
+        }
     }
 
-    override suspend fun updateUserTemperature(reviews: List<Review>): Boolean {
-        return userRemoteDataSource.updateUserTemperature(reviews)
-    }
-
-    override suspend fun updateUserMeetingCount(userDocumentID: String): Boolean {
-        return userRemoteDataSource.updateUserMeetingCount(userDocumentID)
+    override suspend fun updateUserNickname(
+        userId: String,
+        nickname: String
+    ): Result<Boolean, NetworkError> {
+        return userRemoteDataSource.updateUserNickname(userId, nickname)
     }
 
     override suspend fun updateUserProfileImage(
-        userDocumentID: String,
-        profileImageUri: String?
-    ): Boolean {
-        val uri = if (profileImageUri.isNullOrBlank()) {
+        userId: String,
+        profileImageUri: String
+    ): Result<Boolean, NetworkError> {
+        val imagePath = if (profileImageUri.isBlank()) {
             ""
         } else {
-            storageRepository.uploadImage(
-                Uri.parse(profileImageUri)
-            )
+            when (val response =
+                storageRemoteDataSource.uploadImage("userProfile", Uri.parse(profileImageUri))) {
+                is Result.Error -> return response
+                is Result.Success -> response.data
+            }
         }
 
         // 기존 프로필 이미지 삭제
-        deleteUserProfileImage(userDocumentID)
+        val userResponse = when (val result = userRemoteDataSource.getUser(userId)) {
+            is Result.Error -> return result
+            is Result.Success -> result.data
+        }
+        storageRemoteDataSource.deleteImage(userResponse.profileImageUrl)
+            .onError {
+                // TODO : Firebase analytics 추가
+            }
 
         // 프로필 이미지 갱신
-        return userRemoteDataSource.updateProfileImage(userDocumentID, uri)
-    }
-
-    override suspend fun deleteUserProfileImage(userDocumentID: String) {
-        val userResponse = userRemoteDataSource.getUser(userDocumentID)
-        storageRepository.deleteImage(userResponse.profileImage)
-    }
-
-    override suspend fun updateEmail(userDocumentID: String, email: String): Boolean {
-        return userRemoteDataSource.updateEmail(userDocumentID, email)
-    }
-
-    override fun addPostWithAsync(
-        userDocumentID: String,
-        tempPostDocumentID: String,
-        images: List<String>
-    ): Flow<UploadStateEntity> = flow {
-        emit(UploadStateEntity.Pending(tempPostDocumentID))
-
-        val imageUrls = mutableListOf<String>()
-        for ((idx, image) in images.withIndex()) {
-            emit(
-                UploadStateEntity.ProcessImage(
-                    tempPostDocumentID,
-                    idx + 1,
-                    images.size,
-                )
-            )
-            val url = storageRepository.uploadImage(
-                Uri.parse(image)
-            )
-            imageUrls.add(url)
-        }
-
-        emit(UploadStateEntity.ProcessPost(tempPostDocumentID))
-
-        val postDocumentId = postRepository.createPost(imageUrls)
-        val isSuccess = userRemoteDataSource.addPost(userDocumentID, postDocumentId)
-        if (isSuccess) {
-            emit(UploadStateEntity.SuccessPost(tempPostDocumentID, postDocumentId))
-        } else {
-            emit(UploadStateEntity.Fail(tempPostDocumentID))
-        }
+        return userRemoteDataSource.updateUserProfileImage(userId, imagePath)
     }
 
     override fun addPostWithWorkManager(
         workRequestKey: UUID,
-        userDocumentID: String,
+        userId: String,
         tempPostDocumentID: String,
         images: List<String>
-    ): Flow<UploadStateEntity> {
+    ): Flow<UploadState> {
         val inputData = Data.Builder()
-            .putString(UploadWorker.UPLOAD_USER_DOCUMENT_ID_KEY, userDocumentID)
+            .putString(UploadWorker.UPLOAD_USER_ID_KEY, userId)
             .putString(UploadWorker.UPLOAD_TEMP_POST_DOCUMENT_ID_KEY, tempPostDocumentID)
             .putStringArray(UploadWorker.UPLOAD_IMAGES_KEY, images.toTypedArray())
             .build()
@@ -219,64 +117,27 @@ internal class UserRepositoryImpl @Inject constructor(
             val jsonString = it.progress.getString(UploadWorker.PROGRESS_KEY)
                 ?: run {
                     return@map when (it.state) {
-                        WorkInfo.State.ENQUEUED -> UploadStateEntity.Pending(tempPostDocumentID)
-                        WorkInfo.State.RUNNING -> UploadStateEntity.Pending(tempPostDocumentID)
+                        WorkInfo.State.ENQUEUED -> UploadState.Pending(tempPostDocumentID)
+                        WorkInfo.State.RUNNING -> UploadState.Pending(tempPostDocumentID)
                         WorkInfo.State.SUCCEEDED -> {
                             val tPostDocumentID =
                                 it.outputData.getString(UploadWorker.RESULT_TEMP_POST_DOCUMENT_ID_KEY)
-                                    ?: return@map UploadStateEntity.Fail(tempPostDocumentID)
+                                    ?: return@map UploadState.Fail(tempPostDocumentID)
                             val postDocumentID =
                                 it.outputData.getString(UploadWorker.RESULT_POST_DOCUMENT_ID_KEY)
-                                    ?: return@map UploadStateEntity.Fail(tempPostDocumentID)
-                            return@map UploadStateEntity.SuccessPost(
+                                    ?: return@map UploadState.Fail(tempPostDocumentID)
+                            return@map UploadState.SuccessPost(
                                 tPostDocumentID,
                                 postDocumentID
                             )
                         }
 
-                        WorkInfo.State.FAILED -> UploadStateEntity.Fail(tempPostDocumentID)
-                        WorkInfo.State.BLOCKED -> UploadStateEntity.Pending(tempPostDocumentID)
-                        WorkInfo.State.CANCELLED -> UploadStateEntity.Fail(tempPostDocumentID)
+                        WorkInfo.State.FAILED -> UploadState.Fail(tempPostDocumentID)
+                        WorkInfo.State.BLOCKED -> UploadState.Pending(tempPostDocumentID)
+                        WorkInfo.State.CANCELLED -> UploadState.Fail(tempPostDocumentID)
                     }
                 }
-            jsonAdapter.fromJson(jsonString) ?: UploadStateEntity.Pending(tempPostDocumentID)
+            jsonAdapter.decodeFromString<UploadStateDto>(jsonString).toDomain()
         }
-    }
-
-    override suspend fun getAccessToken(): com.bestapp.zipbab.data.remote.notification.fcm.AccessToken {
-        val querySnapshot = firestoreDB.getAccessDB().document("n9FI6noeU2dFTHbHdQd8")
-            .get()
-            .await()
-
-        return querySnapshot.toObject<com.bestapp.zipbab.data.remote.notification.fcm.AccessToken>() ?: com.bestapp.zipbab.data.remote.notification.fcm.AccessToken()
-    }
-
-    override suspend fun removeItem(
-        udi: String,
-        exchange: List<NotificationTypeResponse>,
-        index: Int
-    ): Boolean {
-
-        return firestoreDB.getUsersDB().document(udi)
-            .update("notifications", exchange)
-            .doneSuccessful()
-    }
-
-    override suspend fun addNotification(
-        type: NotificationType,
-        userDocumentID: String,
-        meetingDocumentID: String,
-        hostDocumentID: String
-    ): Boolean {
-        val notification = hashMapOf(
-            "meetingDocumentID" to meetingDocumentID,
-            "type" to type.name,
-            "uploadDate" to timeParseFormat.format(System.currentTimeMillis()),
-            "userDocumentID" to userDocumentID,
-        )
-
-        return firestoreDB.getUsersDB().document(hostDocumentID)
-            .update("notifications", FieldValue.arrayUnion(notification))
-            .doneSuccessful()
     }
 }
