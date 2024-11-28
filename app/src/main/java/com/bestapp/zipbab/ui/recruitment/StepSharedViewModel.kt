@@ -2,10 +2,7 @@ package com.bestapp.zipbab.ui.recruitment
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bestapp.zipbab.data.model.remote.MeetingCreationInfo
-import com.bestapp.zipbab.data.repository.AppSettingRepository
-import com.bestapp.zipbab.data.repository.MeetingRepository
-import com.bestapp.zipbab.data.repository.SearchLocationRepository
+import com.bestapp.zipbab.domain.model.flash_meet.FlashMeetingRequest
 import com.bestapp.zipbab.model.kakaoLocation.toUiState
 import com.bestapp.zipbab.ui.recruitment.viewpager.memberverificationcondition.Verification
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,9 +22,6 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class StepSharedViewModel @Inject constructor(
-    private val meetingRepository: MeetingRepository,
-    private val appSettingRepository: AppSettingRepository,
-    private val searchLocationRepository: SearchLocationRepository,
 ) : ViewModel() {
 
     private val _stepState = MutableStateFlow(StepState())
@@ -81,22 +75,22 @@ class StepSharedViewModel @Inject constructor(
 
     fun updateLocation(address: String, zipCode: String) {
         viewModelScope.launch {
-            val searchLocation = searchLocationRepository.convertLocation(address).toUiState()
-            val (latitude, longitude) = if (searchLocation.documentUiState.isEmpty()) {
-                0.0 to 0.0
-            } else {
-                searchLocation.documentUiState.first().let {
-                    it.latitude.toDouble() to it.longitude.toDouble()
-                }
-            }
-            _stepState.update { currentState ->
-                currentState.copy(
-                    address = address,
-                    longitude = longitude,
-                    latitude = latitude,
-                    zipCode = zipCode,
-                )
-            }
+//            val searchLocation = searchLocationRepository.convertLocation(address).toUiState()
+//            val (latitude, longitude) = if (searchLocation.documentUiState.isEmpty()) {
+//                0.0 to 0.0
+//            } else {
+//                searchLocation.documentUiState.first().let {
+//                    it.latitude.toDouble() to it.longitude.toDouble()
+//                }
+//            }
+//            _stepState.update { currentState ->
+//                currentState.copy(
+//                    address = address,
+//                    longitude = longitude,
+//                    latitude = latitude,
+//                    zipCode = zipCode,
+//                )
+//            }
         }
     }
 
@@ -187,44 +181,44 @@ class StepSharedViewModel @Inject constructor(
                     isLoading = true
                 )
             }
-            val hostDocumentID = appSettingRepository.userDocumentID.firstOrNull() ?: run {
-                _message.emit(Message.LOGIN_REQUIRED)
-                return@launch
-            }
-
-            val meetingCreationInfo = with(_stepState.value) {
-                MeetingCreationInfo(
-                    hostDocumentID = hostDocumentID,
-                    category = selectedCategories.first(),
-                    meetingName = meetingName,
-                    participantCount = participantCount,
-                    cost = cost,
-                    description = description,
-                    address = address,
-                    longitude = longitude,
-                    latitude = latitude,
-                    zipCode = zipCode,
-                    date = date,
-                    hour = hour,
-                    minute = minute,
-                    isApprovalRequired = isApprovalRequired ?: false,
-                    verification = verification?.name ?: Verification.NONE.name,
-                    profileUri = profileUri,
-                )
-            }
-            val isSuccess = meetingRepository.createMeeting(meetingCreationInfo)
-
-            val message = if (isSuccess) {
-                Message.CREATION_COMPLETE
-            } else {
-                Message.CREATION_FAIL
-            }
-            _message.emit(message)
-            _stepState.update { currentState ->
-                currentState.copy(
-                    isLoading = false
-                )
-            }
+//            val userPrivateData = appSettingRepository.userPrivateData.firstOrNull() ?: run {
+//                _message.emit(Message.LOGIN_REQUIRED)
+//                return@launch
+//            }
+//
+//            val flashMeetingRequest = with(_stepState.value) {
+//                FlashMeetingRequest(
+//                    hostId = userPrivateData.id,
+//                    category = selectedCategories.first(),
+//                    meetingName = meetingName,
+//                    participantCount = participantCount,
+//                    cost = cost,
+//                    description = description,
+//                    address = address,
+//                    longitude = longitude,
+//                    latitude = latitude,
+//                    zipCode = zipCode,
+//                    date = date,
+//                    hour = hour,
+//                    minute = minute,
+//                    isApprovalRequired = isApprovalRequired ?: false,
+//                    verification = verification?.name ?: Verification.NONE.name,
+//                    profileUri = profileUri,
+//                )
+//            }
+//            val isSuccess = flashMeetingRepository.createMeeting(flashMeetingRequest)
+//
+//            val message = if (isSuccess) {
+//                Message.CREATION_COMPLETE
+//            } else {
+//                Message.CREATION_FAIL
+//            }
+//            _message.emit(message)
+//            _stepState.update { currentState ->
+//                currentState.copy(
+//                    isLoading = false
+//                )
+//            }
         }
     }
 

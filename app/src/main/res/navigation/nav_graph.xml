@@ -20,9 +20,6 @@
             android:id="@+id/action_homeFragment_to_notificationFragment"
             app:destination="@id/notificationFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_costFragment"
-            app:destination="@id/costFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_recruitmentFragment"
             app:destination="@id/recruitmentFragment" />
         <action
@@ -85,18 +82,6 @@
         android:name="com.bestapp.zipbab.ui.notification.NotificationFragment"
         android:label="fragment_notification"
         tools:layout="@layout/fragment_notification" />
-    <fragment
-        android:id="@+id/costFragment"
-        android:name="com.bestapp.zipbab.ui.cost.CostFragment"
-        android:label="fragment_cost"
-        tools:layout="@layout/fragment_cost">
-        <action
-            android:id="@+id/action_costFragment_to_meetingInfoFragment"
-            app:destination="@id/meetingInfoFragment" />
-        <argument
-            android:name="costCategory"
-            app:argType="com.bestapp.zipbab.args.FilterArgs$CostArgs" />
-    </fragment>
     <fragment
         android:id="@+id/meetingInfoFragment"
         android:name="com.bestapp.zipbab.ui.mettinginfo.MeetingInfoFragment"

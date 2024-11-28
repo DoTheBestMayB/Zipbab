@@ -29,11 +29,6 @@ class HomeFragment : Fragment() {
         action.safeNavigate(this)
     }
 
-    private val costAdapter = CostAdapter { costCategory ->
-        val action = HomeFragmentDirections.actionHomeFragmentToCostFragment(costCategory.toArgs())
-        action.safeNavigate(this)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,8 +48,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setAdapter() {
-        binding.rvFoodMenu.adapter = foodMenuAdapter
-        binding.rvCost.adapter = costAdapter
     }
 
     private fun setListener() {
@@ -62,37 +55,16 @@ class HomeFragment : Fragment() {
             val action = HomeFragmentDirections.actionHomeFragmentToSearchFragment()
             action.safeNavigate(this)
         }
-
-        binding.ivWrite.setOnClickListener {
-            viewModel.onWrite()
-        }
     }
 
     private fun setObserve() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.userLoginState.collect { isLoggedIn ->
-                        binding.ivNotification.setOnClickListener {
-                            if (isLoggedIn) {
-                                val action =
-                                    HomeFragmentDirections.actionHomeFragmentToNotificationFragment()
-                                action.safeNavigate(this@HomeFragment)
-                            } else {
-                                val action = HomeFragmentDirections.actionHomeFragmentToLoginGraph()
-                                action.safeNavigate(this@HomeFragment)
-                            }
-                        }
-                    }
                 }
                 launch {
                     viewModel.foodCategory.collect { state ->
                         foodMenuAdapter.submitList(state)
-                    }
-                }
-                launch {
-                    viewModel.costCategory.collect { state ->
-                        costAdapter.submitList(state)
                     }
                 }
                 launch {
@@ -122,8 +94,6 @@ class HomeFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        binding.rvCost.adapter = null
-        binding.rvFoodMenu.adapter = null
         _binding = null
 
         super.onDestroyView()

@@ -1,10 +1,10 @@
 package com.bestapp.zipbab.data.remote.datasource
 
-import com.bestapp.zipbab.data.model.remote.FilterResponse
+import com.bestapp.zipbab.data.model.remote.category.FoodCategoryResponse
+import com.bestapp.zipbab.domain.util.NetworkError
+import com.bestapp.zipbab.domain.util.Result
 
 interface CategoryRemoteDataSource {
 
-    suspend fun getFoodCategory(): FilterResponse.FoodCategory
-
-    suspend fun getCostCategory(): FilterResponse.CostCategory
+    suspend fun getFoodCategory(): Result<FoodCategoryResponse, NetworkError>
 }

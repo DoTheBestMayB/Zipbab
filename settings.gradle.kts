@@ -26,3 +26,4 @@ dependencyResolutionManagement {
 rootProject.name = "Zipbab"
 include(":app")
 include(":data")
+include(":domain")

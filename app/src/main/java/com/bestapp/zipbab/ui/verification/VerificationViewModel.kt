@@ -2,8 +2,8 @@ package com.bestapp.zipbab.ui.verification
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bestapp.zipbab.data.repository.AppSettingRepository
-import com.bestapp.zipbab.data.repository.UserRepository
+import com.bestapp.zipbab.domain.repository.AppSettingRepository
+import com.bestapp.zipbab.domain.repository.UserRepository
 import com.bestapp.zipbab.model.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,17 +18,18 @@ class VerificationViewModel @Inject constructor(
     private val userRepository: UserRepository,
 ): ViewModel() {
 
-    val userUiState: StateFlow<VerificationUiState> = appSettingRepository.userDocumentID
+    val userUiState: StateFlow<VerificationUiState> = appSettingRepository.userPrivateData
         .map { userDocumentID ->
-            if (userDocumentID.isBlank()) {
-                VerificationUiState()
-            } else {
-                val user = userRepository.getUser(userDocumentID).toUi()
-                VerificationUiState(
-                    email = user.verifiedEmail,
-                    phone = user.verifiedPhone,
-                )
-            }
+//            if (userDocumentID.isBlank()) {
+//                VerificationUiState()
+//            } else {
+//                val user = userRepository.getUser(userDocumentID).toUi()
+//                VerificationUiState(
+//                    email = user.verifiedEmail,
+//                    phone = user.verifiedPhone,
+//                )
+//            }
+            VerificationUiState()
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),

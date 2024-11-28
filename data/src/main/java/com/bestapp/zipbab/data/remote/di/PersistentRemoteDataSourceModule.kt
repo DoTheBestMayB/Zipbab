@@ -1,9 +1,11 @@
 package com.bestapp.zipbab.data.remote.di
 
-import com.bestapp.zipbab.data.remote.datasource.PostRemoteDataSource
-import com.bestapp.zipbab.data.remote.datasource.PostRemoteDataSourceImpl
+import com.bestapp.zipbab.data.remote.datasource.ProfilePostRemoteDataSource
+import com.bestapp.zipbab.data.remote.datasource.ProfilePostRemoteDataSourceImpl
 import com.bestapp.zipbab.data.remote.datasource.StorageRemoteDataSource
 import com.bestapp.zipbab.data.remote.datasource.StorageRemoteDataSourceImpl
+import com.bestapp.zipbab.data.remote.datasource.UserPrivateRemoteDataSource
+import com.bestapp.zipbab.data.remote.datasource.UserPrivateRemoteDataSourceImpl
 import com.bestapp.zipbab.data.remote.datasource.UserRemoteDataSource
 import com.bestapp.zipbab.data.remote.datasource.UserRemoteDataSourceImpl
 import dagger.Binds
@@ -19,8 +21,11 @@ internal abstract class PersistentRemoteDataSourceModule {
     abstract fun bindsStorageRemoteDataSource(storageRemoteDataSourceImpl: StorageRemoteDataSourceImpl): StorageRemoteDataSource
 
     @Binds
-    abstract fun bindsPostRemoteDataSource(postRemoteDataSourceImpl: PostRemoteDataSourceImpl): PostRemoteDataSource
+    abstract fun bindsPostRemoteDataSource(postRemoteDataSourceImpl: ProfilePostRemoteDataSourceImpl): ProfilePostRemoteDataSource
 
     @Binds
     abstract fun bindsUserRemoteDataSource(userRemoteDataSourceImpl: UserRemoteDataSourceImpl): UserRemoteDataSource
+
+    @Binds
+    abstract fun bindsUserPrivateRemoteDataSource(userPrivateRemoteDataSourceImpl: UserPrivateRemoteDataSourceImpl): UserPrivateRemoteDataSource
 }

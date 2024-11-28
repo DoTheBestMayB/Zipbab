@@ -63,6 +63,7 @@ import androidx.navigation.fragment.findNavController
 import coil.compose.AsyncImage
 import com.bestapp.zipbab.BuildConfig
 import com.bestapp.zipbab.R
+import com.bestapp.zipbab.domain.model.user.UserPrivate
 import com.bestapp.zipbab.model.PlaceLocationUiState
 import com.bestapp.zipbab.model.UserUiState
 import com.bestapp.zipbab.ui.theme.LocalCustomColorsPalette
@@ -95,7 +96,7 @@ class SettingFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 ZipbabTheme {
-                    val userUiState by settingViewModel.userUiState.collectAsStateWithLifecycle()
+                    val userUiState by settingViewModel.userPrivate.collectAsStateWithLifecycle()
                     val privacyUrl by settingViewModel.requestPrivacyUrl.collectAsStateWithLifecycle()
                     val locationPolicyUrl by settingViewModel.requestLocationPolicyUrl.collectAsStateWithLifecycle()
                     val navActionIntent by settingViewModel.navActionIntent.collectAsStateWithLifecycle()
@@ -135,19 +136,21 @@ class SettingFragment : Fragment() {
                         }
 
                         ActionIntent.PrivacyPolicy -> {
-                            if (privacyUrl.link.isNotBlank()) {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(privacyUrl.link))
-                                context.startActivity(intent)
-                            }
+                            // TODO : content BottomSheet로 표시
+//                            if (privacyUrl.content.isNotBlank()) {
+//                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(privacyUrl.link))
+//                                context.startActivity(intent)
+//                            }
                             settingViewModel.onActionIntentConsumed()
                         }
 
                         ActionIntent.LocationPolicy -> {
-                            if (locationPolicyUrl.link.isNotBlank()) {
-                                val intent =
-                                    Intent(Intent.ACTION_VIEW, Uri.parse(locationPolicyUrl.link))
-                                context.startActivity(intent)
-                            }
+                            // TODO : content BottomSheet로 표시
+//                            if (locationPolicyUrl.link.isNotBlank()) {
+//                                val intent =
+//                                    Intent(Intent.ACTION_VIEW, Uri.parse(locationPolicyUrl.link))
+//                                context.startActivity(intent)
+//                            }
                             settingViewModel.onActionIntentConsumed()
                         }
 
@@ -163,6 +166,7 @@ class SettingFragment : Fragment() {
                             )
                         }
                     }
+
                     LaunchedEffect(true) {
                         settingViewModel.message.collect { message ->
                             val text = when (message) {
@@ -204,7 +208,7 @@ class SettingFragment : Fragment() {
                         findNavController().navigate(action)
                     }
                     SettingScreen(
-                        userUiState = userUiState,
+                        userPrivate = userUiState,
                         loadState = loadState,
                         onAction = { intent ->
                             settingViewModel.handleAction(intent)
@@ -219,7 +223,7 @@ class SettingFragment : Fragment() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen(
-    userUiState: UserUiState,
+    userPrivate: UserPrivate,
     loadState: LoadingState,
     onAction: (SettingIntent) -> Unit,
     modifier: Modifier = Modifier,
@@ -255,7 +259,7 @@ fun SettingScreen(
             LoadingState.Done -> {
                 ScrollContent(
                     innerPadding = innerPadding,
-                    userUiState = userUiState,
+                    userUiState = UserUiState(), // TODO : 이 부분 수정 필요
                     onAction = onAction,
                 )
             }
@@ -608,22 +612,13 @@ fun SettingItem(
 fun SettingScreenPreview() {
     ZipbabTheme {
         SettingScreen(
-            userUiState = UserUiState(
-                userDocumentID = "userDocumentID",
-                nickname = "부캠이",
-                id = "",
-                pw = "",
-                profileImage = "",
-                temperature = 0.0,
-                meetingCount = 0,
-                notificationUiState = listOf(),
-                meetingReviews = listOf(),
-                postDocumentIds = listOf(),
-                placeLocationUiState = PlaceLocationUiState(
-                    locationAddress = "",
-                    locationLat = "",
-                    locationLong = ""
-                )
+            userPrivate = UserPrivate(
+                id = "id",
+                pw = "pw",
+                email = "zipbab@zipbab.com",
+                phone = "",
+                notifications = listOf(),
+                joinedFlashMeetings = listOf()
             ),
             loadState = LoadingState.Done,
             onAction = {},

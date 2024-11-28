@@ -2,16 +2,10 @@ package com.bestapp.zipbab.ui.meetupmap
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bestapp.zipbab.data.model.remote.MeetingResponse
-import com.bestapp.zipbab.data.repository.AppSettingRepository
-import com.bestapp.zipbab.data.repository.MeetingRepository
-import com.bestapp.zipbab.data.repository.UserRepository
 import com.bestapp.zipbab.model.UserUiState
-import com.bestapp.zipbab.model.toUi
 import com.bestapp.zipbab.ui.meetupmap.model.MeetUpMapUi
 import com.bestapp.zipbab.ui.meetupmap.model.MeetUpMapUiState
 import com.bestapp.zipbab.ui.meetupmap.model.MeetingMarkerUiStates
-import com.bestapp.zipbab.ui.meetupmap.model.toUi
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.overlay.Marker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,15 +15,11 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MeetUpMapViewModel @Inject constructor(
-    private val appSettingRepository: AppSettingRepository,
-    private val userRepository: UserRepository,
-    private val meetingRepository: MeetingRepository,
 ) : ViewModel() {
 
     private val _userUiState = MutableStateFlow(UserUiState())
@@ -68,49 +58,13 @@ class MeetUpMapViewModel @Inject constructor(
     }
 
     fun getUserUiState() {
-        viewModelScope.launch {
-            val userDocumentedID = getUser()
-
-            val userUiState = if (userDocumentedID.isNotEmpty()) {
-                userRepository.getUser(userDocumentedID).toUi()
-            } else {
-                UserUiState().copy(
-                    nickname = NO_LOGIN_USER_DEFAULT_NICKNAME
-                )
-            }
-
-            _userUiState.emit(userUiState)
-            updateMeetingWithLoginState()
-        }
     }
 
-    private suspend fun getUser() = appSettingRepository.userDocumentID.first()
+    private suspend fun getUser() = {
+
+    }
 
     fun getMeetings(latLngUser: LatLng) {
-        viewModelScope.launch {
-            val meetings = meetingRepository.getMeetings()
-
-            val meetUpMapUiState = MeetUpMapUiState(
-                meetUpMapMeetingUis = meetings.map {
-                    it.toUiWithDistance(latLngUser)
-                }.filter {
-                    it.distance <= DISTANCE_FILTER && it.activation
-                }.sortedBy {
-                    it.distance
-                }.map {
-                    it.addFormatDistance()
-                }
-            )
-
-            _meetUpMapUiState.value = meetUpMapUiState
-        }
-    }
-
-    private fun MeetingResponse.toUiWithDistance(latLngUser: LatLng): MeetUpMapUi {
-        val distance = haversine(latLngUser, LatLng(latitude, longitude))
-        val isHost = userUiState.value.userDocumentID == hostUserDocumentID
-
-        return toUi(distance, isHost, latitude, longitude)
     }
 
     private fun updateMeetingWithLoginState() = viewModelScope.launch {

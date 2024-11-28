@@ -1,25 +1,19 @@
 package com.bestapp.zipbab.model
 
+import android.net.Uri
 import com.bestapp.zipbab.args.ProfileEditArgs
-import com.bestapp.zipbab.data.model.UploadStateEntity
-import com.bestapp.zipbab.data.model.local.GalleryImageInfo
 import com.bestapp.zipbab.data.model.local.SignOutEntity
-import com.bestapp.zipbab.data.model.remote.FilterResponse
-import com.bestapp.zipbab.data.model.remote.LoginResponse
-import com.bestapp.zipbab.data.model.remote.MeetingResponse
-import com.bestapp.zipbab.data.model.remote.NotificationTypeResponse
 import com.bestapp.zipbab.data.model.remote.PlaceLocation
-import com.bestapp.zipbab.data.model.remote.PostResponse
 import com.bestapp.zipbab.data.model.remote.Review
-import com.bestapp.zipbab.data.model.remote.SignUpResponse
 import com.bestapp.zipbab.data.model.remote.TermInfoResponse
-import com.bestapp.zipbab.data.model.remote.UserResponse
-import com.bestapp.zipbab.data.model.remote.VerifyStateEntity
+import com.bestapp.zipbab.data.model.remote.auth.AuthStateDto
+import com.bestapp.zipbab.data.model.remote.auth.SignUpResponse
+import com.bestapp.zipbab.data.remote.upload.UploadStateDto
+import com.bestapp.zipbab.domain.model.GalleryImage
 import com.bestapp.zipbab.ui.mettinginfo.MemberInfo
 import com.bestapp.zipbab.ui.profileedit.ProfileEditUiState
 import com.bestapp.zipbab.ui.profilepostimageselect.model.PostGalleryUiState
 import com.bestapp.zipbab.ui.profilepostimageselect.model.SelectedImageUiState
-import com.bestapp.zipbab.ui.recruitment.viewpager.categoryselect.FoodCategory
 import com.bestapp.zipbab.ui.signup.SignUpState
 
 // Data -> UiState
@@ -32,54 +26,11 @@ fun SignOutEntity.toUi(): SignOutState {
     }
 }
 
-fun FilterResponse.Cost.toUi() = FilterUiState.CostUiState(
-    name = name,
-    icon = icon,
-    type = type,
-)
-
-fun FilterResponse.Food.toUi() = FilterUiState.FoodUiState(
-    icon = icon,
-    name = name,
-)
-
-fun FilterResponse.Food.toCategory() = FoodCategory(
-    name = name,
-    isSelected = false,
-)
-
-fun MeetingResponse.toUi() = MeetingUiState(
-    meetingDocumentID = meetingDocumentID,
-    title = title,
-    titleImage = titleImage,
-    address = address,
-    zipCode = zipCode,
-    date = date,
-    hour = hour,
-    minute = minute,
-    participantCount = participantCount,
-    description = description,
-    mainMenu = category,
-    costValueByPerson = costValueByPerson,
-    hostUserDocumentID = hostUserDocumentID,
-    members = members,
-    pendingMembers = pendingMembers,
-    attendanceCheck = attendanceCheck,
-    activation = activation
-)
 
 fun PlaceLocation.toUi() = PlaceLocationUiState(
     locationAddress = locationAddress,
     locationLat = locationLat,
     locationLong = locationLong,
-)
-
-fun PostResponse.toUi() = PostUiState(
-    postDocumentID = postDocumentID,
-    images = images,
-    state = UploadState.Default(
-        tempPostDocumentID = postDocumentID
-    ),
 )
 
 fun Review.toUi() = ReviewUiState(
@@ -93,65 +44,43 @@ fun TermInfoResponse.toUi() = TermInfoState(
     date = date,
 )
 
-fun UserResponse.toUi() = UserUiState(
-    userDocumentID = userDocumentID,
-    nickname = nickname,
-    id = id,
-    pw = pw,
-    profileImage = profileImage,
-    temperature = temperature,
-    meetingCount = meetingCount,
-    notificationUiState = notifications.map { it.toUi() },
-    meetingReviews = meetingReviews,
-    postDocumentIds = posts,
-    placeLocationUiState = placeLocation.toUi(),
-    verifiedEmail = verifiedEmail,
-    verifiedPhone = verifiedPhone,
-)
-
-fun VerifyStateEntity.toUi(): VerifyState {
+fun AuthStateDto.toUi(): VerifyState {
     return when(this) {
-        VerifyStateEntity.AlreadyUsedEmail -> VerifyState.AlreadyUsedEmail
-        VerifyStateEntity.Fail -> VerifyState.Fail
-        VerifyStateEntity.FailAtSendVerificationEmail -> VerifyState.FailAtSendVerificationEmail
-        VerifyStateEntity.Success -> VerifyState.Success
-        VerifyStateEntity.PasswordTooShort -> VerifyState.PasswordTooShort
+        AuthStateDto.AlreadyUsedEmail -> VerifyState.AlreadyUsedEmail
+        AuthStateDto.Fail -> VerifyState.Fail
+        AuthStateDto.FailAtSendVerificationEmail -> VerifyState.FailAtSendVerificationEmail
+        AuthStateDto.Success -> VerifyState.Success
+        AuthStateDto.PasswordTooShort -> VerifyState.PasswordTooShort
     }
 }
 
-fun UploadStateEntity.toArgs(): UploadState {
+fun UploadStateDto.toArgs(): UploadState {
     return when (this) {
-        is UploadStateEntity.Fail -> UploadState.Fail(
-            tempPostDocumentID = tempPostDocumentID
+        is UploadStateDto.Fail -> UploadState.Fail(
+            tempPostDocumentID = tempPostDocumentId
         )
 
-        is UploadStateEntity.Pending -> UploadState.Pending(
-            tempPostDocumentID = tempPostDocumentID
+        is UploadStateDto.Pending -> UploadState.Pending(
+            tempPostDocumentID = tempPostDocumentId
         )
 
-        is UploadStateEntity.ProcessImage -> UploadState.InProgress(
-            tempPostDocumentID = tempPostDocumentID,
+        is UploadStateDto.ProcessImage -> UploadState.InProgress(
+            tempPostDocumentID = tempPostDocumentId,
             currentProgressOrder = currentProgressOrder,
             maxOrder = maxOrder,
         )
 
-        is UploadStateEntity.ProcessPost -> UploadState.ProcessPost(
-            tempPostDocumentID = tempPostDocumentID,
+        is UploadStateDto.ProcessPost -> UploadState.ProcessPost(
+            tempPostDocumentID = tempPostDocumentId,
         )
 
-        is UploadStateEntity.SuccessPost -> UploadState.SuccessPost(
-            tempPostDocumentID = tempPostDocumentID,
-            postDocumentID = postDocumentID,
+        is UploadStateDto.SuccessPost -> UploadState.SuccessPost(
+            tempPostDocumentID = tempPostDocumentId,
+            postDocumentID = postDocumentId,
         )
     }
 }
 
-fun LoginResponse.toUi(): LoginResult {
-    return when (this) {
-        LoginResponse.Fail -> LoginResult.Fail
-        is LoginResponse.Success -> LoginResult.Success(this.userDocumentID)
-    }
-}
 
 fun SignUpResponse.toUi(): SignUpState {
     return when (this) {
@@ -161,19 +90,14 @@ fun SignUpResponse.toUi(): SignUpState {
     }
 }
 
-fun NotificationTypeResponse.toUi(): NotificationUiState.UserNotification {
-    return NotificationUiState.UserNotification(dec = "", uploadDate = uploadDate)
-}
-
-fun GalleryImageInfo.toUi() = GalleryImage(
-    uri = uri,
+fun GalleryImage.toUi() = GalleryImageUi(
+    uri = Uri.parse(uri),
     name = name,
     orderId = orderId,
 )
 
-// UiState -> UiState
-fun GalleryImageInfo.toPostGalleryState() = PostGalleryUiState(
-    uri = uri,
+fun GalleryImage.toPostGalleryState() = PostGalleryUiState(
+    uri = Uri.parse(uri),
     name = name,
 )
 

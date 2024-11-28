@@ -6,8 +6,8 @@ plugins {
     alias(libs.plugins.protobuf)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-    id ("kotlin-parcelize")
-    kotlin("kapt")
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -24,11 +24,7 @@ android {
         buildConfigField("String", "KAKAO_NATIVE_KEY", getValue("kakao_map_native_key"))
         buildConfigField("String", "KAKAO_REST_API_KEY", getValue("kakao_map_rest_api_key"))
         buildConfigField("String", "KAKAO_MAP_BASE_URL", getValue("kakao_map_base_url"))
-        buildConfigField("String", "FCM_BASE_URL", getValue("fcm_base_url"))
         buildConfigField("String", "KAKAO_ADMIN_KEY", getValue("kakao_admin_key"))
-        buildConfigField("String", "GOOGLE_TOKEN_BASE_URL", getValue("google_token_base_url"))
-        buildConfigField("String", "GOOGLE_REFRESH_BASE_URL", getValue("google_refresh_base_url"))
-        buildConfigField("String", "FIREBASE_HOSTING_LINK", getValue("firebase_hosting_link"))
     }
 
     buildTypes {
@@ -41,11 +37,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "21"
     }
     buildFeatures {
         buildConfig = true
@@ -56,7 +52,12 @@ fun getValue(propertyKey: String): String {
     return gradleLocalProperties(rootDir, providers).getProperty(propertyKey)
 }
 
+configurations.configureEach {
+    exclude(group = "com.intellij", module = "annotations")
+}
+
 dependencies {
+    implementation(project(":domain"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -65,17 +66,17 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
 
     // retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.moshi)
-    implementation(libs.moshi)
-    implementation(libs.moshi.adapters)
-    implementation(libs.moshi.kotlin)
-    implementation(libs.okhttp)
+    implementation(libs.bundles.ktor)
 
     // dataStore
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.datastore)
     implementation(libs.protobuf.javalite)
+
+    // room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.compiler)
 
     // Import the Firebase BoM
     implementation(platform(libs.firebase.bom))
@@ -99,9 +100,6 @@ dependencies {
     ksp(libs.androidx.hilt.compiler)
     ksp(libs.hilt.android.compiler)
 
-    // OkHttp3
-    implementation (libs.okhttp)
-    implementation (libs.logging.interceptor)
 }
 
 protobuf {

@@ -1,31 +1,18 @@
 package com.bestapp.zipbab.data.remote.datasource
 
-import com.bestapp.zipbab.data.model.remote.LoginResponse
-import com.bestapp.zipbab.data.model.remote.Review
-import com.bestapp.zipbab.data.model.remote.SignUpResponse
-import com.bestapp.zipbab.data.model.remote.UserResponse
+import com.bestapp.zipbab.data.model.remote.user.UserResponse
+import com.bestapp.zipbab.domain.util.NetworkError
+import com.bestapp.zipbab.domain.util.Result
 
 interface UserRemoteDataSource {
 
-    suspend fun getUser(userDocumentID: String): UserResponse
+    suspend fun getUser(userId: String): Result<UserResponse, NetworkError>
 
-    suspend fun login(id: String, pw: String): LoginResponse
+    suspend fun updateUserNickname(userId: String, nickname: String): Result<Boolean, NetworkError>
 
-    suspend fun signUpUser(nickname: String, email: String, password: String): SignUpResponse
+    suspend fun updateUserProfileImage(userId: String, imagePath: String): Result<Boolean, NetworkError>
 
-    suspend fun checkSignOutIsNotAllowed(userDocumentID: String): Boolean
+    suspend fun addPost(userId: String, postDocumentId: String): Result<Boolean, NetworkError>
 
-    suspend fun signOutUser(userDocumentID: String): Boolean
-
-    suspend fun updateUserNickname(userDocumentID: String, nickname: String): Boolean
-
-    suspend fun updateUserTemperature(reviews: List<Review>): Boolean
-
-    suspend fun updateUserMeetingCount(userDocumentID: String): Boolean
-
-    suspend fun updateProfileImage(userDocumentID: String, imageUri: String): Boolean
-
-    suspend fun addPost(userDocumentID: String, postDocumentId: String): Boolean
-
-    suspend fun updateEmail(userDocumentID: String, email: String): Boolean
+    suspend fun removePost(userId: String, postDocumentId: String): Result<Boolean, NetworkError>
 }

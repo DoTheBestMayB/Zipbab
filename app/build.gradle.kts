@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.googleService)
     alias(libs.plugins.navigationSafeArgs)
-    alias(libs.plugins.kotlinParcelize)
+    alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     id ("kotlin-parcelize")
@@ -30,8 +30,6 @@ android {
         buildConfigField("String", "KAKAO_REST_API_KEY", getValue("kakao_map_rest_api_key"))
         buildConfigField("String", "KAKAO_MAP_BASE_URL", getValue("kakao_map_base_url"))
         buildConfigField("String", "KAKAO_ADMIN_KEY", getValue("kakao_admin_key"))
-        buildConfigField("String", "GOOGLE_TOKEN_BASE_URL", getValue("google_token_base_url"))
-        buildConfigField("String", "GOOGLE_REFRESH_BASE_URL", getValue("google_refresh_base_url"))
     }
 
     buildTypes {
@@ -44,11 +42,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "21"
     }
     buildFeatures {
         viewBinding = true
@@ -66,6 +64,7 @@ fun getValue(propertyKey: String): String {
 
 dependencies {
     implementation(project(":data"))
+    implementation(project(":domain"))
 
     implementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -82,7 +81,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.firebase.perf.ktx)
     implementation(libs.androidx.lifecycle.service)
     implementation(libs.play.services.location)
     implementation(libs.androidx.core.splashscreen)
@@ -127,6 +125,7 @@ dependencies {
 
     // Import the Firebase BoM
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.perf.ktx)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.messaging)

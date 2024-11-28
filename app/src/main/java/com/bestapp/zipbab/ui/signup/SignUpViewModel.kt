@@ -2,10 +2,9 @@ package com.bestapp.zipbab.ui.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bestapp.zipbab.data.model.remote.Privacy
-import com.bestapp.zipbab.data.repository.AppSettingRepository
-import com.bestapp.zipbab.data.repository.UserRepository
-import com.bestapp.zipbab.model.toUi
+import com.bestapp.zipbab.domain.repository.AppSettingRepository
+import com.bestapp.zipbab.domain.repository.AuthRepository
+import com.bestapp.zipbab.domain.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +15,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val userRepository: UserRepository,
     private val appSettingRepository: AppSettingRepository,
     private val signUpInputValidator: SignUpInputValidator,
 ) : ViewModel() {
@@ -24,8 +22,8 @@ class SignUpViewModel @Inject constructor(
     private val _signUpState = MutableStateFlow<SignUpState>(SignUpState.Default)
     val signUpState: StateFlow<SignUpState> = _signUpState.asStateFlow()
 
-    private val _requestPrivacyUrl = MutableStateFlow(Privacy())
-    val requestPrivacyUrl: StateFlow<Privacy> = _requestPrivacyUrl.asStateFlow()
+    private val _requestPrivacyUrl = MutableStateFlow("")
+    val requestPrivacyUrl: StateFlow<String> = _requestPrivacyUrl.asStateFlow()
 
     private val isTermAgreed = MutableStateFlow(false)
     private val nickname = MutableStateFlow("")
@@ -46,29 +44,31 @@ class SignUpViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _requestPrivacyUrl.emit(appSettingRepository.getPrivacyInfo())
+            appSettingRepository.getPrivacyPolicy().onSuccess {
+                _requestPrivacyUrl.value = it.content
+            }
         }
     }
 
     fun onSignUp() {
         viewModelScope.launch {
-            var signUpState =
-                userRepository.signUpUser(nickname.value, email.value, password.value).toUi()
-
-            when (signUpState) {
-                SignUpState.Default -> Unit
-                SignUpState.DuplicateEmail -> Unit
-                SignUpState.Fail -> Unit
-                is SignUpState.Success -> {
-                    val isSuccess = appSettingRepository.updateUserDocumentId(signUpState.userDocumentID)
-                    // 회원가입에 성공했으나, 회원 정보 저장에 실패한 경우
-                    if (isSuccess.not()) {
-                        signUpState = SignUpState.SaveDocumentIdFail
-                    }
-                }
-                SignUpState.SaveDocumentIdFail -> Unit
-            }
-            _signUpState.emit(signUpState)
+//            var signUpState =
+//                userRepository.signUpUser(nickname.value, email.value, password.value).toUi()
+//
+//            when (signUpState) {
+//                SignUpState.Default -> Unit
+//                SignUpState.DuplicateEmail -> Unit
+//                SignUpState.Fail -> Unit
+//                is SignUpState.Success -> {
+//                    val isSuccess = appSettingRepository.updateUserDocumentId(signUpState.userDocumentID)
+//                    // 회원가입에 성공했으나, 회원 정보 저장에 실패한 경우
+//                    if (isSuccess.not()) {
+//                        signUpState = SignUpState.SaveDocumentIdFail
+//                    }
+//                }
+//                SignUpState.SaveDocumentIdFail -> Unit
+//            }
+//            _signUpState.emit(signUpState)
         }
     }
 

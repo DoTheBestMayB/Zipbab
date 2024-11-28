@@ -16,15 +16,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
-import com.bestapp.zipbab.BuildConfig
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.databinding.ActivityMainBinding
 import com.bestapp.zipbab.ui.profile.ProfileFragment
 import dagger.hilt.android.AndroidEntryPoint
-import com.bestapp.zipbab.ui.setting.SettingFragment
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
