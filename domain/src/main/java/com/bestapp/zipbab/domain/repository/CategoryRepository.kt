@@ -1,9 +1,10 @@
 package com.bestapp.zipbab.domain.repository
 
-import com.bestapp.zipbab.domain.model.category.FoodCategory
-import com.bestapp.zipbab.domain.util.NetworkError
-import com.bestapp.zipbab.domain.util.Result
+import com.bestapp.zipbab.domain.model.category.CategoryGroup
+import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
-    suspend fun getFoodCategory(): Result<FoodCategory, NetworkError>
+    suspend fun fetchFlashMeetCategory()
+
+    fun getFlashMeetCategory(): Flow<CategoryGroup>
 }

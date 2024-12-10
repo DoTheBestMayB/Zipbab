@@ -9,12 +9,6 @@ fun UserPrivateEntity.toDomain(): UserPrivate {
         pw = pw,
         email = email,
         phone = phone,
-        notifications = notifications.map {
-            it.toDomain()
-        },
-        joinedFlashMeetings = joinedFlashMeetings.map {
-            it.toDomain()
-        },
     )
 }
 
@@ -24,11 +18,5 @@ fun UserPrivate.toEntity(): UserPrivateEntity {
         pw = pw,
         email = email,
         phone = phone,
-        notifications = notifications.map {
-            it.toEntity()
-        },
-        joinedFlashMeetings = joinedFlashMeetings.map {
-            it.toEntity()
-        },
     )
 }

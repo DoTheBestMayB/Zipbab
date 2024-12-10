@@ -2,8 +2,10 @@ package com.bestapp.zipbab.data.local.room.dao
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.bestapp.zipbab.data.local.room.entity.UserPrivateEntity
+import com.bestapp.zipbab.data.local.room.entity.UserPrivateRelations
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -17,4 +19,8 @@ interface UserPrivateDao {
 
     @Query("DELETE FROM UserPrivateEntity")
     suspend fun deleteUserPrivate()
+
+    @Transaction
+    @Query("SELECT * FROM UserPrivateEntity LIMIT 1")
+    fun getUserWithRelations(): Flow<UserPrivateRelations?>
 }

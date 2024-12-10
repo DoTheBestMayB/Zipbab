@@ -1,7 +1,6 @@
 package com.bestapp.zipbab.data.mapper
 
 import com.bestapp.zipbab.data.local.room.entity.JoinedFlashMeetingEntity
-import com.bestapp.zipbab.data.local.room.entity.MeetTypeEntity
 import com.bestapp.zipbab.data.model.remote.flash_meet.FlashMeetingResponse
 import com.bestapp.zipbab.data.model.remote.flash_meet.IngredientResponse
 import com.bestapp.zipbab.data.model.remote.flash_meet.MenuResponse
@@ -18,9 +17,10 @@ fun JoinedFlashMeetingEntity.toDomain(): JoinedFlashMeeting {
     return JoinedFlashMeeting(
         meetId = meetId,
         joinedAt = joinedAt,
-        type = type.toDomain(),
+        type = MeetType.entries.firstOrNull { it.symbol == type } ?: MeetType.NOT_SUPPORTED,
         hasReviewed = hasReviewed,
         reviewId = reviewId,
+        userId = userId,
     )
 }
 
@@ -28,25 +28,13 @@ fun JoinedFlashMeeting.toEntity(): JoinedFlashMeetingEntity {
     return JoinedFlashMeetingEntity(
         meetId = meetId,
         joinedAt = joinedAt,
-        type = type.toEntity(),
+        type = type.symbol,
         hasReviewed = hasReviewed,
         reviewId = reviewId,
+        userId = userId,
     )
 }
 
-fun MeetTypeEntity.toDomain(): MeetType {
-    return when (this) {
-        MeetTypeEntity.FLASH_MEET -> MeetType.FLASH_MEET
-        MeetTypeEntity.MEET -> MeetType.MEET
-    }
-}
-
-fun MeetType.toEntity(): MeetTypeEntity {
-    return when (this) {
-        MeetType.FLASH_MEET -> MeetTypeEntity.FLASH_MEET
-        MeetType.MEET -> MeetTypeEntity.MEET
-    }
-}
 
 suspend fun FlashMeetingResponse.toDomain(
     fetchUserById: suspend (String) -> UserResponse,

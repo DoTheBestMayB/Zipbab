@@ -1,7 +1,7 @@
 package com.bestapp.zipbab.data.remote.datasource
 
-import com.bestapp.zipbab.data.model.remote.category.FoodCategoryResponse
-import com.bestapp.zipbab.data.model.remote.category.FoodIconResponse
+import com.bestapp.zipbab.data.model.remote.category.CategoryResponse
+import com.bestapp.zipbab.data.model.remote.category.IconResponse
 import com.bestapp.zipbab.data.networking.safeFirebaseCall
 import com.bestapp.zipbab.data.remote.firestoreDB.FirestoreDB
 import com.bestapp.zipbab.domain.util.NetworkError
@@ -14,8 +14,8 @@ internal class CategoryRemoteDataSourceImpl @Inject constructor(
 ) : CategoryRemoteDataSource {
 
     @Suppress("UNCHECKED_CAST")
-    override suspend fun getFoodCategory(): Result<FoodCategoryResponse, NetworkError> {
-        return safeFirebaseCall<FoodCategoryResponse> {
+    override suspend fun getFlashMeetCategory(): Result<CategoryResponse, NetworkError> {
+        return safeFirebaseCall<CategoryResponse> {
             val documentSnapshot = firestoreDB.getCategoryDB().document("food")
                 .get()
                 .await()
@@ -25,13 +25,13 @@ internal class CategoryRemoteDataSourceImpl @Inject constructor(
                 val imageUrl = categoryData["imageUrl"]?.let {
                     firestoreDB.getImageUrl(it)
                 } ?: ""
-                FoodIconResponse(
+                IconResponse(
                     imageUrl = imageUrl,
                     name = categoryData["name"] ?: "",
                 )
             } ?: emptyList()
 
-            FoodCategoryResponse(iconResponses)
+            CategoryResponse(iconResponses)
         }
     }
 }

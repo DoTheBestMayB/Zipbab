@@ -4,6 +4,7 @@ import java.time.ZonedDateTime
 
 data class Notification(
     val uuid: String,
+    val userId: String,
     val type: NotificationType,
     val createdAt: ZonedDateTime,
     val isRead: Boolean,

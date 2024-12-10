@@ -20,8 +20,20 @@ internal class AppSettingRepositoryImpl @Inject constructor(
     private val privacyRemoteDataSource: PrivacyRemoteDataSource,
 ) : AppSettingRepository {
 
-    override val userPrivateData: Flow<UserPrivate?> = userPrivateLocalDataSource.privateData.map {
-        it?.toDomain()
+    override val userPrivateData: Flow<UserPrivate?> = userPrivateLocalDataSource.privateRelations.map { relations ->
+        if (relations == null) {
+            null
+        } else {
+            UserPrivate(
+                id = relations.user.id,
+                pw = relations.user.pw,
+                email = relations.user.email,
+                phone = relations.user.phone,
+                notifications = relations.notifications.map { it.toDomain() },
+                joinedFlashMeetings = relations.joinedFlashMeetings.map { it.toDomain() },
+            )
+        }
+
     }
 
     override suspend fun updatePrivateData(userPrivate: UserPrivate) {

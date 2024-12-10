@@ -271,6 +271,15 @@ fun SettingScreen(
 }
 
 @Composable
+fun SomeComposable(
+    name: String,
+    modifier: Modifier = Modifier,
+    onAction: (String) -> Unit,
+) {
+    // Some Code ...
+}
+
+@Composable
 fun ScrollContent(
     innerPadding: PaddingValues,
     userUiState: UserUiState,
