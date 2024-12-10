@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -22,50 +23,51 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.bestapp.zipbab.R
+import com.bestapp.zipbab.UserPrivateUiState
 import com.bestapp.zipbab.domain.model.category.CategoryGroup
 import com.bestapp.zipbab.domain.model.category.CategoryIcon
 
 @Composable
 fun HomeScreen(
+    userPrivateUiState: UserPrivateUiState,
+    categoryUiState: CategoryUiState,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(),
 ) {
-    val alertUiState by viewModel.alertUiState.collectAsStateWithLifecycle()
-    val flashMeetCategoryUiState by viewModel.flashMeetCategoryUiState.collectAsStateWithLifecycle()
 
     HomeScreen(
-        alertUiState = alertUiState,
-        flashMeetCategoryUiState = flashMeetCategoryUiState,
+        userUiState = userPrivateUiState,
+        categoryUiState = categoryUiState,
         modifier = modifier,
     )
 }
 
 @Composable
 fun HomeScreen(
-    alertUiState: AlertUiState,
-    flashMeetCategoryUiState: CategoryUiState,
+    userUiState: UserPrivateUiState,
+    categoryUiState: CategoryUiState,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         topBar = {
-            TopBar(isAlertExist = alertUiState is AlertUiState.Exist)
+            TopBar(isAlertExist = userUiState is UserPrivateUiState.LoggedIn && userUiState.userPrivate.notifications.isNotEmpty())
         },
         bottomBar = { BottomNavigationBar() },
+        modifier = modifier.statusBarsPadding()
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             AnnouncementSection()
-            TabSection(categoryUiState = flashMeetCategoryUiState)
+            TabSection(categoryUiState = categoryUiState)
         }
 
     }
@@ -85,6 +87,7 @@ fun TopBar(
     ) {
         Text(
             text = stringResource(R.string.app_name),
+            fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(start = 18.dp),
         )
         Box(
@@ -147,7 +150,8 @@ fun CategoryItem(
         AsyncImage(
             model = imageUrl,
             contentDescription = null,
-            modifier = Modifier.width(48.dp)
+            modifier = Modifier
+                .width(48.dp)
                 .height(48.dp)
         )
         Spacer(modifier = Modifier.size(4.dp))
@@ -164,8 +168,8 @@ fun BottomNavigationBar(modifier: Modifier = Modifier) {
 @Composable
 private fun HomeScreenPreview() {
     HomeScreen(
-        alertUiState = AlertUiState.Exist,
-        flashMeetCategoryUiState = CategoryUiState.Success(
+        userUiState = UserPrivateUiState.NotLoggedIn,
+        categoryUiState = CategoryUiState.Success(
             categories = CategoryGroup(
                 icons = listOf(
                     CategoryIcon("", "A"),
@@ -189,16 +193,18 @@ private fun TopBarPreview() {
 @Preview
 @Composable
 private fun TabSectionPreview() {
-    TabSection(categoryUiState = CategoryUiState.Success(
-        categories = CategoryGroup(
-            icons = listOf(
-                CategoryIcon("", "A"),
-                CategoryIcon("", "B"),
-                CategoryIcon("", "C"),
-                CategoryIcon("", "D"),
-                CategoryIcon("", "E"),
-                CategoryIcon("", "F"),
+    TabSection(
+        categoryUiState = CategoryUiState.Success(
+            categories = CategoryGroup(
+                icons = listOf(
+                    CategoryIcon("", "A"),
+                    CategoryIcon("", "B"),
+                    CategoryIcon("", "C"),
+                    CategoryIcon("", "D"),
+                    CategoryIcon("", "E"),
+                    CategoryIcon("", "F"),
+                )
             )
         )
-    ))
+    )
 }
