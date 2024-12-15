@@ -34,8 +34,8 @@ class MainActivityViewModel @Inject constructor(
                 initialValue = UserPrivateUiState.Loading,
             )
 
-    val flashMeetCategoryUiState: StateFlow<CategoryUiState> =
-        categoryRepository.getFlashMeetCategory()
+    val categoryUiState: StateFlow<CategoryUiState> =
+        categoryRepository.getCategory()
             .map { categoryGroup ->
                 CategoryUiState.Success(categories = categoryGroup)
             }.stateIn(
@@ -46,7 +46,7 @@ class MainActivityViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            categoryRepository.fetchFlashMeetCategory()
+            categoryRepository.fetchCategory()
         }
     }
 

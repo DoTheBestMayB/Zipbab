@@ -6,5 +6,5 @@ import com.bestapp.zipbab.domain.util.Result
 
 interface CategoryRemoteDataSource {
 
-    suspend fun getFlashMeetCategory(): Result<CategoryResponse, NetworkError>
+    suspend fun getCategory(name: String): Result<CategoryResponse, NetworkError>
 }

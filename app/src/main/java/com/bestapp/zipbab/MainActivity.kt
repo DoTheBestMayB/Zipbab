@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bestapp.zipbab.home.CategoryUiState
 import com.bestapp.zipbab.home.HomeScreen
-import com.bestapp.zipbab.ui.theme.ZipbabTheme
+import com.bestapp.zipbab.theme.ZipbabTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 launch {
-                    viewModel.flashMeetCategoryUiState.collect { state ->
+                    viewModel.categoryUiState.collect { state ->
                         categoryUiState = state
                     }
                 }

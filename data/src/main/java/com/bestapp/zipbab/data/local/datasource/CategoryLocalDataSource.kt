@@ -5,7 +5,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface CategoryLocalDataSource {
 
-    suspend fun replaceFlashMeet(categories: List<CategoryEntity>)
+    suspend fun replaceFlashMeet(category: CategoryEntity)
 
-    fun getFlashMeet(): Flow<List<CategoryEntity>>
+    suspend fun replaceMeet(category: CategoryEntity)
+
+    fun getCategories(): Flow<List<CategoryEntity>>
 }

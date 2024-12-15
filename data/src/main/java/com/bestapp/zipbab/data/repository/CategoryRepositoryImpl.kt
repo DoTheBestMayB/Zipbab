@@ -3,6 +3,7 @@ package com.bestapp.zipbab.data.repository
 import com.bestapp.zipbab.data.local.datasource.CategoryLocalDataSource
 import com.bestapp.zipbab.data.mapper.toDomain
 import com.bestapp.zipbab.data.mapper.toEntity
+import com.bestapp.zipbab.data.model.local.CategoryType
 import com.bestapp.zipbab.data.remote.datasource.CategoryRemoteDataSource
 import com.bestapp.zipbab.domain.model.category.CategoryGroup
 import com.bestapp.zipbab.domain.repository.CategoryRepository
@@ -17,22 +18,22 @@ internal class CategoryRepositoryImpl @Inject constructor(
     private val categoryRemoteDataSource: CategoryRemoteDataSource,
     private val categoryLocalDataSource: CategoryLocalDataSource,
 ) : CategoryRepository {
-    override suspend fun fetchFlashMeetCategory() {
-        categoryRemoteDataSource.getFlashMeetCategory().map {
-            it.toEntity()
-        }.onSuccess {
-            categoryLocalDataSource.replaceFlashMeet(it)
+    override suspend fun fetchCategory() {
+        for (type in CategoryType.entries) {
+            categoryRemoteDataSource.getCategory(type.serverName).map {
+                it.toEntity(type.symbol)
+            }.onSuccess {
+                categoryLocalDataSource.replaceFlashMeet(it)
+            }
         }
     }
 
-    override fun getFlashMeetCategory(): Flow<CategoryGroup> {
-        return categoryLocalDataSource.getFlashMeet()
+    override fun getCategory(): Flow<List<CategoryGroup>> {
+        return categoryLocalDataSource.getCategories()
             .map { entities ->
-                CategoryGroup(
-                    icons = entities.map {
-                        it.toDomain()
-                    }
-                )
+                entities.map {
+                    it.toDomain()
+                }
             }.distinctUntilChanged()
     }
 }

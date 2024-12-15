@@ -215,4 +215,5 @@
     <string name="flash_meet">번개 모임</string>
     <string name="meet">모임</string>
     <string name="quick_flash_meet_header">가장 빠른 번개 모임</string>
+    <string name="category_is_not_available">준비중 입니다.</string>
 </resources>

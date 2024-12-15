@@ -4,7 +4,7 @@ import com.bestapp.zipbab.domain.model.category.CategoryGroup
 import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
-    suspend fun fetchFlashMeetCategory()
+    suspend fun fetchCategory()
 
-    fun getFlashMeetCategory(): Flow<CategoryGroup>
+    fun getCategory(): Flow<List<CategoryGroup>>
 }

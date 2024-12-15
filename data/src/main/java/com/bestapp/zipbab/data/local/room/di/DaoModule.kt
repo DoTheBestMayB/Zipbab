@@ -1,6 +1,6 @@
 package com.bestapp.zipbab.data.local.room.di
 
-import com.bestapp.zipbab.data.local.room.dao.FlashMeetCategoryDao
+import com.bestapp.zipbab.data.local.room.dao.CategoryDao
 import com.bestapp.zipbab.data.local.room.dao.UserPrivateDao
 import com.bestapp.zipbab.data.local.room.database.AppDatabase
 import dagger.Module
@@ -20,5 +20,5 @@ object DaoModule {
     @Provides
     fun provideFlashMeetCategoryDao(
         database: AppDatabase,
-    ): FlashMeetCategoryDao = database.flashMeetCategoryDao()
+    ): CategoryDao = database.flashMeetCategoryDao()
 }

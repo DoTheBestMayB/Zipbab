@@ -1,4 +1,4 @@
-package com.bestapp.zipbab.ui.theme
+package com.bestapp.zipbab.theme
 
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily

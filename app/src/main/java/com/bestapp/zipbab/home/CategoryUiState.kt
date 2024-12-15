@@ -6,6 +6,6 @@ interface CategoryUiState {
     data object Loading: CategoryUiState
 
     data class Success(
-        val categories: CategoryGroup,
+        val categories: List<CategoryGroup>,
     ): CategoryUiState
 }
