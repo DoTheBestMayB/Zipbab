@@ -12,13 +12,15 @@ import coil.util.DebugLogger
 import com.bestapp.zipbab.util.CacheControlInterceptor
 import com.google.firebase.FirebaseApp
 import dagger.hilt.android.HiltAndroidApp
+import okhttp3.OkHttpClient
 import javax.inject.Inject
 
 
 @HiltAndroidApp
 class App : Application(), Configuration.Provider, ImageLoaderFactory {
 
-    @Inject lateinit var workerFactory: HiltWorkerFactory
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
@@ -32,8 +34,10 @@ class App : Application(), Configuration.Provider, ImageLoaderFactory {
 
     override fun newImageLoader(): ImageLoader {
         return ImageLoader(this).newBuilder()
-            .components {
-                add(CacheControlInterceptor())
+            .okHttpClient {
+                OkHttpClient.Builder()
+                    .addInterceptor(CacheControlInterceptor())
+                    .build()
             }
             .memoryCachePolicy(CachePolicy.ENABLED)
             .memoryCache {
