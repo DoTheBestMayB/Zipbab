@@ -3,6 +3,7 @@ package com.bestapp.zipbab.home
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,9 +29,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
@@ -50,10 +56,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -70,6 +79,7 @@ import com.bestapp.zipbab.domain.model.category.CategoryGroup
 import com.bestapp.zipbab.domain.model.category.CategoryIcon
 import com.bestapp.zipbab.domain.model.category.CategoryState
 import com.bestapp.zipbab.theme.LocalCustomColorsPalette
+import com.bestapp.zipbab.theme.SquareButton
 import com.bestapp.zipbab.theme.ZipbabTheme
 
 
@@ -108,8 +118,8 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize()
         ) {
+            SearchSection()
             AnnouncementSection()
             TabSection(categoryUiState = categoryUiState)
         }
@@ -131,6 +141,7 @@ fun TopBar(
     ) {
         Text(
             text = stringResource(R.string.app_name),
+            fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(start = 18.dp),
         )
@@ -153,6 +164,39 @@ fun TopBar(
             }
         }
     }
+}
+
+@Composable
+fun SearchSection(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+        ),
+        border = BorderStroke(width = 1.dp, color = LocalCustomColorsPalette.current.mainColor),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 18.dp, vertical = 12.dp)
+    ) {
+        Row {
+            Text(
+                text = stringResource(R.string.search_meet_home_screen),
+                fontWeight = FontWeight.Thin,
+                color = LocalCustomColorsPalette.current.unselected,
+                fontSize = 18.sp,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = LocalCustomColorsPalette.current.mainColor,
+            )
+        }
+    }
+
 }
 
 @Composable
@@ -224,7 +268,8 @@ fun TabSection(
                                 topStart = if (index == 0) 16.dp else 0.dp,
                                 topEnd = if (index == categoryUiState.categories.lastIndex) 16.dp else 0.dp,
                             )
-                        ).background(Color.White),
+                        )
+                        .background(Color.White),
                     selected = index == selectedTabIndex,
                     onClick = {
                         selectedTabIndex = index
@@ -387,7 +432,7 @@ fun CreateMeetText(
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                     append(name)
                 }
-                append(" 생성하러 가기")
+                append(stringResource(R.string.create_meet_home_screen))
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                     append(" >")
                 }
@@ -478,6 +523,12 @@ private fun HomeScreenPreview() {
 @Composable
 private fun TopBarPreview() {
     TopBar(isAlertExist = false)
+}
+
+@Preview
+@Composable
+private fun SearchSectionPreview() {
+    SearchSection()
 }
 
 @Preview()
