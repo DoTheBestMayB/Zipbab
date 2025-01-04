@@ -1,8 +1,12 @@
 package com.bestapp.zipbab.home
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,6 +49,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -71,6 +76,7 @@ import com.bestapp.zipbab.domain.model.category.CategoryIcon
 import com.bestapp.zipbab.domain.model.category.CategoryState
 import com.bestapp.zipbab.theme.LocalCustomColorsPalette
 import com.bestapp.zipbab.theme.ZipbabTheme
+import kotlinx.coroutines.delay
 
 
 private const val MAX_CATEGORY_ICON_SIZE = 8
@@ -93,6 +99,8 @@ fun HomeScreen(
     onAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val density = LocalDensity.current
+
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -112,14 +120,31 @@ fun HomeScreen(
             )
         }
 
-        if (homeState.announcementText != null) {
-            item {
+
+        item {
+            AnimatedVisibility(
+                visible = homeState.announcementText.isNotBlank(),
+                enter = slideInVertically {
+                    with(density) {
+                        40.dp.roundToPx()
+                    }
+                } + expandVertically {
+                    with(density) {
+                        40.dp.roundToPx()
+                    }
+                } + fadeIn(
+                    initialAlpha = 0.3f
+                )
+            ) {
                 AnnouncementSection(
                     displayText = homeState.announcementText,
                     eventId = homeState.announcementId,
                     onAnnouncementNotificationClick = {
                         onAction(HomeAction.OnAnnouncementNotificationClick)
                     },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
                 )
             }
         }
@@ -206,11 +231,37 @@ fun SearchSection(
 @Composable
 fun AnnouncementSection(
     displayText: String,
-    eventId: String?,
+    eventId: String,
     onAnnouncementNotificationClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    Column(
+        modifier = modifier
+            .clickable(
+                enabled = eventId.isNotBlank(),
+                onClick = onAnnouncementNotificationClick,
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        val buildAnnotatedString = buildAnnotatedString {
+            withStyle(
+                style = SpanStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+            ) {
+                append(displayText)
 
+                if (eventId.isNotBlank()) {
+                    append(" " + stringResource(id = R.string.go_symbol_text))
+                }
+            }
+        }
+
+        Text(
+            text = buildAnnotatedString
+        )
+    }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -223,11 +274,9 @@ fun TabSection(
 ) {
     val density = LocalDensity.current
     val tabWidths = remember(categories.size) {
-        val tabWidthStateList = mutableStateListOf<Dp>()
-        repeat(categories.size) {
-            tabWidthStateList.add(0.dp)
+        Array(categories.size) {
+            0.dp
         }
-        tabWidthStateList
     }
 
     var selectedTabIndex by remember {
@@ -307,60 +356,31 @@ fun TabSection(
         ) { index ->
             val category = categories[index]
 
-            when (category.state) {
-                CategoryState.READY -> {
-                    // 두 줄 높이를 유지하기 위한 invisible placeholder
-                    Column(
-                        modifier = Modifier.background(Color.White),
-                        horizontalAlignment = Alignment.CenterHorizontally,
+            Column(
+                modifier = Modifier.background(Color.White),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    FlowRow(
+                        maxItemsInEachRow = 4,
+                        modifier = Modifier.padding(horizontal = 32.dp, vertical = 24.dp),
+                        horizontalArrangement = Arrangement.spacedBy(36.dp),
+                        verticalArrangement = Arrangement.spacedBy(24.dp),
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .background(Color.White),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            FlowRow(
-                                maxItemsInEachRow = 4,
-                                modifier = Modifier.padding(horizontal = 32.dp, vertical = 24.dp),
-                                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                                verticalArrangement = Arrangement.spacedBy(24.dp),
-                            ) {
-                                for (i in 0 until MAX_CATEGORY_ICON_SIZE) {
-                                    PlaceHolderCategoryItem()
-                                }
+                        if (category.state == CategoryState.READY) {
+                            for (i in 0 until MAX_CATEGORY_ICON_SIZE) {
+                                PlaceHolderCategoryItem()
                             }
-                            Text(
-                                text = stringResource(R.string.category_is_not_available),
-                                style = MaterialTheme.typography.bodyLarge,
-                            )
-                        }
-                        HorizontalDivider(
-                            thickness = 2.dp,
-                            color = LocalCustomColorsPalette.current.lightGray
-                        )
-                        CreateMeetText(name = category.name)
-                    }
-                }
-
-                CategoryState.AVAILABLE -> {
-                    val displayedIcons = category.icons.take(MAX_CATEGORY_ICON_SIZE)
-                    val placeHoldersCount = MAX_CATEGORY_ICON_SIZE - displayedIcons.size
-                    val items = displayedIcons + List(placeHoldersCount) {
-                        CategoryIcon("", "PlaceHolder $it")
-                    }
-
-                    Column(
-                        modifier = Modifier.background(Color.White),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        FlowRow(
-                            maxItemsInEachRow = 4,
-                            modifier = Modifier
-                                .background(Color.White)
-                                .padding(horizontal = 32.dp, vertical = 24.dp),
-                            horizontalArrangement = Arrangement.spacedBy(24.dp),
-                            verticalArrangement = Arrangement.spacedBy(24.dp),
-                        ) {
+                        } else {
+                            val displayedIcons = category.icons.take(MAX_CATEGORY_ICON_SIZE)
+                            val placeHoldersCount = MAX_CATEGORY_ICON_SIZE - displayedIcons.size
+                            val items = displayedIcons + List(placeHoldersCount) {
+                                CategoryIcon("", "PlaceHolder $it")
+                            }
                             for (icon in items) {
                                 if (icon.label.contains("PlaceHolder")) {
                                     PlaceHolderCategoryItem()
@@ -375,16 +395,24 @@ fun TabSection(
                                 }
                             }
                         }
-                        HorizontalDivider(
-                            thickness = 2.dp,
-                            color = LocalCustomColorsPalette.current.lightGray
-                        )
-                        CreateMeetText(
-                            name = category.name,
-                            onClick = onCategoryCreateClick
+                    }
+                    if (category.state == CategoryState.READY) {
+                        Text(
+                            text = stringResource(R.string.category_is_not_available),
+                            style = MaterialTheme.typography.bodyLarge,
                         )
                     }
+
                 }
+                HorizontalDivider(
+                    thickness = 2.dp,
+                    color = LocalCustomColorsPalette.current.lightGray
+                )
+                CreateMeetText(
+                    name = category.name,
+                    isClickable = category.state == CategoryState.AVAILABLE,
+                    onClick = onCategoryCreateClick,
+                )
             }
         }
     }
@@ -426,11 +454,17 @@ fun PlaceHolderCategoryItem(modifier: Modifier = Modifier) {
 @Composable
 fun CreateMeetText(
     name: String,
+    isClickable: Boolean,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = { },
+    onClick: () -> Unit = {},
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(
+                enabled = isClickable,
+                onClick = onClick,
+            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -441,12 +475,12 @@ fun CreateMeetText(
                 append(" ")
                 append(stringResource(R.string.create_meet_home_screen))
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                    append(" >")
+                    append(stringResource(id = R.string.go_symbol_text))
                 }
             },
             modifier = Modifier
-                .padding(vertical = 12.dp)
-                .clickable { onClick() },
+                .padding(vertical = 12.dp),
+            color = Color.Unspecified.copy(alpha = if (isClickable) 1f else 0.3f)
         )
     }
 }
@@ -478,48 +512,59 @@ fun Modifier.customTabIndicatorOffset(
 @Composable
 private fun HomeScreenPreview() {
     ZipbabTheme {
-        HomeScreen(
-            homeState = HomeState(
-                isLoading = false,
-                isAlertExist = true,
-                announcementText = "집밥이 바꼈습니다!",
-                categories = listOf(
-                    CategoryGroup(
-                        name = "flashMeet",
-                        state = CategoryState.AVAILABLE,
-                        icons = listOf(
-                            CategoryIcon("", "A"),
-                            CategoryIcon("", "B"),
-                            CategoryIcon("", "C"),
-                            CategoryIcon("", "D"),
-                            CategoryIcon("", "E"),
-                            CategoryIcon("", "F"),
-                        )
-                    ),
-                    CategoryGroup(
-                        name = "meet",
-                        state = CategoryState.READY,
-                        icons = listOf(
-                            CategoryIcon("", "A"),
-                            CategoryIcon("", "B"),
-                            CategoryIcon("", "C"),
-                            CategoryIcon("", "D"),
-                            CategoryIcon("", "E"),
-                            CategoryIcon("", "F"),
-                        )
-                    ),
-                    CategoryGroup(
-                        name = "test",
-                        state = CategoryState.AVAILABLE,
-                        icons = listOf(
-                            CategoryIcon("", "A"),
-                            CategoryIcon("", "B"),
-                            CategoryIcon("", "C"),
+        var state by remember {
+            mutableStateOf(
+                HomeState(
+                    isLoading = false,
+                    isAlertExist = true,
+                    announcementText = "",
+                    categories = listOf(
+                        CategoryGroup(
+                            name = "flashMeet",
+                            state = CategoryState.AVAILABLE,
+                            icons = listOf(
+                                CategoryIcon("", "A"),
+                                CategoryIcon("", "B"),
+                                CategoryIcon("", "C"),
+                                CategoryIcon("", "D"),
+                                CategoryIcon("", "E"),
+                                CategoryIcon("", "F"),
+                            )
+                        ),
+                        CategoryGroup(
+                            name = "meet",
+                            state = CategoryState.READY,
+                            icons = listOf(
+                                CategoryIcon("", "A"),
+                                CategoryIcon("", "B"),
+                                CategoryIcon("", "C"),
+                                CategoryIcon("", "D"),
+                                CategoryIcon("", "E"),
+                                CategoryIcon("", "F"),
+                            )
+                        ),
+                        CategoryGroup(
+                            name = "test",
+                            state = CategoryState.AVAILABLE,
+                            icons = listOf(
+                                CategoryIcon("", "A"),
+                                CategoryIcon("", "B"),
+                                CategoryIcon("", "C"),
+                            )
                         )
                     )
                 )
-            ),
+            )
+        }
+        HomeScreen(
+            homeState = state,
             onAction = {},
         )
+        LaunchedEffect(Unit) {
+            delay(2000)
+            state = state.copy(
+                announcementText = "집밥이 바꼈습니다!"
+            )
+        }
     }
 }

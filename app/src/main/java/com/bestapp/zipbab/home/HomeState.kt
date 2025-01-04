@@ -6,7 +6,7 @@ data class HomeState(
     val isLoading: Boolean = true,
     val isLoggedIn: Boolean = false,
     val isAlertExist: Boolean = false,
-    val announcementText: String? = null,
-    val announcementId: String? = null,
+    val announcementText: String = "",
+    val announcementId: String = "",
     val categories: List<CategoryGroup> = emptyList(),
 )

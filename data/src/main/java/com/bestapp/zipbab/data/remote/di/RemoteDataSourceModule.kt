@@ -10,6 +10,8 @@ import com.bestapp.zipbab.data.remote.datasource.ReportRemoteDataSource
 import com.bestapp.zipbab.data.remote.datasource.ReportRemoteDataSourceImpl
 import com.bestapp.zipbab.data.remote.datasource.AuthRemoteDataSource
 import com.bestapp.zipbab.data.remote.datasource.AuthRemoteDataSourceImpl
+import com.bestapp.zipbab.data.remote.datasource.NoticeRemoteDataSource
+import com.bestapp.zipbab.data.remote.datasource.NoticeRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -33,4 +35,7 @@ internal abstract class RemoteDataSourceModule {
 
     @Binds
     abstract fun bindsAuthRemoteDataSource(authRemoteDataSourceImpl: AuthRemoteDataSourceImpl): AuthRemoteDataSource
+
+    @Binds
+    abstract fun bindsNoticeRemoteDataSource(noticeRemoteDataSourceImpl: NoticeRemoteDataSourceImpl): NoticeRemoteDataSource
 }

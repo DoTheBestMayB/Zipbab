@@ -218,4 +218,5 @@
     <string name="category_is_not_available">준비중 입니다.</string>
     <string name="search_meet_home_screen">원하는 모임 찾으러 가기</string>
     <string name="create_meet_home_screen"> 생성하러 가기</string>
+    <string name="go_symbol_text"> ></string>
 </resources>
