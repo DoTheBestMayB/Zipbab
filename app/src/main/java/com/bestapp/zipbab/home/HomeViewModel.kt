@@ -1,36 +1,36 @@
 package com.bestapp.zipbab.home
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.bestapp.zipbab.domain.repository.CategoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    categoryRepository: CategoryRepository,
 ) : ViewModel() {
 
-//    val userLoginState: StateFlow<Boolean> = appSettingRepository.userDocumentID
-//        .map { userDocumentID ->
-//            userDocumentID.isNotBlank()
-//        }.stateIn(
-//            scope = viewModelScope,
-//            started = SharingStarted.Eagerly,
-//            initialValue = false,
-//        )
-//
-//    init {
-//        viewModelScope.launch {
-//            val foodCategoryResponse = async {
-//                categoryRepository.getFoodCategory().food.map { category ->
-//                    category.toUi()
-//                }
-//            }
-//            val costCategoryResponse = categoryRepository.getCostCategory().cost.map { category ->
-//                category.toUi()
-//            }
-//            _costCategory.value = costCategoryResponse
-//            _foodCategory.value = foodCategoryResponse.await()
-//        }
-//    }
+    var state by mutableStateOf(HomeState())
+        private set
+
+    init {
+        categoryRepository.getCategory()
+            .onEach { categories ->
+                state = state.copy(
+                    categories = categories,
+                )
+            }.launchIn(viewModelScope)
+    }
+
+    fun onAction(action: HomeAction) {
+
+    }
 
     fun onWrite() {
 //        _navDestination.value = if (userLoginState.value) {

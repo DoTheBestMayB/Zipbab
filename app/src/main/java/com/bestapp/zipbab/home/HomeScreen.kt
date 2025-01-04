@@ -9,6 +9,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,25 +19,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
@@ -67,7 +66,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.bestapp.zipbab.R
-import com.bestapp.zipbab.UserPrivateUiState
 import com.bestapp.zipbab.domain.model.category.CategoryGroup
 import com.bestapp.zipbab.domain.model.category.CategoryIcon
 import com.bestapp.zipbab.domain.model.category.CategoryState
@@ -78,52 +76,69 @@ import com.bestapp.zipbab.theme.ZipbabTheme
 private const val MAX_CATEGORY_ICON_SIZE = 8
 
 @Composable
-fun HomeScreen(
-    userPrivateUiState: UserPrivateUiState,
-    categoryUiState: CategoryUiState,
+fun HomeScreenRoot(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(),
 ) {
-
     HomeScreen(
-        userUiState = userPrivateUiState,
-        categoryUiState = categoryUiState,
+        homeState = viewModel.state,
+        onAction = viewModel::onAction,
         modifier = modifier,
     )
 }
 
 @Composable
 fun HomeScreen(
-    userUiState: UserPrivateUiState,
-    categoryUiState: CategoryUiState,
+    homeState: HomeState,
+    onAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(
-        topBar = {
-            TopBar(isAlertExist = userUiState is UserPrivateUiState.LoggedIn && userUiState.userPrivate.notifications.isNotEmpty())
-        },
-        bottomBar = { BottomNavigationBar() },
+    LazyColumn(
         modifier = modifier
-            .statusBarsPadding()
             .fillMaxSize()
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-        ) {
-            SearchSection()
-            AnnouncementSection()
-            TabSection(categoryUiState = categoryUiState)
+    ) {
+        item {
+            TopSection(
+                isAlertExist = homeState.isAlertExist,
+                onAlertClick = { onAction(HomeAction.OnAlertClick) },
+            )
         }
 
+        item {
+            SearchSection(
+                onSearchClick = {
+                    onAction(HomeAction.OnSearchClick)
+                },
+            )
+        }
+
+        if (homeState.announcementText != null) {
+            item {
+                AnnouncementSection(
+                    displayText = homeState.announcementText,
+                    eventId = homeState.announcementId,
+                    onAnnouncementNotificationClick = {
+                        onAction(HomeAction.OnAnnouncementNotificationClick)
+                    },
+                )
+            }
+        }
+
+        item {
+            TabSection(
+                categories = homeState.categories,
+                onCategoryItemClick = { onAction(HomeAction.OnCategoryClick(it)) },
+                onCategoryCreateClick = { onAction(HomeAction.OnCategoryCreateClick) }
+            )
+        }
     }
 }
 
 @Composable
-fun TopBar(
+fun TopSection(
     isAlertExist: Boolean,
+    onAlertClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onAlertClick: () -> Unit = {},
 ) {
     Row(
         modifier = modifier
@@ -137,23 +152,20 @@ fun TopBar(
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(start = 18.dp),
         )
-        Box(
+        BadgedBox(
             modifier = Modifier
                 .padding(end = 18.dp)
-                .clickable(onClick = onAlertClick)
+                .clickable(onClick = onAlertClick),
+            badge = {
+                if (isAlertExist) {
+                    Badge()
+                }
+            }
         ) {
             Icon(
                 imageVector = Icons.Default.Notifications,
                 contentDescription = "알림",
             )
-            if (isAlertExist) {
-                Box(
-                    modifier = Modifier
-                        .size(8.dp)
-                        .align(Alignment.TopEnd)
-                        .background(Color.Red, shape = CircleShape)
-                )
-            }
         }
     }
 }
@@ -161,10 +173,10 @@ fun TopBar(
 @Composable
 fun SearchSection(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {},
+    onSearchClick: () -> Unit,
 ) {
     Button(
-        onClick = onClick,
+        onClick = onSearchClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.White,
         ),
@@ -192,24 +204,27 @@ fun SearchSection(
 }
 
 @Composable
-fun AnnouncementSection(modifier: Modifier = Modifier) {
+fun AnnouncementSection(
+    displayText: String,
+    eventId: String?,
+    onAnnouncementNotificationClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
 
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TabSection(
-    categoryUiState: CategoryUiState,
+    categories: List<CategoryGroup>,
+    onCategoryItemClick: (CategoryGroup) -> Unit,
+    onCategoryCreateClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onCategoryItemClick: (CategoryGroup, CategoryIcon) -> Unit = { _, _ -> },
-    onCategoryCreateClick: (CategoryGroup) -> Unit = {},
 ) {
-    if (categoryUiState !is CategoryUiState.Success) {
-        return
-    }
     val density = LocalDensity.current
-    val tabWidths = remember(categoryUiState.categories.size) {
+    val tabWidths = remember(categories.size) {
         val tabWidthStateList = mutableStateListOf<Dp>()
-        repeat(categoryUiState.categories.size) {
+        repeat(categories.size) {
             tabWidthStateList.add(0.dp)
         }
         tabWidthStateList
@@ -219,7 +234,7 @@ fun TabSection(
         mutableIntStateOf(0)
     }
     val pagerState = rememberPagerState {
-        categoryUiState.categories.size
+        categories.size
     }
     LaunchedEffect(selectedTabIndex) {
         pagerState.animateScrollToPage(selectedTabIndex)
@@ -252,13 +267,13 @@ fun TabSection(
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            categoryUiState.categories.forEachIndexed { index, item ->
+            categories.forEachIndexed { index, item ->
                 Tab(
                     modifier = Modifier
                         .clip(
                             shape = RoundedCornerShape(
                                 topStart = if (index == 0) 16.dp else 0.dp,
-                                topEnd = if (index == categoryUiState.categories.lastIndex) 16.dp else 0.dp,
+                                topEnd = if (index == categories.lastIndex) 16.dp else 0.dp,
                             )
                         )
                         .background(Color.White),
@@ -290,27 +305,27 @@ fun TabSection(
             state = pagerState,
             modifier = Modifier.fillMaxWidth()
         ) { index ->
-            val category = categoryUiState.categories[index]
+            val category = categories[index]
 
             when (category.state) {
                 CategoryState.READY -> {
                     // 두 줄 높이를 유지하기 위한 invisible placeholder
                     Column(
-                        modifier = Modifier.background(Color.White)
+                        modifier = Modifier.background(Color.White),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Box(
                             modifier = Modifier
                                 .background(Color.White),
                             contentAlignment = Alignment.Center,
                         ) {
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(4),
+                            FlowRow(
+                                maxItemsInEachRow = 4,
                                 modifier = Modifier.padding(horizontal = 32.dp, vertical = 24.dp),
                                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                                 verticalArrangement = Arrangement.spacedBy(24.dp),
-                                userScrollEnabled = false,
                             ) {
-                                items(MAX_CATEGORY_ICON_SIZE) {
+                                for (i in 0 until MAX_CATEGORY_ICON_SIZE) {
                                     PlaceHolderCategoryItem()
                                 }
                             }
@@ -336,15 +351,17 @@ fun TabSection(
 
                     Column(
                         modifier = Modifier.background(Color.White),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(4),
-                            modifier = Modifier.padding(horizontal = 32.dp, vertical = 24.dp),
+                        FlowRow(
+                            maxItemsInEachRow = 4,
+                            modifier = Modifier
+                                .background(Color.White)
+                                .padding(horizontal = 32.dp, vertical = 24.dp),
                             horizontalArrangement = Arrangement.spacedBy(24.dp),
                             verticalArrangement = Arrangement.spacedBy(24.dp),
-                            userScrollEnabled = false,
                         ) {
-                            items(items = items, key = { it.label }) { icon ->
+                            for (icon in items) {
                                 if (icon.label.contains("PlaceHolder")) {
                                     PlaceHolderCategoryItem()
                                 } else {
@@ -352,7 +369,7 @@ fun TabSection(
                                         imageUrl = icon.imageUrl,
                                         name = icon.label,
                                         onClick = {
-                                            onCategoryItemClick(category, icon)
+                                            onCategoryItemClick(category)
                                         }
                                     )
                                 }
@@ -364,9 +381,7 @@ fun TabSection(
                         )
                         CreateMeetText(
                             name = category.name,
-                            onClick = {
-                                onCategoryCreateClick(category)
-                            }
+                            onClick = onCategoryCreateClick
                         )
                     }
                 }
@@ -404,7 +419,6 @@ fun PlaceHolderCategoryItem(modifier: Modifier = Modifier) {
             modifier = Modifier.size(48.dp),
         )
         Spacer(modifier = Modifier.height(4.dp))
-        // Empty text placeholder space (could be invisible text or just a Spacer)
         Text(" ")
     }
 }
@@ -424,6 +438,7 @@ fun CreateMeetText(
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                     append(name)
                 }
+                append(" ")
                 append(stringResource(R.string.create_meet_home_screen))
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                     append(" >")
@@ -434,11 +449,6 @@ fun CreateMeetText(
                 .clickable { onClick() },
         )
     }
-}
-
-@Composable
-fun BottomNavigationBar(modifier: Modifier = Modifier) {
-
 }
 
 fun Modifier.customTabIndicatorOffset(
@@ -469,8 +479,10 @@ fun Modifier.customTabIndicatorOffset(
 private fun HomeScreenPreview() {
     ZipbabTheme {
         HomeScreen(
-            userUiState = UserPrivateUiState.NotLoggedIn,
-            categoryUiState = CategoryUiState.Success(
+            homeState = HomeState(
+                isLoading = false,
+                isAlertExist = true,
+                announcementText = "집밥이 바꼈습니다!",
                 categories = listOf(
                     CategoryGroup(
                         name = "flashMeet",
@@ -506,65 +518,8 @@ private fun HomeScreenPreview() {
                         )
                     )
                 )
-            )
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun TopBarPreview() {
-    TopBar(isAlertExist = false)
-}
-
-@Preview
-@Composable
-private fun SearchSectionPreview() {
-    SearchSection()
-}
-
-@Preview()
-@Composable
-private fun TabSectionPreview() {
-    ZipbabTheme {
-        TabSection(
-            categoryUiState = CategoryUiState.Success(
-                categories = listOf(
-                    CategoryGroup(
-                        name = "flashMeet",
-                        state = CategoryState.AVAILABLE,
-                        icons = listOf(
-                            CategoryIcon("", "A"),
-                            CategoryIcon("", "B"),
-                            CategoryIcon("", "C"),
-                            CategoryIcon("", "D"),
-                            CategoryIcon("", "E"),
-                            CategoryIcon("", "F"),
-                        )
-                    ),
-                    CategoryGroup(
-                        name = "meet",
-                        state = CategoryState.READY,
-                        icons = listOf(
-                            CategoryIcon("", "A"),
-                            CategoryIcon("", "B"),
-                            CategoryIcon("", "C"),
-                            CategoryIcon("", "D"),
-                            CategoryIcon("", "E"),
-                            CategoryIcon("", "F"),
-                        )
-                    ),
-                    CategoryGroup(
-                        name = "test",
-                        state = CategoryState.AVAILABLE,
-                        icons = listOf(
-                            CategoryIcon("", "A"),
-                            CategoryIcon("", "B"),
-                            CategoryIcon("", "C"),
-                        )
-                    )
-                )
-            )
+            ),
+            onAction = {},
         )
     }
 }
