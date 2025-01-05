@@ -103,6 +103,7 @@ fun HomeScreen(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
     ) {
         item {
             TopSection(
@@ -297,7 +298,8 @@ fun TabSection(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
     ) {
         TabRow(
             selectedTabIndex = selectedTabIndex,
