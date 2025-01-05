@@ -48,7 +48,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -136,16 +135,19 @@ fun HomeScreen(
                     initialAlpha = 0.3f
                 )
             ) {
-                AnnouncementSection(
-                    displayText = homeState.announcementText,
-                    eventId = homeState.announcementId,
-                    onAnnouncementNotificationClick = {
-                        onAction(HomeAction.OnAnnouncementNotificationClick)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                )
+                GradientBackground {
+                    AnnouncementSection(
+                        displayText = homeState.announcementText,
+                        eventId = homeState.announcementId,
+                        onAnnouncementNotificationClick = {
+                            onAction(HomeAction.OnAnnouncementNotificationClick)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                    )
+                }
+
             }
         }
 
