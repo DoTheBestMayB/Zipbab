@@ -298,7 +298,7 @@ fun TabSection(
     }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
     ) {
         TabRow(
@@ -365,38 +365,45 @@ fun TabSection(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Box(
-                    modifier = Modifier
-                        .background(Color.White),
                     contentAlignment = Alignment.Center,
                 ) {
                     FlowRow(
                         maxItemsInEachRow = 4,
-                        modifier = Modifier.padding(horizontal = 32.dp, vertical = 24.dp),
+                        modifier = Modifier
+                            .padding(horizontal = 32.dp, vertical = 24.dp),
                         horizontalArrangement = Arrangement.spacedBy(36.dp),
                         verticalArrangement = Arrangement.spacedBy(24.dp),
                     ) {
-                        if (category.state == CategoryState.READY) {
-                            for (i in 0 until MAX_CATEGORY_ICON_SIZE) {
-                                PlaceHolderCategoryItem()
-                            }
-                        } else {
-                            val displayedIcons = category.icons.take(MAX_CATEGORY_ICON_SIZE)
-                            val placeHoldersCount = MAX_CATEGORY_ICON_SIZE - displayedIcons.size
-                            val items = displayedIcons + List(placeHoldersCount) {
-                                CategoryIcon("", "PlaceHolder $it")
-                            }
-                            for (icon in items) {
-                                if (icon.label.contains("PlaceHolder")) {
-                                    PlaceHolderCategoryItem()
-                                } else {
-                                    CategoryItem(
-                                        imageUrl = icon.imageUrl,
-                                        name = icon.label,
-                                        onClick = {
-                                            onCategoryItemClick(category)
-                                        }
-                                    )
-                                }
+                        val displayedIcons = category.icons.take(MAX_CATEGORY_ICON_SIZE)
+                        val placeHoldersCount = MAX_CATEGORY_ICON_SIZE - displayedIcons.size
+                        val items = displayedIcons + List(placeHoldersCount) {
+                            CategoryIcon("", "PlaceHolder $it")
+                        }
+                        for (icon in items) {
+                            if (icon.label.contains("PlaceHolder")) {
+                                CategoryItem(
+                                    name = " ",
+                                    imageContent = {
+                                        Box(
+                                            modifier = Modifier.size(48.dp),
+                                        )
+                                    }
+                                )
+                            } else {
+                                CategoryItem(
+                                    name = icon.label,
+                                    onClick = {
+                                        onCategoryItemClick(category)
+                                    },
+                                    imageContent = {
+                                        AsyncImage(
+                                            model = icon.imageUrl,
+                                            contentDescription = null,
+                                            modifier = Modifier
+                                                .size(48.dp)
+                                        )
+                                    }
+                                )
                             }
                         }
                     }
@@ -424,34 +431,18 @@ fun TabSection(
 
 @Composable
 fun CategoryItem(
-    imageUrl: String,
     name: String,
     onClick: () -> Unit = {},
+    imageContent: @Composable () -> Unit,
 ) {
     Column(
         modifier = Modifier.clickable { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = null,
-            modifier = Modifier
-                .size(48.dp)
-        )
+        imageContent()
         Spacer(modifier = Modifier.size(4.dp))
         Text(text = name)
-    }
-}
-
-@Composable
-fun PlaceHolderCategoryItem(modifier: Modifier = Modifier) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
-            modifier = Modifier.size(48.dp),
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(" ")
     }
 }
 
