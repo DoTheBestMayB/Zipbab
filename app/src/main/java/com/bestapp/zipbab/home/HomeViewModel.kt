@@ -5,10 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bestapp.zipbab.domain.repository.BannerRepository
 import com.bestapp.zipbab.domain.repository.CategoryRepository
 import com.bestapp.zipbab.domain.repository.NoticeRepository
-import com.bestapp.zipbab.domain.util.Result
+import com.bestapp.zipbab.domain.util.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -17,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     categoryRepository: CategoryRepository,
+    bannerRepository: BannerRepository,
     noticeRepository: NoticeRepository,
 ) : ViewModel() {
 
@@ -32,14 +35,20 @@ class HomeViewModel @Inject constructor(
             }.launchIn(viewModelScope)
 
         viewModelScope.launch {
-            when (val result = noticeRepository.fetchAnnouncement()) {
-                is Result.Error -> Unit
-                is Result.Success ->{
-                    state = state.copy(
-                        announcementText = result.data?.displayText ?: "",
-                        announcementId = result.data?.eventId ?: "",
-                    )
-                }
+            val bannerResult = async {
+                bannerRepository.getHomeBanner()
+            }
+
+            noticeRepository.fetchAnnouncement().onSuccess { result ->
+                state = state.copy(
+                    announcementText = result?.displayText ?: "",
+                    announcementId = result?.eventId ?: "",
+                )
+            }
+            bannerResult.await().onSuccess { result ->
+                state = state.copy(
+                    banners = result
+                )
             }
         }
     }

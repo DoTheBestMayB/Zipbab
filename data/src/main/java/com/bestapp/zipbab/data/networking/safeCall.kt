@@ -37,6 +37,7 @@ suspend inline fun <reified T> safeFirebaseCall(
     } catch (e: FirebaseTooManyRequestsException) {
         return Result.Error(NetworkError.TOO_MANY_REQUESTS)
     } catch (e: Exception) {
+        throw e
         coroutineContext.ensureActive()
         return Result.Error(NetworkError.UNKNOWN)
     }

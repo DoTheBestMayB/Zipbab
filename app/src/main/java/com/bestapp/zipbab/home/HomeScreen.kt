@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -70,6 +71,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.bestapp.zipbab.R
+import com.bestapp.zipbab.domain.model.banner.BannerItem
 import com.bestapp.zipbab.domain.model.category.CategoryGroup
 import com.bestapp.zipbab.domain.model.category.CategoryIcon
 import com.bestapp.zipbab.domain.model.category.CategoryState
@@ -158,6 +160,21 @@ fun HomeScreen(
                 onCategoryItemClick = { onAction(HomeAction.OnCategoryClick(it)) },
                 onCategoryCreateClick = { onAction(HomeAction.OnCategoryCreateClick) }
             )
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        if (homeState.banners.isNotEmpty()) {
+            item {
+                BannerSection(
+                    banners = homeState.banners,
+                    onBannerClick = {
+                        onAction(HomeAction.OnBannerClick(it))
+                    },
+                )
+            }
         }
     }
 }
@@ -503,6 +520,53 @@ fun Modifier.customTabIndicatorOffset(
         .width(currentTabWidth)
 }
 
+@Composable
+fun BannerSection(
+    banners: List<BannerItem>,
+    onBannerClick: (BannerItem) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val pagerState = rememberPagerState {
+        banners.size
+    }
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .aspectRatio(ratio = 3f)
+            .background(Color.White),
+    ) {
+        HorizontalPager(
+            state = pagerState,
+        ) { index ->
+            val banner = banners[index]
+
+            AsyncImage(
+                model = banner.bannerUrl,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(
+                        enabled = banner.contentUrl != null,
+                        onClick = {
+                            onBannerClick(banner)
+                        },
+                    )
+            )
+        }
+        Text(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(8.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(Color.Black.copy(alpha = 0.75f))
+                .padding(8.dp),
+            text = "${pagerState.currentPage + 1} / ${pagerState.pageCount}",
+            color = Color.White,
+        )
+    }
+}
+
 @Preview
 @Composable
 private fun HomeScreenPreview() {
@@ -546,6 +610,14 @@ private fun HomeScreenPreview() {
                                 CategoryIcon("", "B"),
                                 CategoryIcon("", "C"),
                             )
+                        )
+                    ),
+                    banners = listOf(
+                        BannerItem(
+                            bannerUrl = "https://picsum.photos/900/300",
+                        ),
+                        BannerItem(
+                            bannerUrl = "https://picsum.photos/900/300",
                         )
                     )
                 )
