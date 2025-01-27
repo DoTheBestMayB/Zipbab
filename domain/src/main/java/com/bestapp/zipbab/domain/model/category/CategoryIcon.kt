@@ -1,6 +1,6 @@
 package com.bestapp.zipbab.domain.model.category
 
-data class FoodIcon(
+data class CategoryIcon(
     val imageUrl: String = "",
-    val name: String = "",
+    val label: String = "",
 )

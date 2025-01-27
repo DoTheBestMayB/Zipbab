@@ -8,6 +8,7 @@ import com.bestapp.zipbab.domain.model.user.NotificationType
 fun NotificationEntity.toDomain(): Notification {
     return Notification(
         uuid = documentId,
+        userId = userId,
         type = when (type) {
             is NotificationTypeEntity.FlashMeetRequest -> NotificationType.FlashMeetRequest(
                 meetId = type.meetId,
@@ -30,6 +31,7 @@ fun NotificationEntity.toDomain(): Notification {
 fun Notification.toEntity(): NotificationEntity {
     return NotificationEntity(
         documentId = uuid,
+        userId = userId,
         type = when (val type = type) {
             is NotificationType.FlashMeetApproval -> NotificationTypeEntity.FlashMeetApproval(meetId = type.meetId)
             is NotificationType.FlashMeetReject -> NotificationTypeEntity.FlashMeetReject(

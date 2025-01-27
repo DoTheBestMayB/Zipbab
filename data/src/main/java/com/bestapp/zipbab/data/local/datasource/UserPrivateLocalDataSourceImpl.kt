@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.bestapp.zipbab.data.local.room.dao.UserPrivateDao
 import com.bestapp.zipbab.data.local.room.entity.UserPrivateEntity
+import com.bestapp.zipbab.data.local.room.entity.UserPrivateRelations
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -23,7 +24,7 @@ class UserPrivateLocalDataSourceImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ) : UserPrivateLocalDataSource {
 
-    override val privateData: Flow<UserPrivateEntity?> = userPrivateDao.getUserPrivate()
+    override val privateRelations: Flow<UserPrivateRelations?> = userPrivateDao.getUserWithRelations()
 
     override suspend fun updatePrivateData(userPrivateEntity: UserPrivateEntity) {
         userPrivateDao.updateUserPrivate(userPrivateEntity)

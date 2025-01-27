@@ -62,6 +62,14 @@ class FirestoreDB @Inject constructor(
         return firebaseFirestore.collection("policy")
     }
 
+    fun getNoticeDB(): CollectionReference {
+        return firebaseFirestore.collection("notice")
+    }
+
+    fun getBannerDB(): CollectionReference {
+        return firebaseFirestore.collection("banner")
+    }
+
     fun <T> runTransaction(transaction: (transaction: Transaction) -> T): Task<T> {
         return firebaseFirestore.runTransaction {
             transaction(it)

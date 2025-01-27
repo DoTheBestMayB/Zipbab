@@ -16,6 +16,12 @@ import com.bestapp.zipbab.domain.repository.UserRepository
 import com.bestapp.zipbab.data.repository.UserRepositoryImpl
 import com.bestapp.zipbab.domain.repository.AuthRepository
 import com.bestapp.zipbab.data.repository.AuthRepositoryImpl
+import com.bestapp.zipbab.data.repository.BannerRepositoryImpl
+import com.bestapp.zipbab.data.repository.NoticeRepositoryImpl
+import com.bestapp.zipbab.data.repository.NotificationRepositoryImpl
+import com.bestapp.zipbab.domain.repository.BannerRepository
+import com.bestapp.zipbab.domain.repository.NoticeRepository
+import com.bestapp.zipbab.domain.repository.NotificationRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -48,4 +54,13 @@ internal abstract class ViewModelRepositoryModule {
 
     @Binds
     abstract fun bindsAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
+
+    @Binds
+    abstract fun bindsNotificationRepository(notificationRepositoryImpl: NotificationRepositoryImpl): NotificationRepository
+
+    @Binds
+    abstract fun bindsNoticeRepository(noticeRepositoryImpl: NoticeRepositoryImpl): NoticeRepository
+
+    @Binds
+    abstract fun bindsBannerRepository(bannerRepositoryImpl: BannerRepositoryImpl): BannerRepository
 }

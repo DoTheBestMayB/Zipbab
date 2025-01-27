@@ -1,7 +1,8 @@
 package com.bestapp.zipbab.data.remote.datasource
 
-import com.bestapp.zipbab.data.model.remote.category.FoodCategoryResponse
-import com.bestapp.zipbab.data.model.remote.category.FoodIconResponse
+import com.bestapp.zipbab.data.model.remote.category.CategoryResponse
+import com.bestapp.zipbab.data.model.remote.category.CategoryState
+import com.bestapp.zipbab.data.model.remote.category.IconResponse
 import com.bestapp.zipbab.data.networking.safeFirebaseCall
 import com.bestapp.zipbab.data.remote.firestoreDB.FirestoreDB
 import com.bestapp.zipbab.domain.util.NetworkError
@@ -14,24 +15,28 @@ internal class CategoryRemoteDataSourceImpl @Inject constructor(
 ) : CategoryRemoteDataSource {
 
     @Suppress("UNCHECKED_CAST")
-    override suspend fun getFoodCategory(): Result<FoodCategoryResponse, NetworkError> {
-        return safeFirebaseCall<FoodCategoryResponse> {
-            val documentSnapshot = firestoreDB.getCategoryDB().document("food")
+    override suspend fun getCategory(name: String): Result<CategoryResponse, NetworkError> {
+        return safeFirebaseCall<CategoryResponse> {
+            val documentSnapshot = firestoreDB.getCategoryDB().document(name)
                 .get()
                 .await()
 
-            val iconResponses = documentSnapshot.data?.map { (_, value) ->
-                val categoryData = value as? Map<String, String> ?: emptyMap()
-                val imageUrl = categoryData["imageUrl"]?.let {
+            val items = documentSnapshot.data?.get("items") as? List<Map<String, Any>> ?: emptyList()
+            val state = documentSnapshot.data?.get("state") as? String ?: CategoryState.READY.name
+            val iconResponses = items.map { item ->
+                val imageUrl = (item["imageUrl"] as? String)?.let {
                     firestoreDB.getImageUrl(it)
                 } ?: ""
-                FoodIconResponse(
+                IconResponse(
                     imageUrl = imageUrl,
-                    name = categoryData["name"] ?: "",
+                    name = item["name"] as? String ?: "",
                 )
-            } ?: emptyList()
+            }
 
-            FoodCategoryResponse(iconResponses)
+            CategoryResponse(
+                icons = iconResponses,
+                state = CategoryState.entries.firstOrNull { it.name == state } ?: CategoryState.READY,
+            )
         }
     }
 }

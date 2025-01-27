@@ -11,6 +11,6 @@ data class JoinedMeetingResponse(
     val reviewId: String = "",
 )
 
-enum class MeetType {
-    FLASH_MEET, MEET
+enum class MeetType(val symbol: String) {
+    FLASH_MEET("flashMeet"), MEET("meet")
 }

@@ -17,5 +17,5 @@ internal abstract class PersistentRepositoryModule {
     abstract fun bindsStorageRepository(storageRepositoryImpl: StorageRepositoryImpl): StorageRepository
 
     @Binds
-    abstract fun bindsPostRepository(profilePostRepositoryImpl: ProfilePostRepositoryImpl): ProfilePostRepository
+    abstract fun bindsProfilePostRepository(profilePostRepositoryImpl: ProfilePostRepositoryImpl): ProfilePostRepository
 }

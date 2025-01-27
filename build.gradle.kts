@@ -16,5 +16,5 @@ plugins {
     alias(libs.plugins.protobuf) apply false
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.jetbrainsKotlinJvm) apply false
-
+    alias(libs.plugins.room) apply false
 }
