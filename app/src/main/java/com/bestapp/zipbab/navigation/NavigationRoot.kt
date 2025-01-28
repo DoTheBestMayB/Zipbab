@@ -1,5 +1,7 @@
 package com.bestapp.zipbab.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -30,6 +32,12 @@ fun NavigationRoot(
     NavHost(
         startDestination = Main,
         navController = navController,
+        enterTransition = {
+            EnterTransition.None
+        },
+        exitTransition = {
+            ExitTransition.None
+        }
     ) {
         mainGraph(navController, isLoggedIn, modifier)
         settingGraph(navController, modifier)
