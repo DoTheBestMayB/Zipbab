@@ -33,6 +33,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
@@ -223,7 +224,11 @@ fun TopSection(
             }
         ) {
             Icon(
-                imageVector = Icons.Default.Notifications,
+                imageVector = if (isAlertExist) {
+                    Icons.Filled.Notifications
+                } else {
+                    Icons.Outlined.Notifications
+                },
                 contentDescription = "알림",
             )
         }
