@@ -27,7 +27,6 @@ import com.bestapp.zipbab.domain.model.user.MeetType
 fun NavigationRoot(
     navController: NavHostController,
     isLoggedIn: Boolean,
-    modifier: Modifier = Modifier,
 ) {
     NavHost(
         startDestination = Main,
@@ -39,16 +38,15 @@ fun NavigationRoot(
             ExitTransition.None
         }
     ) {
-        mainGraph(navController, isLoggedIn, modifier)
-        settingGraph(navController, modifier)
-        authGraph(navController, modifier)
+        mainGraph(navController, isLoggedIn)
+        settingGraph(navController)
+        authGraph(navController)
     }
 }
 
 private fun NavGraphBuilder.mainGraph(
     navController: NavController,
     isLoggedIn: Boolean,
-    modifier: Modifier = Modifier,
 ) {
     navigation<Main>(
         startDestination = Home,
@@ -77,45 +75,35 @@ private fun NavGraphBuilder.mainGraph(
                 onBannerClick = {
                     navController.navigate(Banner(it))
                 },
-                modifier = modifier,
             )
         }
         composable<Alert> {
-            AlertScreenRoot(
-                modifier = modifier,
-            )
+            AlertScreenRoot()
         }
         composable<Search> { backstackEntry ->
-            SearchMeetScreenRoot(
-                modifier = modifier,
-            )
+            SearchMeetScreenRoot()
         }
         composable<Category> {
             val category = it.toRoute<Category>()
             CategoryScreenRoot(
                 meetType = category.meetType,
                 label = category.label,
-                modifier = modifier,
             )
         }
         composable<Banner> {
             val banner = it.toRoute<Banner>()
             BannerScreenRoot(
                 contentUrl = banner.contentUrl,
-                modifier = modifier,
             )
         }
         composable<Announcement> {
             val announcement = it.toRoute<Announcement>()
             AnnouncementScreenRoot(
                 eventId = announcement.eventId,
-                modifier = modifier,
             )
         }
         composable<Recruitment> {
-            RecruitmentScreenRoot(
-                modifier = modifier,
-            )
+            RecruitmentScreenRoot()
         }
 
     }
@@ -123,35 +111,27 @@ private fun NavGraphBuilder.mainGraph(
 
 private fun NavGraphBuilder.settingGraph(
     navController: NavController,
-    modifier: Modifier = Modifier,
 ) {
     navigation<Setting>(
         startDestination = SettingOverview,
     ) {
         composable<SettingOverview> {
-            SettingScreenRoot(
-                modifier = modifier,
-            )
+            SettingScreenRoot()
         }
     }
 }
 
 private fun NavGraphBuilder.authGraph(
     navController: NavController,
-    modifier: Modifier = Modifier,
 ) {
     navigation<Auth>(
         startDestination = Login,
     ) {
         composable<Login> {
-            LoginScreenRoot(
-                modifier = modifier,
-            )
+            LoginScreenRoot()
         }
         composable<Register> {
-            RegisterScreenRoot(
-                modifier = modifier
-            )
+            RegisterScreenRoot()
         }
     }
 }

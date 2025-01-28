@@ -5,8 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -57,12 +60,14 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ZipbabTheme {
-                Scaffold { paddingValues ->
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
                     val navController = rememberNavController()
                     NavigationRoot(
                         navController = navController,
                         isLoggedIn = userPrivateUiState is UserPrivateUiState.LoggedIn,
-                        modifier = Modifier.padding(paddingValues),
                     )
                 }
             }

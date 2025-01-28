@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.bestapp.zipbab.compose_ui.home
 
 import androidx.compose.animation.AnimatedVisibility
@@ -38,14 +40,18 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -116,80 +122,82 @@ fun HomeScreen(
     onAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val density = LocalDensity.current
-
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        item {
+    Scaffold(
+        topBar = {
             TopSection(
                 isAlertExist = homeState.isAlertExist,
                 onAlertClick = { onAction(HomeAction.OnAlertClick) },
             )
         }
-
-        item {
-            SearchSection(
-                onSearchClick = {
-                    onAction(HomeAction.OnSearchClick)
-                },
-            )
-        }
-
-
-        item {
-            AnimatedVisibility(
-                visible = homeState.announcementText.isNotBlank(),
-                enter = slideInVertically {
-                    with(density) {
-                        40.dp.roundToPx()
-                    }
-                } + expandVertically {
-                    with(density) {
-                        40.dp.roundToPx()
-                    }
-                } + fadeIn(
-                    initialAlpha = 0.3f
-                )
-            ) {
-                GradientBackground {
-                    AnnouncementSection(
-                        displayText = homeState.announcementText,
-                        eventId = homeState.announcementId,
-                        onAnnouncementNotificationClick = {
-                            onAction(HomeAction.OnAnnouncementNotificationClick(homeState.announcementId))
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp),
-                    )
-                }
-
-            }
-        }
-
-        item {
-            TabSection(
-                categories = homeState.categories,
-                onCategoryItemClick = { onAction(HomeAction.OnCategoryClick(it)) },
-                onCategoryCreateClick = { onAction(HomeAction.OnCategoryCreateClick) }
-            )
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(24.dp))
-        }
-
-        if (homeState.banners.isNotEmpty()) {
+    ) { padding ->
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(padding)
+                .background(MaterialTheme.colorScheme.background)
+        ) {
             item {
-                BannerSection(
-                    banners = homeState.banners,
-                    onBannerClick = {
-                        onAction(HomeAction.OnBannerClick(it))
+                SearchSection(
+                    onSearchClick = {
+                        onAction(HomeAction.OnSearchClick)
                     },
                 )
+            }
+
+            item {
+                val density = LocalDensity.current
+
+                AnimatedVisibility(
+                    visible = homeState.announcementText.isNotBlank(),
+                    enter = slideInVertically {
+                        with(density) {
+                            40.dp.roundToPx()
+                        }
+                    } + expandVertically {
+                        with(density) {
+                            40.dp.roundToPx()
+                        }
+                    } + fadeIn(
+                        initialAlpha = 0.3f
+                    )
+                ) {
+                    GradientBackground {
+                        AnnouncementSection(
+                            displayText = homeState.announcementText,
+                            eventId = homeState.announcementId,
+                            onAnnouncementNotificationClick = {
+                                onAction(HomeAction.OnAnnouncementNotificationClick(homeState.announcementId))
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 16.dp),
+                        )
+                    }
+
+                }
+            }
+
+            item {
+                TabSection(
+                    categories = homeState.categories,
+                    onCategoryItemClick = { onAction(HomeAction.OnCategoryClick(it)) },
+                    onCategoryCreateClick = { onAction(HomeAction.OnCategoryCreateClick) }
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+
+            if (homeState.banners.isNotEmpty()) {
+                item {
+                    BannerSection(
+                        banners = homeState.banners,
+                        onBannerClick = {
+                            onAction(HomeAction.OnBannerClick(it))
+                        },
+                    )
+                }
             }
         }
     }
@@ -201,38 +209,45 @@ fun TopSection(
     onAlertClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Text(
-            text = stringResource(R.string.app_name),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 18.dp),
-        )
-        BadgedBox(
-            modifier = Modifier
-                .padding(end = 18.dp)
-                .clickable(onClick = onAlertClick),
-            badge = {
-                if (isAlertExist) {
-                    Badge()
-                }
-            }
-        ) {
-            Icon(
-                imageVector = if (isAlertExist) {
-                    Icons.Filled.Notifications
-                } else {
-                    Icons.Outlined.Notifications
-                },
-                contentDescription = "알림",
+    TopAppBar(
+        modifier = modifier,
+        title = {
+            Text(
+                text = stringResource(R.string.app_name),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 18.dp),
             )
-        }
-    }
+        },
+        actions = {
+            BadgedBox(
+                modifier = Modifier
+                    .padding(end = 18.dp)
+                    .clickable(onClick = onAlertClick),
+                badge = {
+                    if (isAlertExist) {
+                        Badge()
+                    }
+                }
+            ) {
+                Icon(
+                    imageVector = if (isAlertExist) {
+                        Icons.Filled.Notifications
+                    } else {
+                        Icons.Outlined.Notifications
+                    },
+                    contentDescription = "알림",
+                )
+            }
+        },
+        colors = TopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            titleContentColor = MaterialTheme.colorScheme.onBackground,
+            navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
+            actionIconContentColor = MaterialTheme.colorScheme.onBackground,
+            scrolledContainerColor = MaterialTheme.colorScheme.background,
+        )
+    )
 }
 
 @Composable
