@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.bestapp.zipbab.compose_ui.home.CategoryUiState
+import com.bestapp.zipbab.navigation.NavigationRoot
 import com.bestapp.zipbab.theme.ZipbabTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch

@@ -86,10 +86,10 @@ private const val MAX_CATEGORY_ICON_SIZE = 8
 fun HomeScreenRoot(
     onSearchClick: () -> Unit,
     onAlertClick: () -> Unit,
-    onAnnouncementNotificationClick: () -> Unit,
-    onCategoryItemClick: (CategoryGroup) -> Unit,
+    onAnnouncementNotificationClick: (String) -> Unit,
+    onCategoryItemClick: (String) -> Unit,
     onCategoryCreateClick: () -> Unit,
-    onBannerClick: (BannerItem) -> Unit,
+    onBannerClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -99,10 +99,10 @@ fun HomeScreenRoot(
             when (action) {
                 HomeAction.OnSearchClick -> onSearchClick()
                 HomeAction.OnAlertClick -> onAlertClick()
-                HomeAction.OnAnnouncementNotificationClick -> onAnnouncementNotificationClick()
-                is HomeAction.OnCategoryClick -> onCategoryItemClick(action.categoryGroup)
+                is HomeAction.OnAnnouncementNotificationClick -> onAnnouncementNotificationClick(action.eventId)
+                is HomeAction.OnCategoryClick -> onCategoryItemClick(action.label)
                 HomeAction.OnCategoryCreateClick -> onCategoryCreateClick()
-                is HomeAction.OnBannerClick -> onBannerClick(action.bannerItem)
+                is HomeAction.OnBannerClick -> onBannerClick(action.contentUrl)
             }
         },
         modifier = modifier,
@@ -158,7 +158,7 @@ fun HomeScreen(
                         displayText = homeState.announcementText,
                         eventId = homeState.announcementId,
                         onAnnouncementNotificationClick = {
-                            onAction(HomeAction.OnAnnouncementNotificationClick)
+                            onAction(HomeAction.OnAnnouncementNotificationClick(homeState.announcementId))
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -303,7 +303,7 @@ fun AnnouncementSection(
 @Composable
 fun TabSection(
     categories: List<CategoryGroup>,
-    onCategoryItemClick: (CategoryGroup) -> Unit,
+    onCategoryItemClick: (String) -> Unit,
     onCategoryCreateClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -425,7 +425,7 @@ fun TabSection(
                                 CategoryItem(
                                     name = icon.label,
                                     onClick = {
-                                        onCategoryItemClick(category)
+                                        onCategoryItemClick(icon.label)
                                     },
                                     imageContent = {
                                         AsyncImage(
@@ -538,7 +538,7 @@ fun Modifier.customTabIndicatorOffset(
 @Composable
 fun BannerSection(
     banners: List<BannerItem>,
-    onBannerClick: (BannerItem) -> Unit,
+    onBannerClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState {
@@ -564,7 +564,10 @@ fun BannerSection(
                     .clickable(
                         enabled = banner.contentUrl != null,
                         onClick = {
-                            onBannerClick(banner)
+                            val contentUrl = banner.contentUrl
+                            if (contentUrl != null) {
+                                onBannerClick(contentUrl)
+                            }
                         },
                     )
             )

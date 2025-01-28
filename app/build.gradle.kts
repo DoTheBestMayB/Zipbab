@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.googleService)
     alias(libs.plugins.navigationSafeArgs)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
 }
@@ -84,6 +85,7 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.paging.runtime)
     implementation(libs.hilt.work)
+    implementation(libs.kotlinx.serialization.json)
 
     // webkit
     implementation(libs.androidx.webkit.webkit)

@@ -1,4 +1,4 @@
-package com.bestapp.zipbab
+package com.bestapp.zipbab.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.bestapp.zipbab.compose_ui.alert.AlertScreenRoot
 import com.bestapp.zipbab.compose_ui.announcement.AnnouncementScreenRoot
 import com.bestapp.zipbab.compose_ui.banner.BannerScreenRoot
@@ -18,6 +19,7 @@ import com.bestapp.zipbab.compose_ui.recruitment.RecruitmentScreenRoot
 import com.bestapp.zipbab.compose_ui.register.RegisterScreenRoot
 import com.bestapp.zipbab.compose_ui.search_meet.SearchMeetScreenRoot
 import com.bestapp.zipbab.compose_ui.setting.SettingScreenRoot
+import com.bestapp.zipbab.domain.model.user.MeetType
 
 @Composable
 fun NavigationRoot(
@@ -26,11 +28,11 @@ fun NavigationRoot(
     modifier: Modifier = Modifier,
 ) {
     NavHost(
-        startDestination = "main",
+        startDestination = Main,
         navController = navController,
     ) {
         mainGraph(navController, isLoggedIn, modifier)
-        settingGraph(navController, isLoggedIn, modifier)
+        settingGraph(navController, modifier)
         authGraph(navController, modifier)
     }
 }
@@ -40,63 +42,69 @@ private fun NavGraphBuilder.mainGraph(
     isLoggedIn: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    navigation(
-        startDestination = "home",
-        route = "main"
+    navigation<Main>(
+        startDestination = Home,
     ) {
-        composable(route = "home") {
+        composable<Home> {
             HomeScreenRoot(
                 onSearchClick = {
-                    navController.navigate("search")
+                    navController.navigate(Search)
                 },
                 onAlertClick = {
                     if (isLoggedIn) {
-                        navController.navigate("alert")
+                        navController.navigate(Alert)
                     } else {
-                        navController.navigate("auth")
+                        navController.navigate(Auth)
                     }
                 },
                 onAnnouncementNotificationClick = {
-                    navController.navigate("announcement")
+                    navController.navigate(Announcement(it))
                 },
                 onCategoryItemClick = {
-                    navController.navigate("category")
+                    navController.navigate(Category(it, MeetType.FLASH_MEET))
                 },
                 onCategoryCreateClick = {
-                    navController.navigate("recruitment")
+                    navController.navigate(Recruitment)
                 },
                 onBannerClick = {
-                    navController.navigate("banner")
+                    navController.navigate(Banner(it))
                 },
                 modifier = modifier,
             )
         }
-        composable(route = "alert") {
+        composable<Alert> {
             AlertScreenRoot(
                 modifier = modifier,
             )
         }
-        composable(route = "search") {
+        composable<Search> { backstackEntry ->
             SearchMeetScreenRoot(
                 modifier = modifier,
             )
         }
-        composable(route = "category") {
+        composable<Category> {
+            val category = it.toRoute<Category>()
             CategoryScreenRoot(
+                meetType = category.meetType,
+                label = category.label,
                 modifier = modifier,
             )
         }
-        composable(route = "banner") {
+        composable<Banner> {
+            val banner = it.toRoute<Banner>()
             BannerScreenRoot(
+                contentUrl = banner.contentUrl,
                 modifier = modifier,
             )
         }
-        composable(route = "announcement") {
+        composable<Announcement> {
+            val announcement = it.toRoute<Announcement>()
             AnnouncementScreenRoot(
+                eventId = announcement.eventId,
                 modifier = modifier,
             )
         }
-        composable(route = "recruitment") {
+        composable<Recruitment> {
             RecruitmentScreenRoot(
                 modifier = modifier,
             )
@@ -107,14 +115,12 @@ private fun NavGraphBuilder.mainGraph(
 
 private fun NavGraphBuilder.settingGraph(
     navController: NavController,
-    isLoggedIn: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    navigation(
-        startDestination = "setting_overview",
-        route = "setting"
+    navigation<Setting>(
+        startDestination = SettingOverview,
     ) {
-        composable("setting_overview") {
+        composable<SettingOverview> {
             SettingScreenRoot(
                 modifier = modifier,
             )
@@ -126,16 +132,15 @@ private fun NavGraphBuilder.authGraph(
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
-    navigation(
-        startDestination = "login",
-        route = "auth"
+    navigation<Auth>(
+        startDestination = Login,
     ) {
-        composable(route = "login") {
+        composable<Login> {
             LoginScreenRoot(
                 modifier = modifier,
             )
         }
-        composable(route = "register") {
+        composable<Register> {
             RegisterScreenRoot(
                 modifier = modifier
             )
