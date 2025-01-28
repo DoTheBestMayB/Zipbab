@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.bestapp.zipbab.domain.model.user.UserPrivate
 import com.bestapp.zipbab.domain.repository.AppSettingRepository
 import com.bestapp.zipbab.domain.repository.CategoryRepository
-import com.bestapp.zipbab.home.CategoryUiState
+import com.bestapp.zipbab.compose_ui.home.CategoryUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

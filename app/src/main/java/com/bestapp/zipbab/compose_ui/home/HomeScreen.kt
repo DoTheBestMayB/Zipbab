@@ -1,4 +1,4 @@
-package com.bestapp.zipbab.home
+package com.bestapp.zipbab.compose_ui.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -68,7 +68,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.domain.model.banner.BannerItem
@@ -84,12 +84,27 @@ private const val MAX_CATEGORY_ICON_SIZE = 8
 
 @Composable
 fun HomeScreenRoot(
+    onSearchClick: () -> Unit,
+    onAlertClick: () -> Unit,
+    onAnnouncementNotificationClick: () -> Unit,
+    onCategoryItemClick: (CategoryGroup) -> Unit,
+    onCategoryCreateClick: () -> Unit,
+    onBannerClick: (BannerItem) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = viewModel(),
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     HomeScreen(
         homeState = viewModel.state,
-        onAction = viewModel::onAction,
+        onAction = { action ->
+            when (action) {
+                HomeAction.OnSearchClick -> onSearchClick()
+                HomeAction.OnAlertClick -> onAlertClick()
+                HomeAction.OnAnnouncementNotificationClick -> onAnnouncementNotificationClick()
+                is HomeAction.OnCategoryClick -> onCategoryItemClick(action.categoryGroup)
+                HomeAction.OnCategoryCreateClick -> onCategoryCreateClick()
+                is HomeAction.OnBannerClick -> onBannerClick(action.bannerItem)
+            }
+        },
         modifier = modifier,
     )
 }

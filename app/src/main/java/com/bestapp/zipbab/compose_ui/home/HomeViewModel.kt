@@ -1,4 +1,4 @@
-package com.bestapp.zipbab.home
+package com.bestapp.zipbab.compose_ui.home
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,18 +51,6 @@ class HomeViewModel @Inject constructor(
                 )
             }
         }
-    }
-
-    fun onAction(action: HomeAction) {
-
-    }
-
-    fun onWrite() {
-//        _navDestination.value = if (userLoginState.value) {
-//             NavDestination.Recruitment
-//        } else {
-//            NavDestination.Login
-//        }
     }
 }
 

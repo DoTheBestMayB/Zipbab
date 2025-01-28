@@ -1,4 +1,4 @@
-package com.bestapp.zipbab.home
+package com.bestapp.zipbab.compose_ui.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope

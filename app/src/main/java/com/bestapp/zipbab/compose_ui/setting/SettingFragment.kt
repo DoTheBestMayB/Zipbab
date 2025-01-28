@@ -1,4 +1,4 @@
-package com.bestapp.zipbab.ui.setting
+package com.bestapp.zipbab.compose_ui.setting
 
 import android.content.Intent
 import android.net.Uri
@@ -64,7 +64,6 @@ import coil.compose.AsyncImage
 import com.bestapp.zipbab.BuildConfig
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.domain.model.user.UserPrivate
-import com.bestapp.zipbab.model.PlaceLocationUiState
 import com.bestapp.zipbab.model.UserUiState
 import com.bestapp.zipbab.theme.LocalCustomColorsPalette
 import com.bestapp.zipbab.theme.MainColor
@@ -79,6 +78,11 @@ import com.skydoves.balloon.compose.Balloon
 import com.skydoves.balloon.compose.rememberBalloonBuilder
 import com.skydoves.balloon.compose.setBackgroundColor
 import dagger.hilt.android.AndroidEntryPoint
+
+@Composable
+fun SettingScreenRoot(modifier: Modifier = Modifier) {
+
+}
 
 @AndroidEntryPoint
 class SettingFragment : Fragment() {

@@ -101,10 +101,12 @@ dependencies {
     ksp(libs.androidx.hilt.compiler)
     ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.navigation.fragment)
+    implementation(libs.hilt.navigation.compose)
 
     // navigation
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.compose)
 
     // datastore
     implementation(libs.androidx.datastore.preferences)
