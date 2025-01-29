@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">지금집밥</string>
     <string name="home">홈</string>
-    <string name="meetUpMap">지도</string>
+    <string name="nearMeetMap">지도</string>
     <string name="setting">내 정보</string>
     <string name="recruit_app_bar">모임 등록</string>
     <string name="notification_app_bar">알림</string>

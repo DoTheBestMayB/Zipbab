@@ -1,4 +1,4 @@
-package com.bestapp.zipbab.ui.setting
+package com.bestapp.zipbab.compose_ui.setting
 
 sealed interface ActionIntent {
 

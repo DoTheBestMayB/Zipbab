@@ -8,7 +8,7 @@
     <item
         android:id="@+id/meetUpMapFragment"
         android:icon="@drawable/baseline_map_24"
-        android:title="@string/meetUpMap" />
+        android:title="@string/nearMeetMap" />
 
     <item
         android:id="@+id/settingFragment"

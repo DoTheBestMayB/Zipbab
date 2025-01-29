@@ -37,7 +37,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingFragment"
-        android:name="com.bestapp.zipbab.ui.setting.SettingFragment"
+        android:name="com.bestapp.zipbab.compose_ui.setting.SettingFragment"
         android:label="fragment_setting"
         tools:layout="@layout/fragment_setting">
         <action

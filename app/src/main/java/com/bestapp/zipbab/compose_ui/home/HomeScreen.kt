@@ -1,4 +1,6 @@
-package com.bestapp.zipbab.home
+@file:OptIn(ExperimentalMaterial3Api::class)
+
+package com.bestapp.zipbab.compose_ui.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -33,18 +35,23 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -68,7 +75,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.domain.model.banner.BannerItem
@@ -84,12 +91,27 @@ private const val MAX_CATEGORY_ICON_SIZE = 8
 
 @Composable
 fun HomeScreenRoot(
+    onSearchClick: () -> Unit,
+    onAlertClick: () -> Unit,
+    onAnnouncementNotificationClick: (String) -> Unit,
+    onCategoryItemClick: (String) -> Unit,
+    onCategoryCreateClick: () -> Unit,
+    onBannerClick: (String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = viewModel(),
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     HomeScreen(
         homeState = viewModel.state,
-        onAction = viewModel::onAction,
+        onAction = { action ->
+            when (action) {
+                HomeAction.OnSearchClick -> onSearchClick()
+                HomeAction.OnAlertClick -> onAlertClick()
+                is HomeAction.OnAnnouncementNotificationClick -> onAnnouncementNotificationClick(action.eventId)
+                is HomeAction.OnCategoryClick -> onCategoryItemClick(action.label)
+                HomeAction.OnCategoryCreateClick -> onCategoryCreateClick()
+                is HomeAction.OnBannerClick -> onBannerClick(action.contentUrl)
+            }
+        },
         modifier = modifier,
     )
 }
@@ -100,119 +122,132 @@ fun HomeScreen(
     onAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val density = LocalDensity.current
-
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        item {
-            TopSection(
+    Scaffold(
+        topBar = {
+            CustomTopAppBar(
                 isAlertExist = homeState.isAlertExist,
                 onAlertClick = { onAction(HomeAction.OnAlertClick) },
             )
-        }
-
-        item {
-            SearchSection(
-                onSearchClick = {
-                    onAction(HomeAction.OnSearchClick)
-                },
-            )
-        }
-
-
-        item {
-            AnimatedVisibility(
-                visible = homeState.announcementText.isNotBlank(),
-                enter = slideInVertically {
-                    with(density) {
-                        40.dp.roundToPx()
-                    }
-                } + expandVertically {
-                    with(density) {
-                        40.dp.roundToPx()
-                    }
-                } + fadeIn(
-                    initialAlpha = 0.3f
-                )
-            ) {
-                GradientBackground {
-                    AnnouncementSection(
-                        displayText = homeState.announcementText,
-                        eventId = homeState.announcementId,
-                        onAnnouncementNotificationClick = {
-                            onAction(HomeAction.OnAnnouncementNotificationClick)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp),
-                    )
-                }
-
-            }
-        }
-
-        item {
-            TabSection(
-                categories = homeState.categories,
-                onCategoryItemClick = { onAction(HomeAction.OnCategoryClick(it)) },
-                onCategoryCreateClick = { onAction(HomeAction.OnCategoryCreateClick) }
-            )
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(24.dp))
-        }
-
-        if (homeState.banners.isNotEmpty()) {
+        },
+    ) { padding ->
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(padding)
+                .background(MaterialTheme.colorScheme.background)
+        ) {
             item {
-                BannerSection(
-                    banners = homeState.banners,
-                    onBannerClick = {
-                        onAction(HomeAction.OnBannerClick(it))
+                SearchSection(
+                    onSearchClick = {
+                        onAction(HomeAction.OnSearchClick)
                     },
                 )
+            }
+
+            item {
+                val density = LocalDensity.current
+
+                AnimatedVisibility(
+                    visible = homeState.announcementText.isNotBlank(),
+                    enter = slideInVertically {
+                        with(density) {
+                            40.dp.roundToPx()
+                        }
+                    } + expandVertically {
+                        with(density) {
+                            40.dp.roundToPx()
+                        }
+                    } + fadeIn(
+                        initialAlpha = 0.3f
+                    )
+                ) {
+                    GradientBackground {
+                        AnnouncementSection(
+                            displayText = homeState.announcementText,
+                            eventId = homeState.announcementId,
+                            onAnnouncementNotificationClick = {
+                                onAction(HomeAction.OnAnnouncementNotificationClick(homeState.announcementId))
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 16.dp),
+                        )
+                    }
+
+                }
+            }
+
+            item {
+                TabSection(
+                    categories = homeState.categories,
+                    onCategoryItemClick = { onAction(HomeAction.OnCategoryClick(it)) },
+                    onCategoryCreateClick = { onAction(HomeAction.OnCategoryCreateClick) }
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+
+            if (homeState.banners.isNotEmpty()) {
+                item {
+                    BannerSection(
+                        banners = homeState.banners,
+                        onBannerClick = {
+                            onAction(HomeAction.OnBannerClick(it))
+                        },
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun TopSection(
+fun CustomTopAppBar(
     isAlertExist: Boolean,
     onAlertClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Text(
-            text = stringResource(R.string.app_name),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 18.dp),
-        )
-        BadgedBox(
-            modifier = Modifier
-                .padding(end = 18.dp)
-                .clickable(onClick = onAlertClick),
-            badge = {
-                if (isAlertExist) {
-                    Badge()
-                }
-            }
-        ) {
-            Icon(
-                imageVector = Icons.Default.Notifications,
-                contentDescription = "알림",
+    TopAppBar(
+        modifier = modifier,
+        title = {
+            Text(
+                text = stringResource(R.string.app_name),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 18.dp),
             )
-        }
-    }
+        },
+        actions = {
+            BadgedBox(
+                modifier = Modifier
+                    .padding(end = 18.dp)
+                    .clickable(onClick = onAlertClick),
+                badge = {
+                    if (isAlertExist) {
+                        Badge()
+                    }
+                }
+            ) {
+                Icon(
+                    imageVector = if (isAlertExist) {
+                        Icons.Filled.Notifications
+                    } else {
+                        Icons.Outlined.Notifications
+                    },
+                    contentDescription = "알림",
+                )
+            }
+        },
+        colors = TopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            titleContentColor = MaterialTheme.colorScheme.onBackground,
+            navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
+            actionIconContentColor = MaterialTheme.colorScheme.onBackground,
+            scrolledContainerColor = MaterialTheme.colorScheme.background,
+        )
+    )
 }
 
 @Composable
@@ -288,7 +323,7 @@ fun AnnouncementSection(
 @Composable
 fun TabSection(
     categories: List<CategoryGroup>,
-    onCategoryItemClick: (CategoryGroup) -> Unit,
+    onCategoryItemClick: (String) -> Unit,
     onCategoryCreateClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -410,7 +445,7 @@ fun TabSection(
                                 CategoryItem(
                                     name = icon.label,
                                     onClick = {
-                                        onCategoryItemClick(category)
+                                        onCategoryItemClick(icon.label)
                                     },
                                     imageContent = {
                                         AsyncImage(
@@ -523,7 +558,7 @@ fun Modifier.customTabIndicatorOffset(
 @Composable
 fun BannerSection(
     banners: List<BannerItem>,
-    onBannerClick: (BannerItem) -> Unit,
+    onBannerClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState {
@@ -549,7 +584,10 @@ fun BannerSection(
                     .clickable(
                         enabled = banner.contentUrl != null,
                         onClick = {
-                            onBannerClick(banner)
+                            val contentUrl = banner.contentUrl
+                            if (contentUrl != null) {
+                                onBannerClick(contentUrl)
+                            }
                         },
                     )
             )

@@ -1,4 +1,4 @@
-package com.bestapp.zipbab.ui.setting
+package com.bestapp.zipbab.compose_ui.setting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

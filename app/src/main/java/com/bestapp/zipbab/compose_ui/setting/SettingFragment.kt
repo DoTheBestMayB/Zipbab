@@ -1,4 +1,4 @@
-package com.bestapp.zipbab.ui.setting
+package com.bestapp.zipbab.compose_ui.setting
 
 import android.content.Intent
 import android.net.Uri
@@ -10,12 +10,14 @@ import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -64,7 +66,6 @@ import coil.compose.AsyncImage
 import com.bestapp.zipbab.BuildConfig
 import com.bestapp.zipbab.R
 import com.bestapp.zipbab.domain.model.user.UserPrivate
-import com.bestapp.zipbab.model.PlaceLocationUiState
 import com.bestapp.zipbab.model.UserUiState
 import com.bestapp.zipbab.theme.LocalCustomColorsPalette
 import com.bestapp.zipbab.theme.MainColor
@@ -79,6 +80,28 @@ import com.skydoves.balloon.compose.Balloon
 import com.skydoves.balloon.compose.rememberBalloonBuilder
 import com.skydoves.balloon.compose.setBackgroundColor
 import dagger.hilt.android.AndroidEntryPoint
+
+@Composable
+fun SettingScreenRoot(
+    modifier: Modifier = Modifier
+) {
+    SettingScreen(
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SettingScreen(
+    modifier: Modifier = Modifier,
+) {
+    Scaffold{  paddingValue ->
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(paddingValue)
+        )
+    }
+}
 
 @AndroidEntryPoint
 class SettingFragment : Fragment() {
