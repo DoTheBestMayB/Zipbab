@@ -4,4 +4,4 @@
 
 ## 스크린샷
 
-- <img src="" width=300 />
+<img src="" width=300 />
