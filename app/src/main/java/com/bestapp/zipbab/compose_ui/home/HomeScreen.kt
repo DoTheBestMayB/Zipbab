@@ -124,11 +124,11 @@ fun HomeScreen(
 ) {
     Scaffold(
         topBar = {
-            TopSection(
+            CustomTopAppBar(
                 isAlertExist = homeState.isAlertExist,
                 onAlertClick = { onAction(HomeAction.OnAlertClick) },
             )
-        }
+        },
     ) { padding ->
         LazyColumn(
             modifier = modifier
@@ -204,7 +204,7 @@ fun HomeScreen(
 }
 
 @Composable
-fun TopSection(
+fun CustomTopAppBar(
     isAlertExist: Boolean,
     onAlertClick: () -> Unit,
     modifier: Modifier = Modifier,

@@ -2,6 +2,9 @@ package com.bestapp.zipbab.navigation
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -17,6 +20,7 @@ import com.bestapp.zipbab.compose_ui.banner.BannerScreenRoot
 import com.bestapp.zipbab.compose_ui.category.CategoryScreenRoot
 import com.bestapp.zipbab.compose_ui.home.HomeScreenRoot
 import com.bestapp.zipbab.compose_ui.login.LoginScreenRoot
+import com.bestapp.zipbab.compose_ui.near_meet_map.NearMeetMapScreenRoot
 import com.bestapp.zipbab.compose_ui.recruitment.RecruitmentScreenRoot
 import com.bestapp.zipbab.compose_ui.register.RegisterScreenRoot
 import com.bestapp.zipbab.compose_ui.search_meet.SearchMeetScreenRoot
@@ -28,19 +32,38 @@ fun NavigationRoot(
     navController: NavHostController,
     isLoggedIn: Boolean,
 ) {
-    NavHost(
-        startDestination = Main,
-        navController = navController,
-        enterTransition = {
-            EnterTransition.None
-        },
-        exitTransition = {
-            ExitTransition.None
+    Scaffold(
+        bottomBar = {
+            ZipbabNavigationBar(navController)
         }
-    ) {
-        mainGraph(navController, isLoggedIn)
-        settingGraph(navController)
-        authGraph(navController)
+    ) { innerPadding ->
+        NavHost(
+            startDestination = Main,
+            navController = navController,
+            enterTransition = {
+                EnterTransition.None
+            },
+            exitTransition = {
+                ExitTransition.None
+            },
+            modifier = Modifier
+                .padding(innerPadding)
+                // bottom navigation bar를 위해 여기서 scaffold를 사용하고, 각 화면에서 topBar를 위해 scaffold를 또 사용한다.
+                // innerPadding이 중복 적용되는 것을 방지하기 위해 consumeWindowInsets 함수를 호출함.
+                .consumeWindowInsets(innerPadding)
+        ) {
+            mainGraph(
+                navController = navController,
+                isLoggedIn = isLoggedIn,
+            )
+            nearMapGraph(
+                navController = navController,
+            )
+            settingGraph(
+                navController = navController,
+            )
+            authGraph(navController)
+        }
     }
 }
 
@@ -106,6 +129,18 @@ private fun NavGraphBuilder.mainGraph(
             RecruitmentScreenRoot()
         }
 
+    }
+}
+
+private fun NavGraphBuilder.nearMapGraph(
+    navController: NavController,
+) {
+    navigation<NearMeetMap>(
+        startDestination = Map,
+    ) {
+        composable<Map> {
+            NearMeetMapScreenRoot()
+        }
     }
 }
 

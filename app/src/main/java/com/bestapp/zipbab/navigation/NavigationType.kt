@@ -10,6 +10,12 @@ object Auth
 object Main
 
 @Serializable
+object NearMeetMap
+
+@Serializable
+object Map
+
+@Serializable
 object Setting
 
 @Serializable
