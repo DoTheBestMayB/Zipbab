@@ -10,7 +10,7 @@ internal class CategoryRemoteDataSourceImpl @Inject constructor(
     private val firestoreDB: FirestoreDB,
 ) : CategoryRemoteDataSource {
     override suspend fun getFoodCategory(): FilterResponse.FoodCategory {
-        val documentSnapshot = firestoreDB.getCategoryDB().document("food")
+        val documentSnapshot = firestoreDB.getCategoryDB().document("flashMeet")
             .get()
             .await()
 

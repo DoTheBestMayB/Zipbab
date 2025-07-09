@@ -44,7 +44,7 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val foodCategoryResponse = async {
-                categoryRepository.getFoodCategory().food.map { category ->
+                categoryRepository.getFoodCategory().items.map { category ->
                     category.toUi()
                 }
             }
@@ -57,11 +57,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onWrite() {
-        _navDestination.value = if (userLoginState.value) {
-             NavDestination.Recruitment
-        } else {
-            NavDestination.Login
-        }
+        _navDestination.value = NavDestination.Recruitment
     }
 
     fun onNavConsumed() {

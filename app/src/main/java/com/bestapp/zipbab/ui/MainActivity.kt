@@ -3,6 +3,7 @@ package com.bestapp.zipbab.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -51,6 +52,18 @@ class MainActivity : AppCompatActivity() {
 //            Firebase.firestore.useEmulator(LOCALHOST, FIRESTORE_PORT)
 //        }
     }
+
+    override fun onRestoreInstanceState(
+        savedInstanceState: Bundle?,
+        persistentState: PersistableBundle?
+    ) {
+        super.onRestoreInstanceState(savedInstanceState, persistentState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+    }
+
 
     private fun setUi() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->

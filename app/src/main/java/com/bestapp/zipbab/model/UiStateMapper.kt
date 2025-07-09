@@ -39,7 +39,7 @@ fun FilterResponse.Cost.toUi() = FilterUiState.CostUiState(
 )
 
 fun FilterResponse.Food.toUi() = FilterUiState.FoodUiState(
-    icon = icon,
+    icon = imageUrl,
     name = name,
 )
 

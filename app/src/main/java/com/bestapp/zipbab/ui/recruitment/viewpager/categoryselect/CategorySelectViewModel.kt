@@ -20,7 +20,7 @@ class CategorySelectViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val categories = categoryRepository.getFoodCategory().food.map {
+            val categories = categoryRepository.getFoodCategory().items.map {
                 it.toCategory()
             }
 

@@ -3,7 +3,7 @@ package com.bestapp.zipbab.data.model.remote
 sealed interface FilterResponse {
 
     data class FoodCategory(
-        val food: List<Food> = emptyList(),
+        val items: List<Food> = emptyList(),
     )
 
     /**
@@ -11,7 +11,7 @@ sealed interface FilterResponse {
      * @property name 이름 ex) 파스타, 전, 구이, 샌드위치
      */
     data class Food(
-        val icon: String = "",
+        val imageUrl: String = "",
         val name: String = "",
     ) : FilterResponse
 

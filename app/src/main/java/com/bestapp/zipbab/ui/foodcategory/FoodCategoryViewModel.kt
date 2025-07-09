@@ -55,7 +55,7 @@ class FoodCategoryViewModel @Inject constructor(
 
         viewModelScope.launch {
             val foodUiStateList =
-                categoryRepository.getFoodCategory().food.mapIndexed { index, filter ->
+                categoryRepository.getFoodCategory().items.mapIndexed { index, filter ->
                     if (filter.toUi().name == selectMenu) {
                         selectIndex = index
                     }
